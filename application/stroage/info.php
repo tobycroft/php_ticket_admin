@@ -14,7 +14,7 @@
  */
 return [
     // 模块名[必填]
-    'name' => 'Storage',
+    'name' => 'storage',
     // 模块标题[必填]
     'title' => '仓库管理',
     // 模块唯一标识[必填]，格式：模块名.开发者标识.module
