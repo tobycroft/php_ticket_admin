@@ -68,8 +68,16 @@ class Builder extends ZBuilder
     public function initialize()
     {
         $this->_template = Env::get('app_path') . 'common/builder/form/layout.html';
-        // 手动构建完整URL，确保包含端口号
-        $this->_vars['post_url'] = $this->request->scheme() . '://' . $this->request->host(true) . ':' . $this->request->remotePort() . $this->request->url();
+        // 手动构建完整URL，确保包含客户端实际访问的端口号
+        $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+        $port = '';
+        if (strpos($httpHost, ':') !== false) {
+            list($host, $port) = explode(':', $httpHost, 2);
+            $port = ':' . $port;
+        } else {
+            $host = $httpHost;
+        }
+        $this->_vars['post_url'] = $this->request->scheme() . '://' . $host . $port . $this->request->url();
         $this->_vars['_token_name'] = config('zbuilder.form_token_name');
         $this->_vars['_token_value'] = $this->request->token($this->_vars['_token_name']);
     }
