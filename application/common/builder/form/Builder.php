@@ -70,6 +70,7 @@ class Builder extends ZBuilder
         $this->_template = Env::get('app_path') . 'common/builder/form/layout.html';
         // 手动构建完整URL，确保包含客户端实际访问的端口号
         $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+        var_dump($httpHost);
         $port = '';
         if (strpos($httpHost, ':') !== false) {
             list($host, $port) = explode(':', $httpHost, 2);
