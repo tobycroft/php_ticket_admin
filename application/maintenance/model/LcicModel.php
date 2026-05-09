@@ -1,7 +1,7 @@
 <?php
 
 
-namespace app\lcic\model;
+namespace app\maintenance\model;
 
 use think\Model;
 
