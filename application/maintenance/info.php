@@ -18,7 +18,7 @@ return [
     // 模块标题[必填]
     'title' => '运维系统',
     // 模块唯一标识[必填]，格式：模块名.开发者标识.module
-    'identifier' => 'lcic.lcic.module',
+    'identifier' => 'maintenance.tuuz.module',
     // 模块图标[选填]
     'icon' => 'fa fa-fw fa-newspaper-o',
     // 模块描述[选填]
