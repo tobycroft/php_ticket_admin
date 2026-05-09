@@ -17,10 +17,12 @@ class Index extends Admin
      */
     public function index()
     {
-        // 设置页面标题
-        return ZBuilder::make('blank')
+        // 使用 table 构建器创建首页，预留 dashboard 功能
+        return ZBuilder::make('table')
             ->setPageTitle('运维系统')
             ->setPageTips('欢迎使用运维系统，此页面将作为 dashboard 使用', 'info')
+            ->addColumn('tips', '提示信息')
+            ->setRowList([['tips' => 'Dashboard 功能开发中...']])
             ->fetch();
     }
 }
