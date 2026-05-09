@@ -16,7 +16,7 @@ return [
     // 模块名[必填]
     'name' => 'stor',
     // 模块标题[必填]
-    'title' => '仓库管理',
+    'title' => '仓库系统',
     // 模块唯一标识[必填]，格式：模块名.开发者标识.module
     'identifier' => 'storage.fc.module',
     // 模块图标[选填]
