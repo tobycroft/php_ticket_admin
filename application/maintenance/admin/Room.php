@@ -5,8 +5,7 @@ namespace app\maintenance\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
-use app\lcic\model\LcicModel;
-use app\parentschool\model\TeacherModel;
+use app\maintenance\model\LcicModel;
 use think\Db;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
