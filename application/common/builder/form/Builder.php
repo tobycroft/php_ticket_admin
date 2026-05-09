@@ -68,7 +68,8 @@ class Builder extends ZBuilder
     public function initialize()
     {
         $this->_template = Env::get('app_path') . 'common/builder/form/layout.html';
-        $this->_vars['post_url'] = $this->request->url(true);
+        // 手动构建完整URL，确保包含端口号
+        $this->_vars['post_url'] = $this->request->scheme() . '://' . $this->request->host(true) . $this->request->url();
         $this->_vars['_token_name'] = config('zbuilder.form_token_name');
         $this->_vars['_token_value'] = $this->request->token($this->_vars['_token_name']);
     }
