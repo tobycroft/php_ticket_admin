@@ -1,7 +1,7 @@
 <?php
 
 
-namespace app\lcic\model;
+namespace app\stor\model;
 
 use think\Model;
 

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace app\lcic\admin;
+namespace app\stor\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
