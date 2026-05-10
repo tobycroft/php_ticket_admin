@@ -14,6 +14,7 @@ class Event extends Admin
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
+        $map[] = ['is_canceled', '=', 0];
 
         $data_list = EventAction::getList($map);
 
