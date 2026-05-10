@@ -4,8 +4,9 @@ namespace app\maintenance\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
-use app\maintenance\action\UserAction;
+use app\user\model\Role as RoleModel;
 use app\user\model\User as UserModel;
+use think\Db;
 use think\facade\Hook;
 
 /**
@@ -14,6 +15,28 @@ use think\facade\Hook;
  */
 class User extends Admin
 {
+    /**
+     * 获取运维相关角色列表
+     * @return array
+     */
+    private function getMaintenanceRoles()
+    {
+        return RoleModel::where('name', 'like', '%运维%')
+            ->whereOr('name', 'like', '%维护%')
+            ->column('id,name');
+    }
+
+    /**
+     * 获取运维相关角色ID列表
+     * @return array
+     */
+    private function getMaintenanceRoleIds()
+    {
+        return RoleModel::where('name', 'like', '%运维%')
+            ->whereOr('name', 'like', '%维护%')
+            ->column('id');
+    }
+
     /**
      * 用户首页
      * @return mixed
@@ -25,9 +48,17 @@ class User extends Admin
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
-        $data_list = UserAction::getList($map);
+        $role_ids = $this->getMaintenanceRoleIds();
 
-        $role_list = UserAction::getMaintenanceRoles();
+        if (!empty($role_ids)) {
+            $map[] = ['role', 'in', $role_ids];
+        } else {
+            $map[] = ['role', '=', 0];
+        }
+
+        $data_list = UserModel::where($map)->order('sort,role,id desc')->paginate();
+
+        $role_list = $this->getMaintenanceRoles();
 
         return ZBuilder::make('table')
             ->setPageTitle('运维人员')
@@ -63,15 +94,30 @@ class User extends Admin
             $result = $this->validate($data, 'User');
             if(true !== $result) $this->error($result);
 
-            try {
-                UserAction::add($data);
+            $role_ids = $this->getMaintenanceRoleIds();
+            if (!in_array($data['role'], $role_ids)) {
+                $this->error('权限不足，禁止创建非法角色的用户');
+            }
+
+            if (isset($data['roles'])) {
+                $deny_role = array_diff($data['roles'], $role_ids);
+                if ($deny_role) {
+                    $this->error('权限不足，附加角色设置错误');
+                }
+            }
+
+            $data['roles'] = isset($data['roles']) ? implode(',', $data['roles']) : '';
+
+            if ($user = UserModel::create($data)) {
+                Hook::listen('user_add', $user);
+                action_log('user_add', 'admin_user', $user['id'], UID);
                 $this->success('新增成功', url('index'));
-            } catch (\Exception $e) {
-                $this->error($e->getMessage());
+            } else {
+                $this->error('新增失败');
             }
         }
 
-        $role_list = UserAction::getMaintenanceRoles();
+        $role_list = $this->getMaintenanceRoles();
 
         return ZBuilder::make('form')
             ->setPageTitle('新增运维人员')
@@ -102,26 +148,55 @@ class User extends Admin
     {
         if ($id === null) $this->error('缺少参数');
 
-        if (!UserAction::checkAccess($id)) {
+        $role_ids = $this->getMaintenanceRoleIds();
+        $user_list = UserModel::where('role', 'in', $role_ids)->column('id');
+        if (!in_array($id, $user_list)) {
             $this->error('权限不足，没有可操作的用户');
         }
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
+            if ($data['id'] == 1 && $data['role'] != 1) {
+                $this->error('禁止修改超级管理员角色');
+            }
+
+            if ($data['id'] == 1 && $data['status'] != 1) {
+                $this->error('禁止修改超级管理员状态');
+            }
+
             $result = $this->validate($data, 'User.update');
             if(true !== $result) $this->error($result);
 
-            try {
-                UserAction::edit($data);
+            if ($data['password'] == '') {
+                unset($data['password']);
+            }
+
+            if (!in_array($data['role'], $role_ids)) {
+                $this->error('权限不足，禁止修改为非法角色的用户');
+            }
+
+            if (isset($data['roles'])) {
+                $deny_role = array_diff($data['roles'], $role_ids);
+                if ($deny_role) {
+                    $this->error('权限不足，附加角色设置错误');
+                }
+            }
+
+            $data['roles'] = isset($data['roles']) ? implode(',', $data['roles']) : '';
+
+            if (UserModel::update($data)) {
+                $user = UserModel::get($data['id']);
+                Hook::listen('user_edit', $user);
+                action_log('user_edit', 'admin_user', $user['id'], UID, get_nickname($user['id']));
                 $this->success('编辑成功', cookie('__forward__'));
-            } catch (\Exception $e) {
-                $this->error($e->getMessage());
+            } else {
+                $this->error('编辑失败');
             }
         }
 
-        $info = UserAction::getInfo($id);
-        $role_list = UserAction::getMaintenanceRoles();
+        $info = UserModel::where('id', $id)->field('password', true)->find();
+        $role_list = $this->getMaintenanceRoles();
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑运维人员')
@@ -189,12 +264,39 @@ class User extends Admin
         $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
 
-        try {
-            UserAction::setStatus($type, $ids);
-            $this->success('操作成功');
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
+        $role_ids = $this->getMaintenanceRoleIds();
+        $user_list = UserModel::where('role', 'in', $role_ids)->column('id');
+
+        if (!empty($user_list)) {
+            $ids = array_intersect($user_list, $ids);
         }
+
+        if (!$ids) {
+            $this->error('权限不足，没有可操作的用户');
+        }
+
+        switch ($type) {
+            case 'enable':
+                if (false === UserModel::where('id', 'in', $ids)->setField('status', 1)) {
+                    $this->error('启用失败');
+                }
+                break;
+            case 'disable':
+                if (false === UserModel::where('id', 'in', $ids)->setField('status', 0)) {
+                    $this->error('禁用失败');
+                }
+                break;
+            case 'delete':
+                if (false === UserModel::where('id', 'in', $ids)->delete()) {
+                    $this->error('删除失败');
+                }
+                break;
+            default:
+                $this->error('非法操作');
+        }
+
+        action_log('user_'.$type, 'admin_user', '', UID);
+        $this->success('操作成功');
     }
 
     /**
@@ -209,7 +311,9 @@ class User extends Admin
         $field = input('post.name', '');
         $value = input('post.value', '');
 
-        if (!UserAction::checkAccess($id)) {
+        $role_ids = $this->getMaintenanceRoleIds();
+        $user_list = UserModel::where('role', 'in', $role_ids)->column('id');
+        if (!in_array($id, $user_list)) {
             $this->error('权限不足，没有可操作的用户');
         }
 

@@ -13,57 +13,25 @@ use think\facade\Hook;
 class UserAction
 {
     /**
-     * 获取运维组父角色ID
-     * @return int|false
-     */
-    private static function getMaintenanceGroupId()
-    {
-        return RoleModel::where('name', '运维组')
-            ->whereOr('name', '运行维护组')
-            ->value('id');
-    }
-
-    /**
-     * 获取运维组及其所有子角色ID列表
-     * @return array
-     */
-    public static function getMaintenanceRoleIds()
-    {
-        $group_id = self::getMaintenanceGroupId();
-        
-        if ($group_id) {
-            return array_merge([$group_id], RoleModel::getChildsId($group_id));
-        }
-        
-        return RoleModel::where('name', 'like', '%运维%')
-            ->whereOr('name', 'like', '%维护%')
-            ->column('id');
-    }
-
-    /**
-     * 获取运维组及其所有子角色列表（树形显示）
+     * 获取运维相关角色列表
      * @return array
      */
     public static function getMaintenanceRoles()
     {
-        $role_ids = self::getMaintenanceRoleIds();
-        
-        if (empty($role_ids)) {
-            return [];
-        }
+        return RoleModel::where('name', 'like', '%运维%')
+            ->whereOr('name', 'like', '%维护%')
+            ->column('id,name');
+    }
 
-        $roles = RoleModel::where('id', 'in', $role_ids)
-            ->column('id,pid,name');
-
-        $tree_config = ['title' => 'name', 'id' => 'id', 'pid' => 'pid'];
-        $roles = \util\Tree::config($tree_config)->toList($roles);
-        
-        $result = [];
-        foreach ($roles as $role) {
-            $result[$role['id']] = $role['title_display'];
-        }
-        
-        return $result;
+    /**
+     * 获取运维相关角色ID列表
+     * @return array
+     */
+    public static function getMaintenanceRoleIds()
+    {
+        return RoleModel::where('name', 'like', '%运维%')
+            ->whereOr('name', 'like', '%维护%')
+            ->column('id');
     }
 
     /**
