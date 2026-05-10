@@ -58,11 +58,13 @@ class Event extends Admin
         $data_list = EventAction::getMyEvents(UID);
 
         $is_closed_list = EventAction::getIsClosedList();
+        $is_canceled_list = EventAction::getIsCanceledList();
 
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
-            $item['can_close'] = !$item['is_closed'];
+            $item['can_close'] = !$item['is_closed'] && !$item['is_canceled'];
         }
 
         return ZBuilder::make('table')
@@ -76,10 +78,11 @@ class Event extends Admin
                 ['sender_name', '发单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
+                ['is_canceled_text', '状态'],
                 ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'condition' => 'can_close']])
+            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -91,12 +94,15 @@ class Event extends Admin
         $data_list = EventAction::getMySentEvents(UID);
 
         $is_closed_list = EventAction::getIsClosedList();
+        $is_canceled_list = EventAction::getIsCanceledList();
 
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
-            $item['can_close'] = !$item['is_closed'];
+            $item['can_close'] = !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_cancel'] = !$item['is_closed'] && !$item['is_canceled'];
         }
 
         return ZBuilder::make('table')
@@ -110,10 +116,11 @@ class Event extends Admin
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
                 ['end_time_text', '结束时间'],
+                ['is_canceled_text', '状态'],
                 ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'condition' => 'can_close']])
+            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -243,6 +250,18 @@ class Event extends Admin
         try {
             EventAction::close($id);
             $this->success('结单成功', cookie('__forward__'));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    public function cancel($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        try {
+            EventAction::cancel($id);
+            $this->success('作废成功', cookie('__forward__'));
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
