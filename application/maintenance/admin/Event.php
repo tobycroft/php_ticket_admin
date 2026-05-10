@@ -134,10 +134,9 @@ class Event extends Admin
             ->setPageTitle('新增工单')
             ->addFormItems([
                 ['text', 'title', '事件标题', '必填'],
-                ['textarea', 'content', '事件描述'],
+                ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填'],
                 ['text', 'customer_name', '对接客户'],
-                ['textarea', 'content', '备注'],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
             ->fetch();
@@ -165,7 +164,7 @@ class Event extends Admin
             ->addFormItems([
                 ['hidden', 'id'],
                 ['text', 'title', '事件标题', '必填'],
-                ['textarea', 'content', '事件描述'],
+                ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填'],
                 ['text', 'customer_name', '对接客户'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
@@ -204,7 +203,7 @@ class Event extends Admin
             ->setPageTitle('工单详情')
             ->setFormItems([
                 ['static', 'title', '事件标题'],
-                ['static', 'content', '事件描述'],
+                ['html', 'content', '事件描述'],
                 ['static', 'start_time_text', '开始时间'],
                 ['static', 'end_time_text', '结束时间'],
                 ['static', 'sender_name', '发单人'],
