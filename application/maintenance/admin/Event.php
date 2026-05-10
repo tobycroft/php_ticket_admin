@@ -42,7 +42,7 @@ class Event extends Admin
                 ['start_time_text', '开始时间'],
                 ['end_time_text', '结束时间'],
                 ['is_canceled_text', '状态'],
-                ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
+                ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
@@ -79,7 +79,7 @@ class Event extends Admin
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
                 ['is_canceled_text', '状态'],
-                ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
+                ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
             ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close']])
@@ -117,7 +117,7 @@ class Event extends Admin
                 ['start_time_text', '开始时间'],
                 ['end_time_text', '结束时间'],
                 ['is_canceled_text', '状态'],
-                ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
+                ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
             ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
