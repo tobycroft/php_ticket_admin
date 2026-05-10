@@ -29,7 +29,7 @@ class User extends Model
     // 获取注册ip
     public function setSignupIpAttr()
     {
-        return get_client_ip(1);
+        return get_client_ip();
     }
 
     /**
@@ -80,7 +80,7 @@ class User extends Model
 
                 // 更新登录信息
                 $user['last_login_time'] = request()->time();
-                $user['last_login_ip']   = request()->ip(1);
+                $user['last_login_ip']   = request()->ip();
                 if ($user->save()) {
                     // 自动登录
                     return $this->autoLogin($this::get($uid), $rememberme);
@@ -112,7 +112,7 @@ class User extends Model
             'username'        => $user->username,
             'nickname'        => $user->nickname,
             'last_login_time' => $user->last_login_time,
-            'last_login_ip'   => get_client_ip(1),
+            'last_login_ip'   => get_client_ip(),
         );
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));

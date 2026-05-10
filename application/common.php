@@ -501,16 +501,15 @@ if (!function_exists('get_plugin_class')) {
 if (!function_exists('get_client_ip')) {
     /**
      * 获取客户端IP地址
-     * @param int $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
+     * @param int $type 返回类型 0 返回IP地址 1 返回IPV4地址数字（已废弃，为兼容保留）
      * @param bool $adv 是否进行高级模式获取（有可能被伪装）
-     * @return mixed
+     * @return string IP地址字符串（支持IPv4和IPv6）
      */
     function get_client_ip($type = 0, $adv = false)
     {
-        $type = $type ? 1 : 0;
         static $ip = NULL;
         if ($ip !== NULL)
-            return $ip[$type];
+            return $ip;
         if ($adv) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -526,10 +525,10 @@ if (!function_exists('get_client_ip')) {
         } elseif (isset($_SERVER['REMOTE_ADDR'])) {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
-        // IP地址合法验证
-        $long = sprintf('%u', ip2long($ip));
-        $ip = $long ? array($ip, $long) : array('0.0.0.0', 0);
-        return $ip[$type];
+        if (empty($ip) || !filter_var($ip, FILTER_VALIDATE_IP)) {
+            $ip = '0.0.0.0';
+        }
+        return $ip;
     }
 }
 
@@ -1060,7 +1059,7 @@ if (!function_exists('action_log')) {
             $data = [
                 'action_id' => $action_info['id'],
                 'user_id' => $user_id,
-                'action_ip' => get_client_ip(1),
+                'action_ip' => get_client_ip(),
                 'model' => $model,
                 'record_id' => $record_id,
                 'create_time' => request()->time()
