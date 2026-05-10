@@ -207,29 +207,16 @@ class Event extends Admin
         $is_sender = $info['sender_id'] == UID;
         $can_close = $is_current_receiver && !$info['is_closed'];
 
-        return ZBuilder::make('form')
-            ->setPageTitle('工单详情')
-            ->setFormItems([
-                ['static', 'title', '事件标题'],
-                ['html', 'content', '事件描述'],
-                ['static', 'start_time_text', '开始时间'],
-                ['static', 'end_time_text', '结束时间'],
-                ['static', 'sender_name', '发单人'],
-                ['static', 'receiver_name', '接单人'],
-                ['static', 'customer_name', '对接客户'],
-                ['static', 'closer_name', '结单人'],
-                ['static', 'is_closed_text', '结单状态'],
-            ])
-            ->setFormData($info)
-            ->addBtn('receive', '接单', '', 'btn-info', '', $info['receiver_id'] == 0)
-            ->addBtn('close', '结单', '', 'btn-success', '', $can_close)
-            ->addBtn('push', '推送', '', 'btn-warning', '', !$info['is_closed'])
-            ->addBtn('addNote', '添加备注', '', 'btn-primary')
-            ->assign('notes', $notes)
-            ->assign('flows', $flows)
-            ->assign('is_current_receiver', $is_current_receiver)
-            ->assign('is_sender', $is_sender)
-            ->fetch();
+        $this->assign('info', $info);
+        $this->assign('notes', $notes);
+        $this->assign('flows', $flows);
+        $this->assign('can_close', $can_close);
+        $this->assign('is_current_receiver', $is_current_receiver);
+        $this->assign('is_sender', $is_sender);
+
+        $this->assign('page_title', '工单详情');
+
+        return $this->fetch('event/detail');
     }
 
     public function receive($id = null)
@@ -284,25 +271,29 @@ class Event extends Admin
 
     public function addNote($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
             try {
                 EventAction::addNote($id, $data['content']);
+                if ($this->request->isAjax()) {
+                    return json(['code' => 1, 'msg' => '添加备注成功', 'url' => url('detail', ['id' => $id])]);
+                }
                 $this->success('添加备注成功', url('detail', ['id' => $id]));
             } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
                 $this->error($e->getMessage());
             }
         }
-
-        return ZBuilder::make('form')
-            ->setPageTitle('添加备注')
-            ->addFormItems([
-                ['textarea', 'content', '备注内容', '必填'],
-            ])
-            ->fetch();
     }
 
     public function delete($ids = [])
