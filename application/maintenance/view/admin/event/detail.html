@@ -149,15 +149,20 @@
 {/block}
 
 {block name="script"}
-    <script src="__LIBS__/wang-editor/js/wangEditor.min.js"></script>
+    <script src="__LIBS__/ueditor/ueditor.config.js"></script>
+    <script src="__LIBS__/ueditor/ueditor.all.min.js"></script>
     <script>
         $(function() {
-            if ($('.js-wangeditor').length > 0) {
-                $('.js-wangeditor').each(function() {
-                    var editor = new wangEditor(this);
-                    editor.create();
-                });
-            }
+            var ue = UE.getEditor('note_content', {
+                toolbars: [
+                    ['bold', 'italic', 'underline', 'strikethrough', '|', 'forecolor', 'backcolor', '|', 
+                     'link', 'unlink', '|', 'alignleft', 'aligncenter', 'alignright', 'justify', '|',
+                     'insertorderedlist', 'insertunorderedlist', '|', 'undo', 'redo', 'fullscreen']
+                ],
+                autoHeightEnabled: true,
+                autoFloatEnabled: true,
+                initialFrameHeight: 200
+            });
         });
     </script>
 {/block}
