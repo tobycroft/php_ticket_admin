@@ -91,7 +91,7 @@ class User extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            $result = $this->validate($data, 'User');
+            $result = $this->validate($data, 'user\User');
             if(true !== $result) $this->error($result);
 
             $role_ids = $this->getMaintenanceRoleIds();
@@ -165,7 +165,7 @@ class User extends Admin
                 $this->error('禁止修改超级管理员状态');
             }
 
-            $result = $this->validate($data, 'User.update');
+            $result = $this->validate($data, 'user\User.update');
             if(true !== $result) $this->error($result);
 
             if ($data['password'] == '') {
