@@ -6,7 +6,7 @@ use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\maintenance\action\EventAction;
 
-class EventCompelete extends Admin
+class EventFinished extends Admin
 {
     public function index()
     {
