@@ -39,7 +39,7 @@ class EventMy extends Admin
                 ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('Event/close', ['id' => '__id__']), 'condition' => 'can_close']])
+            ->addRightButtons(['detail' => ['href' => url('Event/detail', ['id' => '__id__'])], 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('Event/close', ['id' => '__id__']), 'condition' => 'can_close']])
             ->setRowList($data_list)
             ->fetch();
     }

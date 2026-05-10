@@ -44,7 +44,7 @@ class EventCanceled extends Admin
                 ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail', 'active' => ['title' => '激活', 'icon' => 'fa-refresh', 'class' => 'btn btn-xs btn-info', 'href' => url('Event/active', ['id' => '__id__']), 'condition' => 'can_active']])
+            ->addRightButtons(['detail' => ['href' => url('Event/detail', ['id' => '__id__'])], 'active' => ['title' => '激活', 'icon' => 'fa-refresh', 'class' => 'btn btn-xs btn-info', 'href' => url('Event/active', ['id' => '__id__']), 'condition' => 'can_active']])
             ->setRowList($data_list)
             ->fetch();
     }

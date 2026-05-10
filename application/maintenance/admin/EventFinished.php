@@ -44,7 +44,7 @@ class EventFinished extends Admin
                 ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail'])
+            ->addRightButtons(['detail' => ['href' => url('Event/detail', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
