@@ -20,7 +20,8 @@ class EventNoteModel extends Model
         'create_time' => 'integer',
     ];
 
-    public function event()
+    // 重命名方法避免与父类静态方法冲突
+    public function getEvent()
     {
         return $this->belongsTo('EventModel', 'event_id', 'id');
     }
