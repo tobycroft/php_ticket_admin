@@ -17,13 +17,13 @@ class Event extends Admin
 
         $data_list = EventAction::getList($map);
 
-        $status_list = EventAction::getStatusList();
         $is_closed_list = EventAction::getIsClosedList();
 
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
+            $item['can_close'] = ($item['receiver_id'] == UID || $item['sender_id'] == UID) && !$item['is_closed'];
         }
 
         return ZBuilder::make('table')
@@ -38,12 +38,11 @@ class Event extends Admin
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
                 ['end_time_text', '结束时间'],
-                ['is_closed_text', '结单状态'],
-                ['status', '状态', 'switch', '', $status_list],
+                ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add,enable,disable,delete')
-            ->addRightButtons('edit,detail,delete')
+            ->addTopButtons('add,delete')
+            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'condition' => 'can_close']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -59,6 +58,7 @@ class Event extends Admin
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
+            $item['can_close'] = !$item['is_closed'];
         }
 
         return ZBuilder::make('table')
@@ -72,10 +72,10 @@ class Event extends Admin
                 ['sender_name', '发单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
-                ['is_closed_text', '结单状态'],
+                ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons('detail')
+            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'condition' => 'can_close']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -92,6 +92,7 @@ class Event extends Admin
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
+            $item['can_close'] = !$item['is_closed'];
         }
 
         return ZBuilder::make('table')
@@ -105,10 +106,10 @@ class Event extends Admin
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
                 ['end_time_text', '结束时间'],
-                ['is_closed_text', '结单状态'],
+                ['is_closed', '结单状态', 'switch', '', ['未结单', '已结单']],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons('detail')
+            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'condition' => 'can_close']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -333,5 +334,31 @@ class Event extends Admin
         }
 
         $this->success('操作成功');
+    }
+
+    public function quickEdit()
+    {
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+            if (empty($data['pk']) || empty($data['name']) || !isset($data['value'])) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            
+            try {
+                if ($data['name'] == 'is_closed') {
+                    if ($data['value']) {
+                        EventAction::close($data['pk']);
+                    } else {
+                        EventAction::edit(['id' => $data['pk'], 'is_closed' => 0, 'end_time' => 0, 'closer_id' => 0, 'closer_name' => '']);
+                    }
+                } else {
+                    EventAction::edit(['id' => $data['pk'], $data['name'] => $data['value']]);
+                }
+                return json(['code' => 1, 'msg' => '操作成功']);
+            } catch (\Exception $e) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
+        }
+        return json(['code' => 0, 'msg' => '请求方式错误']);
     }
 }
