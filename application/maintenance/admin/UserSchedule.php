@@ -7,7 +7,6 @@ use app\common\builder\ZBuilder;
 use app\maintenance\model\UserScheduleModel;
 use app\user\model\Role as RoleModel;
 use app\user\model\User as UserModel;
-use think\Db;
 
 class UserSchedule extends Admin
 {
@@ -35,11 +34,11 @@ class UserSchedule extends Admin
 
         $map = $this->getMap();
 
-        $data_list = UserSchedule::where($map)->order('user_id, day_of_week, start_time')->paginate();
+        $data_list = UserScheduleModel::where($map)->order('user_id, day_of_week, start_time')->paginate();
 
         $user_list = $this->getMaintenanceUsers();
-        $day_list = UserSchedule::getDayOfWeekList();
-        $status_list = UserSchedule::getStatusList();
+        $day_list = UserScheduleModel::getDayOfWeekList();
+        $status_list = UserScheduleModel::getStatusList();
 
         foreach ($data_list as &$item) {
             $item['user_name'] = isset($user_list[$item['user_id']]) ? $user_list[$item['user_id']] : '未知用户';
@@ -72,7 +71,7 @@ class UserSchedule extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            if (UserSchedule::create($data)) {
+            if (UserScheduleModel::create($data)) {
                 action_log('user_schedule_add', 'mt_user_schedule', '', UID);
                 $this->success('新增成功', url('index'));
             } else {
@@ -81,7 +80,7 @@ class UserSchedule extends Admin
         }
 
         $user_list = $this->getMaintenanceUsers();
-        $day_list = UserSchedule::getDayOfWeekList();
+        $day_list = UserScheduleModel::getDayOfWeekList();
 
         return ZBuilder::make('form')
             ->setPageTitle('新增排班')
@@ -103,7 +102,7 @@ class UserSchedule extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            if (UserSchedule::update($data)) {
+            if (UserScheduleModel::update($data)) {
                 action_log('user_schedule_edit', 'mt_user_schedule', $id, UID);
                 $this->success('编辑成功', cookie('__forward__'));
             } else {
@@ -111,9 +110,9 @@ class UserSchedule extends Admin
             }
         }
 
-        $info = UserSchedule::where('id', $id)->find();
+        $info = UserScheduleModel::where('id', $id)->find();
         $user_list = $this->getMaintenanceUsers();
-        $day_list = UserSchedule::getDayOfWeekList();
+        $day_list = UserScheduleModel::getDayOfWeekList();
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑排班')
@@ -156,17 +155,17 @@ class UserSchedule extends Admin
 
         switch ($type) {
             case 'enable':
-                if (false === UserSchedule::where('id', 'in', $ids)->setField('status', 1)) {
+                if (false === UserScheduleModel::where('id', 'in', $ids)->setField('status', 1)) {
                     $this->error('启用失败');
                 }
                 break;
             case 'disable':
-                if (false === UserSchedule::where('id', 'in', $ids)->setField('status', 0)) {
+                if (false === UserScheduleModel::where('id', 'in', $ids)->setField('status', 0)) {
                     $this->error('禁用失败');
                 }
                 break;
             case 'delete':
-                if (false === UserSchedule::where('id', 'in', $ids)->delete()) {
+                if (false === UserScheduleModel::where('id', 'in', $ids)->delete()) {
                     $this->error('删除失败');
                 }
                 break;
@@ -174,17 +173,17 @@ class UserSchedule extends Admin
                 $this->error('非法操作');
         }
 
-        action_log('user_schedule_' . $type, 'mt_user_schedule', '', UID);
+        action_log('user_schedule_'.$type, 'mt_user_schedule', '', UID);
         $this->success('操作成功');
     }
 
     public function quickEdit($record = [])
     {
-        $id = input('post.pk', '');
+        $id    = input('post.pk', '');
         $field = input('post.name', '');
         $value = input('post.value', '');
 
-        $config = UserSchedule::where('id', $id)->value($field);
+        $config  = UserScheduleModel::where('id', $id)->value($field);
         $details = '字段(' . $field . ')，原值(' . $config . ')，新值：(' . $value . ')';
         return parent::quickEdit(['user_schedule_edit', 'mt_user_schedule', $id, UID, $details]);
     }
