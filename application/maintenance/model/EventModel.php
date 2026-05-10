@@ -21,6 +21,7 @@ class EventModel extends Model
         'receiver_id' => 'integer',
         'closer_id' => 'integer',
         'is_closed' => 'integer',
+        'is_canceled' => 'integer',
         'receive_type' => 'integer',
         'status' => 'integer',
         'create_time' => 'integer',
