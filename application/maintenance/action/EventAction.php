@@ -242,6 +242,21 @@ class EventAction
         ];
     }
 
+    public static function active($id)
+    {
+        $data = [
+            'id' => $id,
+            'is_canceled' => 0,
+        ];
+        
+        if (EventModel::update($data)) {
+            action_log('event_active', 'mt_event', $id, UID);
+            return true;
+        }
+        
+        throw new \Exception('激活失败');
+    }
+
     public static function getStatusList()
     {
         return EventModel::getStatusList();
