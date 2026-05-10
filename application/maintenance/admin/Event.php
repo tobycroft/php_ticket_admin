@@ -122,10 +122,18 @@ class Event extends Admin
                 $this->error('请输入事件标题');
             }
 
+            $data['start_time'] = strtotime($data['start_time']);
+
             try {
                 $event = EventAction::add($data);
-                $this->success('创建成功', url('detail', ['id' => $event['id']]));
+                if ($this->request->isAjax()) {
+                    return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')->build()]);
+                }
+                $this->success('创建成功', url('index'));
             } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
                 $this->error($e->getMessage());
             }
         }
