@@ -1,0 +1,339 @@
+<?php
+
+namespace app\maintenance\admin;
+
+use app\admin\controller\Admin;
+use app\common\builder\ZBuilder;
+use app\maintenance\action\EventAction;
+use app\user\model\User as UserModel;
+
+class Event extends Admin
+{
+    public function index()
+    {
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        $map = $this->getMap();
+
+        $data_list = EventAction::getList($map);
+
+        $status_list = EventAction::getStatusList();
+        $is_closed_list = EventAction::getIsClosedList();
+
+        foreach ($data_list as &$item) {
+            $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
+            $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
+        }
+
+        return ZBuilder::make('table')
+            ->setPageTitle('工单列表')
+            ->setTableName('mt_event')
+            ->setSearch(['title' => '标题', 'sender_name' => '发单人', 'customer_name' => '客户'])
+            ->addColumns([
+                ['id', 'ID'],
+                ['title', '事件标题'],
+                ['sender_name', '发单人'],
+                ['receiver_name', '接单人'],
+                ['customer_name', '对接客户'],
+                ['start_time_text', '开始时间'],
+                ['end_time_text', '结束时间'],
+                ['is_closed_text', '结单状态'],
+                ['status', '状态', 'switch', '', $status_list],
+                ['right_button', '操作', 'btn']
+            ])
+            ->addTopButtons('add,enable,disable,delete')
+            ->addRightButtons('edit,detail,delete')
+            ->setRowList($data_list)
+            ->fetch();
+    }
+
+    public function myEvent()
+    {
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        $data_list = EventAction::getMyEvents(UID);
+
+        $is_closed_list = EventAction::getIsClosedList();
+
+        foreach ($data_list as &$item) {
+            $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
+        }
+
+        return ZBuilder::make('table')
+            ->setPageTitle('我的工单')
+            ->setTableName('mt_event')
+            ->setSearch(['title' => '标题', 'sender_name' => '发单人'])
+            ->addColumns([
+                ['id', 'ID'],
+                ['title', '事件标题'],
+                ['content', '事件描述'],
+                ['sender_name', '发单人'],
+                ['customer_name', '对接客户'],
+                ['start_time_text', '开始时间'],
+                ['is_closed_text', '结单状态'],
+                ['right_button', '操作', 'btn']
+            ])
+            ->addRightButtons('detail')
+            ->setRowList($data_list)
+            ->fetch();
+    }
+
+    public function sentEvent()
+    {
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        $data_list = EventAction::getMySentEvents(UID);
+
+        $is_closed_list = EventAction::getIsClosedList();
+
+        foreach ($data_list as &$item) {
+            $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
+            $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
+        }
+
+        return ZBuilder::make('table')
+            ->setPageTitle('我发起的工单')
+            ->setTableName('mt_event')
+            ->setSearch(['title' => '标题', 'receiver_name' => '接单人'])
+            ->addColumns([
+                ['id', 'ID'],
+                ['title', '事件标题'],
+                ['receiver_name', '接单人'],
+                ['customer_name', '对接客户'],
+                ['start_time_text', '开始时间'],
+                ['end_time_text', '结束时间'],
+                ['is_closed_text', '结单状态'],
+                ['right_button', '操作', 'btn']
+            ])
+            ->addRightButtons('detail')
+            ->setRowList($data_list)
+            ->fetch();
+    }
+
+    public function add()
+    {
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+
+            if (empty($data['title'])) {
+                $this->error('请输入事件标题');
+            }
+
+            try {
+                $event = EventAction::add($data);
+                $this->success('创建成功', url('detail', ['id' => $event['id']]));
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+
+        return ZBuilder::make('form')
+            ->setPageTitle('新增工单')
+            ->addFormItems([
+                ['text', 'title', '事件标题', '必填'],
+                ['textarea', 'content', '事件描述'],
+                ['datetime', 'start_time', '开始时间', '必填'],
+                ['text', 'customer_name', '对接客户'],
+                ['textarea', 'content', '备注'],
+                ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
+            ])
+            ->fetch();
+    }
+
+    public function edit($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+
+            try {
+                EventAction::edit($data);
+                $this->success('编辑成功', cookie('__forward__'));
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+
+        $info = EventAction::getInfo($id);
+
+        return ZBuilder::make('form')
+            ->setPageTitle('编辑工单')
+            ->addFormItems([
+                ['hidden', 'id'],
+                ['text', 'title', '事件标题', '必填'],
+                ['textarea', 'content', '事件描述'],
+                ['datetime', 'start_time', '开始时间', '必填'],
+                ['text', 'customer_name', '对接客户'],
+                ['radio', 'status', '状态', '', ['禁用', '启用']]
+            ])
+            ->setFormData($info)
+            ->fetch();
+    }
+
+    public function detail($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        $info = EventAction::getInfo($id);
+        $notes = EventAction::getNotes($id);
+        $flows = EventAction::getFlows($id);
+
+        $info['start_time_text'] = $info['start_time'] ? date('Y-m-d H:i:s', $info['start_time']) : '';
+        $info['end_time_text'] = $info['end_time'] ? date('Y-m-d H:i:s', $info['end_time']) : '';
+        $info['is_closed_text'] = $info['is_closed'] ? '已结单' : '未结单';
+
+        foreach ($notes as &$note) {
+            $note['create_time_text'] = $note['create_time'] ? date('Y-m-d H:i:s', $note['create_time']) : '';
+        }
+
+        foreach ($flows as &$flow) {
+            $flow['create_time_text'] = $flow['create_time'] ? date('Y-m-d H:i:s', $flow['create_time']) : '';
+            $flow['handle_time_text'] = $flow['handle_time'] ? date('Y-m-d H:i:s', $flow['handle_time']) : '';
+            $flow['status_text'] = ['待处理', '已处理', '已退回'][$flow['status']];
+        }
+
+        $is_current_receiver = $info['receiver_id'] == UID;
+        $is_sender = $info['sender_id'] == UID;
+        $can_close = $is_current_receiver && !$info['is_closed'];
+
+        return ZBuilder::make('form')
+            ->setPageTitle('工单详情')
+            ->setFormItems([
+                ['static', 'title', '事件标题'],
+                ['static', 'content', '事件描述'],
+                ['static', 'start_time_text', '开始时间'],
+                ['static', 'end_time_text', '结束时间'],
+                ['static', 'sender_name', '发单人'],
+                ['static', 'receiver_name', '接单人'],
+                ['static', 'customer_name', '对接客户'],
+                ['static', 'closer_name', '结单人'],
+                ['static', 'is_closed_text', '结单状态'],
+            ])
+            ->setFormData($info)
+            ->addBtn('receive', '接单', '', 'btn-info', '', $info['receiver_id'] == 0)
+            ->addBtn('close', '结单', '', 'btn-success', '', $can_close)
+            ->addBtn('push', '推送', '', 'btn-warning', '', !$info['is_closed'])
+            ->addBtn('addNote', '添加备注', '', 'btn-primary')
+            ->assign('notes', $notes)
+            ->assign('flows', $flows)
+            ->assign('is_current_receiver', $is_current_receiver)
+            ->assign('is_sender', $is_sender)
+            ->fetch();
+    }
+
+    public function receive($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        try {
+            EventAction::receive($id);
+            $this->success('接单成功', cookie('__forward__'));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    public function close($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        try {
+            EventAction::close($id);
+            $this->success('结单成功', cookie('__forward__'));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    public function push($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+
+            try {
+                EventAction::push($id, $data['to_user_id'], $data['reason']);
+                $this->success('推送成功', cookie('__forward__'));
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+
+        $users = UserModel::where('status', 1)->column('id,nickname');
+
+        return ZBuilder::make('form')
+            ->setPageTitle('推送工单')
+            ->addFormItems([
+                ['select', 'to_user_id', '接收人', '必填', $users],
+                ['textarea', 'reason', '推送理由'],
+            ])
+            ->fetch();
+    }
+
+    public function addNote($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+
+            try {
+                EventAction::addNote($id, $data['content']);
+                $this->success('添加备注成功', url('detail', ['id' => $id]));
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+
+        return ZBuilder::make('form')
+            ->setPageTitle('添加备注')
+            ->addFormItems([
+                ['textarea', 'content', '备注内容', '必填'],
+            ])
+            ->fetch();
+    }
+
+    public function delete($ids = [])
+    {
+        return $this->setStatus('delete');
+    }
+
+    public function enable($ids = [])
+    {
+        return $this->setStatus('enable');
+    }
+
+    public function disable($ids = [])
+    {
+        return $this->setStatus('disable');
+    }
+
+    public function setStatus($type = '', $record = [])
+    {
+        $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
+        $ids = (array)$ids;
+
+        foreach ($ids as $id) {
+            if ($type == 'delete') {
+                try {
+                    EventAction::delete($id);
+                } catch (\Exception $e) {
+                    $this->error($e->getMessage());
+                }
+            } else {
+                try {
+                    EventAction::edit(['id' => $id, 'status' => $type == 'enable' ? 1 : 0]);
+                } catch (\Exception $e) {
+                    $this->error($e->getMessage());
+                }
+            }
+        }
+
+        $this->success('操作成功');
+    }
+}
