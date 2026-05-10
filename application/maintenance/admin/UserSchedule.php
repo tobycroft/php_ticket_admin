@@ -4,41 +4,22 @@ namespace app\maintenance\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
+use app\maintenance\action\UserScheduleAction;
 use app\maintenance\model\UserScheduleModel;
-use app\user\model\Role as RoleModel;
-use app\user\model\User as UserModel;
 
 class UserSchedule extends Admin
 {
-    private function getMaintenanceRoleIds()
-    {
-        return RoleModel::where('name', 'like', '%运维%')
-            ->whereOr('name', 'like', '%维护%')
-            ->column('id');
-    }
-
-    private function getMaintenanceUsers()
-    {
-        $role_ids = $this->getMaintenanceRoleIds();
-        if (empty($role_ids)) {
-            return [];
-        }
-        return UserModel::where('role', 'in', $role_ids)
-            ->where('status', 1)
-            ->column('id,nickname');
-    }
-
     public function index()
     {
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
 
-        $data_list = UserScheduleModel::where($map)->order('user_id, day_of_week, start_time')->paginate();
+        $data_list = UserScheduleAction::getList($map);
 
-        $user_list = $this->getMaintenanceUsers();
-        $day_list = UserScheduleModel::getDayOfWeekList();
-        $status_list = UserScheduleModel::getStatusList();
+        $user_list = UserScheduleAction::getMaintenanceUsers();
+        $day_list = UserScheduleAction::getDayOfWeekList();
+        $status_list = UserScheduleAction::getStatusList();
 
         foreach ($data_list as &$item) {
             $item['user_name'] = isset($user_list[$item['user_id']]) ? $user_list[$item['user_id']] : '未知用户';
@@ -71,16 +52,16 @@ class UserSchedule extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            if (UserScheduleModel::create($data)) {
-                action_log('user_schedule_add', 'mt_user_schedule', '', UID);
+            try {
+                UserScheduleAction::add($data);
                 $this->success('新增成功', url('index'));
-            } else {
-                $this->error('新增失败');
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
             }
         }
 
-        $user_list = $this->getMaintenanceUsers();
-        $day_list = UserScheduleModel::getDayOfWeekList();
+        $user_list = UserScheduleAction::getMaintenanceUsers();
+        $day_list = UserScheduleAction::getDayOfWeekList();
 
         return ZBuilder::make('form')
             ->setPageTitle('新增排班')
@@ -102,17 +83,17 @@ class UserSchedule extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            if (UserScheduleModel::update($data)) {
-                action_log('user_schedule_edit', 'mt_user_schedule', $id, UID);
+            try {
+                UserScheduleAction::edit($data);
                 $this->success('编辑成功', cookie('__forward__'));
-            } else {
-                $this->error('编辑失败');
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
             }
         }
 
-        $info = UserScheduleModel::where('id', $id)->find();
-        $user_list = $this->getMaintenanceUsers();
-        $day_list = UserScheduleModel::getDayOfWeekList();
+        $info = UserScheduleAction::getInfo($id);
+        $user_list = UserScheduleAction::getMaintenanceUsers();
+        $day_list = UserScheduleAction::getDayOfWeekList();
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑排班')
@@ -149,32 +130,12 @@ class UserSchedule extends Admin
         $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
 
-        if (!$ids) {
-            $this->error('请选择要操作的数据');
+        try {
+            UserScheduleAction::setStatus($type, $ids);
+            $this->success('操作成功');
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
         }
-
-        switch ($type) {
-            case 'enable':
-                if (false === UserScheduleModel::where('id', 'in', $ids)->setField('status', 1)) {
-                    $this->error('启用失败');
-                }
-                break;
-            case 'disable':
-                if (false === UserScheduleModel::where('id', 'in', $ids)->setField('status', 0)) {
-                    $this->error('禁用失败');
-                }
-                break;
-            case 'delete':
-                if (false === UserScheduleModel::where('id', 'in', $ids)->delete()) {
-                    $this->error('删除失败');
-                }
-                break;
-            default:
-                $this->error('非法操作');
-        }
-
-        action_log('user_schedule_'.$type, 'mt_user_schedule', '', UID);
-        $this->success('操作成功');
     }
 
     public function quickEdit($record = [])
