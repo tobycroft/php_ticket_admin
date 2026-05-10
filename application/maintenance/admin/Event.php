@@ -127,7 +127,7 @@ class Event extends Admin
             try {
                 $event = EventAction::add($data);
                 if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')->build()]);
+                    return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')]);
                 }
                 $this->success('创建成功', url('index'));
             } catch (\Exception $e) {
