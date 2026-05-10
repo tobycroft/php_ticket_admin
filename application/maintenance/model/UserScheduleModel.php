@@ -4,7 +4,7 @@ namespace app\maintenance\model;
 
 use think\Model;
 
-class UserSchedule extends Model
+class UserScheduleModel extends Model
 {
     protected $table = 'mt_user_schedule';
 
