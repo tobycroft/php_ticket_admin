@@ -216,19 +216,30 @@ class EventAction
 
     public static function delete($id)
     {
-        Db::startTrans();
-        try {
-            EventNoteModel::where('event_id', $id)->delete();
-            EventFlowModel::where('event_id', $id)->delete();
-            EventModel::where('id', $id)->delete();
-            Db::commit();
-            
-            action_log('event_delete', 'mt_event', $id, UID);
+        return self::cancel($id);
+    }
+
+    public static function cancel($id)
+    {
+        $data = [
+            'id' => $id,
+            'is_canceled' => 1,
+        ];
+        
+        if (EventModel::update($data)) {
+            action_log('event_cancel', 'mt_event', $id, UID);
             return true;
-        } catch (\Exception $e) {
-            Db::rollback();
-            throw $e;
         }
+        
+        throw new \Exception('作废失败');
+    }
+
+    public static function getIsCanceledList()
+    {
+        return [
+            0 => '正常',
+            1 => '已作废',
+        ];
     }
 
     public static function getStatusList()
