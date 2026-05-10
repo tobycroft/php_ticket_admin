@@ -336,7 +336,7 @@ class Event extends Admin
         $this->success('操作成功');
     }
 
-    public function quickEdit()
+    public function quickEdit($record = [])
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
