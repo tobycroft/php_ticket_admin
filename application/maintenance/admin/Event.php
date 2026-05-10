@@ -46,7 +46,7 @@ class Event extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
-            ->addRightButtons(['detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
+            ->addRightButtons(['edit', 'detail', 'close' => ['title' => '结单', 'icon' => 'fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
             ->setRowList($data_list)
             ->fetch();
     }
