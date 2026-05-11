@@ -286,6 +286,17 @@ class EventAction
         return EventModel::getIsClosedList();
     }
 
+    public static function getPriorityList()
+    {
+        return [
+            1 => '<span class="label label-default">1 - 普通</span>',
+            2 => '<span class="label label-info">2 - 低</span>',
+            3 => '<span class="label label-warning">3 - 中</span>',
+            4 => '<span class="label label-danger">4 - 高</span>',
+            5 => '<span class="label label-red">5 - 紧急</span>',
+        ];
+    }
+
     public static function getReceiveTypeList()
     {
         return EventModel::getReceiveTypeList();

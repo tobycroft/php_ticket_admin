@@ -20,10 +20,12 @@ class Event extends Admin
 
         $is_closed_list = EventAction::getIsClosedList();
         $is_canceled_list = EventAction::getIsCanceledList();
+        $priority_list = EventAction::getPriorityList();
 
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
+            $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
             $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
@@ -43,7 +45,7 @@ class Event extends Admin
                 ['receiver_name', '接单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
-                ['end_time_text', '结束时间'],
+                ['priority_text', '优先级'],
                 ['is_canceled_text', '状态'],
                 ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
@@ -79,6 +81,14 @@ class Event extends Admin
             }
         }
 
+        $priority_list = [
+                1 => '<span class="label label-default">1 - 普通</span>',
+                2 => '<span class="label label-info">2 - 低</span>',
+                3 => '<span class="label label-warning">3 - 中</span>',
+                4 => '<span class="label label-danger">4 - 高</span>',
+                5 => '<span class="label label-red">5 - 紧急</span>',
+            ];
+
         return ZBuilder::make('form')
             ->setPageTitle('新增工单')
             ->addFormItems([
@@ -88,6 +98,7 @@ class Event extends Admin
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填', '', date('Y-m-d H:i:s')],
                 ['text', 'customer_name', '对接客户'],
+                ['select', 'priority', '优先级', '', $priority_list, 1],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
             ->fetch();
@@ -134,6 +145,14 @@ class Event extends Admin
             $this->error('工单不存在');
         }
 
+        $priority_list = [
+                1 => '<span class="label label-default">1 - 普通</span>',
+                2 => '<span class="label label-info">2 - 低</span>',
+                3 => '<span class="label label-warning">3 - 中</span>',
+                4 => '<span class="label label-danger">4 - 高</span>',
+                5 => '<span class="label label-red">5 - 紧急</span>',
+            ];
+
         return ZBuilder::make('form')
             ->setPageTitle('编辑工单')
             ->addFormItems([
@@ -144,6 +163,7 @@ class Event extends Admin
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填'],
                 ['text', 'customer_name', '对接客户'],
+                ['select', 'priority', '优先级', '', $priority_list],
                 ['radio', 'is_closed', '结单状态', '', ['未结单', '已结单'], $info['is_closed']],
                 ['radio', 'is_canceled', '作废状态', '', ['正常', '已作废'], $info['is_canceled']]
             ])
