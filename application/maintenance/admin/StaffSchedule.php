@@ -82,9 +82,8 @@ class StaffSchedule extends Admin
         $this->redirect('index');
     }
 
-    public function edit($id = null)
+    public function edit($id = null, $type = '')
     {
-        $type = $this->request->param('type', '');
         if ($type == 'leave') {
             return $this->editLeave($id);
         } elseif ($type == 'swap') {
@@ -93,9 +92,8 @@ class StaffSchedule extends Admin
         $this->redirect('index');
     }
 
-    public function delete($ids = [])
+    public function delete($ids = [], $type = '')
     {
-        $type = $this->request->param('type', '');
         if ($type == 'leave') {
             return $this->deleteLeave($ids);
         } elseif ($type == 'swap') {
