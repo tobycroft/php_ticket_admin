@@ -1,0 +1,233 @@
+{include file="public/header" /}
+
+<div class="admin-content">
+    <div class="admin-content-body">
+        <div class="page-header">
+            <h1 class="page-title">排班管理</h1>
+            <div class="page-header-actions">
+                <a href="{:url('ShiftPattern/index')}" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus"></i> 班次管理
+                </a>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="text-center mb-4">
+                                <button type="button" class="btn btn-default" onclick="changeMonth({$prev_year}, {$prev_month})">
+                                    <i class="fa fa-chevron-left"></i> 上月
+                                </button>
+                                <span class="h3 mx-4">{$year}年{$month}月</span>
+                                <button type="button" class="btn btn-default" onclick="changeMonth({$next_year}, {$next_month})">
+                                    下月 <i class="fa fa-chevron-right"></i>
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" style="vertical-align:middle;width:150px;">班次</th>
+                                            {foreach $weekdays as $key => $weekday}
+                                                {if $key > 0}
+                                                    <th colspan="1" class="text-center">{$weekday}</th>
+                                                {/if}
+                                            {/foreach}
+                                        </tr>
+                                        <tr>
+                                            {foreach $calendar_days as $day}
+                                                {if $day.day > 0}
+                                                    <th class="text-center">{$day.day}</th>
+                                                {/if}
+                                            {/foreach}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach $shift_list as $shift}
+                                            <tr>
+                                                <td style="background-color:{$shift.color};color:white;font-weight:bold;">
+                                                    {$shift.name}<br>
+                                                    <small>{$shift.start_time} - {$shift.end_time}</small>
+                                                </td>
+                                                {foreach $calendar_days as $day}
+                                                    {if $day.day > 0}
+                                                        <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
+                                                            <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
+                                                                {php $key = "{$day.date}_{$shift.id}";}
+                                                                {if isset($schedule_map[$key])}
+                                                                    {foreach $schedule_map[$key] as $user_id => $schedule}
+                                                                        <span class="label label-primary schedule-user" data-user-id="{$user_id}">
+                                                                            {$schedule.user_name}
+                                                                            <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$user_id}">
+                                                                                <i class="fa fa-times"></i>
+                                                                            </a>
+                                                                        </span>
+                                                                    {/foreach}
+                                                                {/if}
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-default add-user-btn" 
+                                                                    data-date="{$day.date}" data-shift-id="{$shift.id}"
+                                                                    style="margin-top:5px;width:100%;">
+                                                                <i class="fa fa-plus"></i> 添加
+                                                            </button>
+                                                        </td>
+                                                    {else}
+                                                        <td></td>
+                                                    {/if}
+                                                {/foreach}
+                                            </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">选择人员</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal-date">
+                <input type="hidden" id="modal-shift-id">
+                <div class="checkbox-list">
+                    {foreach $user_list as $user}
+                        <label class="checkbox-inline">
+                            <input type="checkbox" class="user-checkbox" value="{$user.id}">
+                            {$user.nickname}
+                        </label>
+                    {/foreach}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveSchedule()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function changeMonth(year, month) {
+    window.location.href = "{:url('index')}?year=" + year + "&month=" + month;
+}
+
+$(function() {
+    $('.add-user-btn').click(function() {
+        var date = $(this).data('date');
+        var shift_id = $(this).data('shift-id');
+        
+        $('#modal-date').val(date);
+        $('#modal-shift-id').val(shift_id);
+        
+        $('.user-checkbox').prop('checked', false);
+        
+        $.ajax({
+            url: "{:url('getSchedule')}",
+            type: 'GET',
+            data: {date: date, shift_id: shift_id},
+            success: function(res) {
+                if (res.code == 1) {
+                    $.each(res.data, function(index, user_id) {
+                        $('.user-checkbox[value="' + user_id + '"]').prop('checked', true);
+                    });
+                }
+            }
+        });
+        
+        $('#userModal').modal('show');
+    });
+    
+    $('.remove-user').click(function() {
+        var date = $(this).data('date');
+        var shift_id = $(this).data('shift-id');
+        var user_id = $(this).data('user-id');
+        
+        $.ajax({
+            url: "{:url('saveSchedule')}",
+            type: 'POST',
+            data: {
+                date: date,
+                shift_id: shift_id,
+                user_ids: []
+            },
+            success: function(res) {
+                if (res.code == 1) {
+                    $('#schedule-' + date + '-' + shift_id).empty();
+                }
+            }
+        });
+    });
+});
+
+function saveSchedule() {
+    var date = $('#modal-date').val();
+    var shift_id = $('#modal-shift-id').val();
+    var user_ids = [];
+    
+    $('.user-checkbox:checked').each(function() {
+        user_ids.push($(this).val());
+    });
+    
+    $.ajax({
+        url: "{:url('saveSchedule')}",
+        type: 'POST',
+        data: {
+            date: date,
+            shift_id: shift_id,
+            user_ids: user_ids
+        },
+        success: function(res) {
+            if (res.code == 1) {
+                var html = '';
+                $.each(user_ids, function(index, user_id) {
+                    var nickname = $('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
+                    html += '<span class="label label-primary schedule-user" data-user-id="' + user_id + '">' + nickname + 
+                             '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '">' +
+                             '<i class="fa fa-times"></i></a></span>';
+                });
+                $('#schedule-' + date + '-' + shift_id).html(html);
+                
+                $('.remove-user').click(function() {
+                    var d = $(this).data('date');
+                    var s_id = $(this).data('shift-id');
+                    var u_id = $(this).data('user-id');
+                    
+                    $.ajax({
+                        url: "{:url('saveSchedule')}",
+                        type: 'POST',
+                        data: {
+                            date: d,
+                            shift_id: s_id,
+                            user_ids: []
+                        },
+                        success: function(r) {
+                            if (r.code == 1) {
+                                $('#schedule-' + d + '-' + s_id).empty();
+                            }
+                        }
+                    });
+                });
+                
+                $('#userModal').modal('hide');
+            }
+            alert(res.msg);
+        }
+    });
+}
+</script>
+
+{include file="public/footer" /}
