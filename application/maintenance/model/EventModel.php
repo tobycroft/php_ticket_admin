@@ -17,7 +17,7 @@ class EventModel extends Model
     protected $type = [
         'start_time' => 'integer',
         'end_time' => 'integer',
-        'sender_id' => 'integer',
+        'creator_id' => 'integer',
         'receiver_id' => 'integer',
         'closer_id' => 'integer',
         'is_closed' => 'integer',
