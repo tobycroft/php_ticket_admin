@@ -187,75 +187,141 @@ class Event extends Admin
 
     public function receive($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             EventAction::receive($id);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '接单成功', 'url' => cookie('__forward__')]);
+            }
             $this->success('接单成功', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function close($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             EventAction::close($id);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '标注已完成', 'url' => cookie('__forward__')]);
+            }
             $this->success('标注已完成', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function reopen($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             EventAction::reopen($id);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '标注未完成', 'url' => cookie('__forward__')]);
+            }
             $this->success('标注未完成', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function cancel($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             EventAction::cancel($id);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '作废成功', 'url' => cookie('__forward__')]);
+            }
             $this->success('作废成功', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function active($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             EventAction::active($id);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '激活成功', 'url' => cookie('__forward__')]);
+            }
             $this->success('激活成功', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function push($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
             try {
                 EventAction::push($id, $data['to_user_id'], $data['reason']);
+                if ($this->request->isAjax()) {
+                    return json(['code' => 1, 'msg' => '推送成功', 'url' => cookie('__forward__')]);
+                }
                 $this->success('推送成功', cookie('__forward__'));
             } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
                 $this->error($e->getMessage());
             }
         }

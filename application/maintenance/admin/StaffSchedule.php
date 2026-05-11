@@ -204,7 +204,12 @@ class StaffSchedule extends Admin
 
     public function approveLeave($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             UserLeaveModel::update([
@@ -215,15 +220,26 @@ class StaffSchedule extends Admin
                 'approve_time' => time(),
             ]);
             action_log('leave_approve', 'mt_user_leave', $id, UID);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '批准成功', 'url' => cookie('__forward__')]);
+            }
             $this->success('批准成功', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function rejectLeave($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             UserLeaveModel::update([
@@ -234,8 +250,14 @@ class StaffSchedule extends Admin
                 'approve_time' => time(),
             ]);
             action_log('leave_reject', 'mt_user_leave', $id, UID);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '已拒绝', 'url' => cookie('__forward__')]);
+            }
             $this->success('已拒绝', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
@@ -246,8 +268,14 @@ class StaffSchedule extends Admin
         try {
             UserLeaveModel::where('id', 'in', $ids)->delete();
             action_log('leave_delete', 'mt_user_leave', '', UID);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '删除成功']);
+            }
             $this->success('删除成功');
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
@@ -368,7 +396,12 @@ class StaffSchedule extends Admin
 
     public function approveSwap($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             UserSwapModel::update([
@@ -379,15 +412,26 @@ class StaffSchedule extends Admin
                 'approve_time' => time(),
             ]);
             action_log('swap_approve', 'mt_user_swap', $id, UID);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '批准成功', 'url' => cookie('__forward__')]);
+            }
             $this->success('批准成功', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
 
     public function rejectSwap($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         try {
             UserSwapModel::update([
@@ -398,8 +442,14 @@ class StaffSchedule extends Admin
                 'approve_time' => time(),
             ]);
             action_log('swap_reject', 'mt_user_swap', $id, UID);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '已拒绝', 'url' => cookie('__forward__')]);
+            }
             $this->success('已拒绝', cookie('__forward__'));
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
@@ -410,8 +460,14 @@ class StaffSchedule extends Admin
         try {
             UserSwapModel::where('id', 'in', $ids)->delete();
             action_log('swap_delete', 'mt_user_swap', '', UID);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '删除成功']);
+            }
             $this->success('删除成功');
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
