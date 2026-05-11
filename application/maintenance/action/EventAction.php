@@ -80,7 +80,25 @@ class EventAction
             return true;
         }
         
-        throw new \Exception('结单失败');
+        throw new \Exception('标注完成失败');
+    }
+
+    public static function reopen($id)
+    {
+        $data = [
+            'id' => $id,
+            'is_closed' => 0,
+            'closer_id' => 0,
+            'closer_name' => '',
+            'end_time' => 0,
+        ];
+        
+        if (EventModel::update($data)) {
+            action_log('event_reopen', 'mt_event', $id, UID);
+            return true;
+        }
+        
+        throw new \Exception('标注未完成失败');
     }
 
     public static function receive($id)
