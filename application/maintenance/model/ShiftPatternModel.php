@@ -6,7 +6,7 @@ use think\Model;
 
 class ShiftPatternModel extends Model
 {
-    protected $name = 'shift_pattern';
+    protected $table = 'mt_shift_pattern';
     protected $pk = 'id';
 
     protected $type = [

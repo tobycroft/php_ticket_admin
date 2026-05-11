@@ -6,7 +6,7 @@ use think\Model;
 
 class DailyScheduleModel extends Model
 {
-    protected $name = 'daily_schedule';
+    protected $table = 'mt_daily_schedule';
     protected $pk = 'id';
 
     protected $type = [
