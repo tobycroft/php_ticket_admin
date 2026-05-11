@@ -46,12 +46,23 @@ class User extends Admin
             $data = $this->request->post();
 
             $result = $this->validate($data, 'app\user\validate\User');
-            if(true !== $result) $this->error($result);
+            if(true !== $result) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $result]);
+                }
+                $this->error($result);
+            }
 
             try {
                 UserAction::add($data);
+                if ($this->request->isAjax()) {
+                    return json(['code' => 1, 'msg' => '新增成功', 'url' => url('index')]);
+                }
                 $this->success('新增成功', url('index'));
             } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
                 $this->error($e->getMessage());
             }
         }
@@ -76,9 +87,17 @@ class User extends Admin
 
     public function edit($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         if (!UserAction::checkAccess($id)) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '权限不足，没有可操作的用户']);
+            }
             $this->error('权限不足，没有可操作的用户');
         }
 
@@ -86,12 +105,23 @@ class User extends Admin
             $data = $this->request->post();
 
             $result = $this->validate($data, 'app\user\validate\User.update');
-            if(true !== $result) $this->error($result);
+            if(true !== $result) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $result]);
+                }
+                $this->error($result);
+            }
 
             try {
                 UserAction::edit($data);
+                if ($this->request->isAjax()) {
+                    return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__')]);
+                }
                 $this->success('编辑成功', cookie('__forward__'));
             } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
                 $this->error($e->getMessage());
             }
         }
@@ -139,8 +169,14 @@ class User extends Admin
 
         try {
             UserAction::setStatus($type, $ids);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '操作成功']);
+            }
             $this->success('操作成功');
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
