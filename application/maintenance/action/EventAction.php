@@ -294,4 +294,15 @@ class EventAction
     {
         return EventFlowModel::getStatusList();
     }
+
+    public static function getPriorityList()
+    {
+        return [
+            1 => '低',
+            2 => '较低',
+            3 => '中',
+            4 => '较高',
+            5 => '高',
+        ];
+    }
 }
