@@ -16,10 +16,12 @@ class EventMy extends Admin
 
         $is_closed_list = EventAction::getIsClosedList();
         $is_canceled_list = EventAction::getIsCanceledList();
+        $priority_list = EventAction::getPriorityList();
 
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
+            $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['can_close'] = !$item['is_closed'] && !$item['is_canceled'];
         }
@@ -35,6 +37,7 @@ class EventMy extends Admin
                 ['creator_name', '发单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
+                ['priority_text', '优先级'],
                 ['is_canceled_text', '状态'],
                 ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
