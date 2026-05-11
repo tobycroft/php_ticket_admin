@@ -45,7 +45,6 @@ class EventAction
     public static function add($data)
     {
         $data['sender_id'] = UID;
-        $data['sender_name'] = get_nickname(UID);
         
         if ($event = EventModel::create($data)) {
             action_log('event_add', 'mt_event', $event['id'], UID);
