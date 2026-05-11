@@ -178,7 +178,19 @@ class Event extends Admin
 
         try {
             EventAction::close($id);
-            $this->success('结单成功', cookie('__forward__'));
+            $this->success('标注已完成', cookie('__forward__'));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    public function reopen($id = null)
+    {
+        if ($id === null) $this->error('缺少参数');
+
+        try {
+            EventAction::reopen($id);
+            $this->success('标注未完成', cookie('__forward__'));
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
