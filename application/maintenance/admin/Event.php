@@ -116,9 +116,8 @@ class Event extends Admin
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填'],
                 ['text', 'customer_name', '对接客户'],
-                ['radio', 'status', '状态', '', ['禁用', '启用']],
-                ['switch', 'is_closed', '结单状态', '', ['未完成', '已完成'], $info['is_closed']],
-                ['switch', 'is_canceled', '作废状态', '', ['正常', '已作废'], $info['is_canceled']]
+                ['radio', 'is_closed', '结单状态', '', ['未结单', '已结单'], $info['is_closed']],
+                ['radio', 'is_canceled', '作废状态', '', ['正常', '已作废'], $info['is_canceled']]
             ])
             ->setFormData($info)
             ->fetch();
