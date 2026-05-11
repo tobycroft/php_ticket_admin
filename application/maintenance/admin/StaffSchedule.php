@@ -72,6 +72,21 @@ class StaffSchedule extends Admin
         return $this->fetch('staff_schedule/index');
     }
 
+    public function add()
+    {
+        $this->redirect('index');
+    }
+
+    public function edit($id = null)
+    {
+        $this->redirect('index');
+    }
+
+    public function delete($ids = [])
+    {
+        $this->redirect('index');
+    }
+
     public function leave()
     {
         cookie('__forward__', $_SERVER['REQUEST_URI']);
@@ -255,7 +270,7 @@ class StaffSchedule extends Admin
                 ['create_time_text', '申请时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add')
+            ->addTopButtons(['add' => ['title' => '新增', 'icon' => 'fa fa-plus', 'href' => url('addSwap')]])
             ->addRightButtons(['edit', 'delete', 'approve' => ['title' => '批准', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('approveSwap', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times-circle', 'class' => 'btn btn-xs btn-danger', 'href' => url('rejectSwap', ['id' => '__id__']), 'condition' => 'can_approve']])
             ->setRowList($data_list)
             ->fetch();
