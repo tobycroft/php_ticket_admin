@@ -132,8 +132,14 @@ class UserSchedule extends Admin
 
         try {
             UserScheduleAction::setStatus($type, $ids);
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '操作成功']);
+            }
             $this->success('操作成功');
         } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
             $this->error($e->getMessage());
         }
     }
