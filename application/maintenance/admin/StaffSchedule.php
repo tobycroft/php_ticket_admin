@@ -74,16 +74,34 @@ class StaffSchedule extends Admin
 
     public function add()
     {
+        $type = $this->request->param('type', '');
+        if ($type == 'leave') {
+            return $this->addLeave();
+        } elseif ($type == 'swap') {
+            return $this->addSwap();
+        }
         $this->redirect('index');
     }
 
     public function edit($id = null)
     {
+        $type = $this->request->param('type', '');
+        if ($type == 'leave') {
+            return $this->editLeave($id);
+        } elseif ($type == 'swap') {
+            return $this->editSwap($id);
+        }
         $this->redirect('index');
     }
 
     public function delete($ids = [])
     {
+        $type = $this->request->param('type', '');
+        if ($type == 'leave') {
+            return $this->deleteLeave($ids);
+        } elseif ($type == 'swap') {
+            return $this->deleteSwap($ids);
+        }
         $this->redirect('index');
     }
 
@@ -122,8 +140,8 @@ class StaffSchedule extends Admin
                 ['create_time_text', '申请时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add')
-            ->addRightButtons(['edit', 'delete', 'approve' => ['title' => '批准', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('approveLeave', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times-circle', 'class' => 'btn btn-xs btn-danger', 'href' => url('rejectLeave', ['id' => '__id__']), 'condition' => 'can_approve']])
+            ->addTopButtons(['add' => ['title' => '新增', 'icon' => 'fa fa-plus', 'href' => url('add', ['type' => 'leave'])]])
+            ->addRightButtons(['edit' => ['href' => url('edit', ['id' => '__id__', 'type' => 'leave'])], 'delete' => ['href' => url('delete', ['ids' => '__id__', 'type' => 'leave'])], 'approve' => ['title' => '批准', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('approveLeave', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times-circle', 'class' => 'btn btn-xs btn-danger', 'href' => url('rejectLeave', ['id' => '__id__']), 'condition' => 'can_approve']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -270,8 +288,8 @@ class StaffSchedule extends Admin
                 ['create_time_text', '申请时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons(['add' => ['title' => '新增', 'icon' => 'fa fa-plus', 'href' => url('addSwap')]])
-            ->addRightButtons(['edit', 'delete', 'approve' => ['title' => '批准', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('approveSwap', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times-circle', 'class' => 'btn btn-xs btn-danger', 'href' => url('rejectSwap', ['id' => '__id__']), 'condition' => 'can_approve']])
+            ->addTopButtons(['add' => ['title' => '新增', 'icon' => 'fa fa-plus', 'href' => url('add', ['type' => 'swap'])]])
+            ->addRightButtons(['edit' => ['href' => url('edit', ['id' => '__id__', 'type' => 'swap'])], 'delete' => ['href' => url('delete', ['ids' => '__id__', 'type' => 'swap'])], 'approve' => ['title' => '批准', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('approveSwap', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times-circle', 'class' => 'btn btn-xs btn-danger', 'href' => url('rejectSwap', ['id' => '__id__']), 'condition' => 'can_approve']])
             ->setRowList($data_list)
             ->fetch();
     }
