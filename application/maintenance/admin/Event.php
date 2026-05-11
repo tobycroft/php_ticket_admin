@@ -28,6 +28,8 @@ class Event extends Admin
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
             $item['can_close'] = ($item['receiver_id'] == UID || $item['sender_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
             $item['can_cancel'] = $item['sender_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_reopen'] = $item['is_closed'] && !$item['is_canceled'];
+            $item['can_complete'] = !$item['is_closed'] && !$item['is_canceled'];
         }
 
         return ZBuilder::make('table')
@@ -47,7 +49,7 @@ class Event extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
-            ->addRightButtons(['edit', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])], 'close' => ['title' => '结单', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
+            ->addRightButtons(['edit', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])], 'close' => ['title' => '标注已完成', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_complete'], 'reopen' => ['title' => '标注未完成', 'icon' => 'fa fa-undo', 'class' => 'btn btn-xs btn-warning', 'href' => url('reopen', ['id' => '__id__']), 'condition' => 'can_reopen'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
             ->setRowList($data_list)
             ->fetch();
     }
