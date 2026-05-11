@@ -72,9 +72,8 @@ class StaffSchedule extends Admin
         return $this->fetch('staff_schedule/index');
     }
 
-    public function add()
+    public function add($type = '')
     {
-        $type = $this->request->param('type', '');
         if ($type == 'leave') {
             return $this->addLeave();
         } elseif ($type == 'swap') {
