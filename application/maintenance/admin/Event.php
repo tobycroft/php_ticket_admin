@@ -26,8 +26,8 @@ class Event extends Admin
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
-            $item['can_close'] = ($item['receiver_id'] == UID || $item['sender_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
-            $item['can_cancel'] = $item['sender_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_cancel'] = $item['creator_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
             $item['can_reopen'] = $item['is_closed'] && !$item['is_canceled'];
             $item['can_complete'] = !$item['is_closed'] && !$item['is_canceled'];
         }
@@ -174,7 +174,7 @@ class Event extends Admin
         }
 
         $is_current_receiver = $info['receiver_id'] == UID;
-        $is_sender = $info['sender_id'] == UID;
+        $is_sender = $info['creator_id'] == UID;
         $can_close = $is_current_receiver && !$info['is_closed'];
 
         $this->assign('info', $info);

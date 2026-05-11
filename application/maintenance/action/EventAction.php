@@ -36,7 +36,7 @@ class EventAction
     {
         $map = [
             ['status', '=', 1],
-            ['sender_id', '=', $user_id],
+            ['creator_id', '=', $user_id],
         ];
         
         return EventModel::where($map)->order('create_time desc')->paginate();
@@ -44,7 +44,7 @@ class EventAction
 
     public static function add($data)
     {
-        $data['sender_id'] = UID;
+        $data['creator_id'] = UID;
         $data['receiver_id'] = UID;
         $data['receiver_name'] = get_nickname(UID);
         
