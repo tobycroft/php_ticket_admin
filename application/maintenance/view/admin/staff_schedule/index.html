@@ -1,0 +1,99 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">批量排班设置</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn btn-default btn-sm" onclick="checkAll()">全选</button>
+                        <button type="button" class="btn btn-default btn-sm" onclick="uncheckAll()">取消全选</button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <form action="{:url('index')}" method="post" class="form-horizontal">
+                        {:token()}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 120px;">运维人员</th>
+                                        <th style="width: 120px;">周一</th>
+                                        <th style="width: 120px;">周二</th>
+                                        <th style="width: 120px;">周三</th>
+                                        <th style="width: 120px;">周四</th>
+                                        <th style="width: 120px;">周五</th>
+                                        <th style="width: 120px;">周六</th>
+                                        <th style="width: 120px;">周日</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {volist name="users" id="user_name" key="user_id"}
+                                    <tr>
+                                        <td class="font-w600">{$user_name}</td>
+                                        {volist name="day_list" id="day_name" key="day"}
+                                        <td>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="schedule_{$user_id}_{$day}" value="1" 
+                                                           {if condition="isset($schedule_data[$user_id][$day])"}checked{/if}>
+                                                    <span class="text-muted">{$day_name}</span>
+                                                </label>
+                                            </div>
+                                            <div class="mt-1" style="display: {if condition="isset($schedule_data[$user_id][$day])"}block{else}none{/if};" 
+                                                 id="time-box-{$user_id}-{$day}">
+                                                <input type="time" name="start_{$user_id}_{$day}" 
+                                                       value="{$schedule_data[$user_id][$day]['start_time']|default='09:00:00'}" 
+                                                       class="form-control input-sm" placeholder="开始时间">
+                                                <input type="time" name="end_{$user_id}_{$day}" 
+                                                       value="{$schedule_data[$user_id][$day]['end_time']|default='18:00:00'}" 
+                                                       class="form-control input-sm mt-1" placeholder="结束时间">
+                                                <input type="text" name="desc_{$user_id}_{$day}" 
+                                                       value="{$schedule_data[$user_id][$day]['description']|default=''}" 
+                                                       class="form-control input-sm mt-1" placeholder="备注">
+                                            </div>
+                                        </td>
+                                        {/volist}
+                                    </tr>
+                                    {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="btn btn-primary">保存排班设置</button>
+                            <a href="{:url('leave')}" class="btn btn-info ml-3">请假管理</a>
+                            <a href="{:url('swap')}" class="btn btn-warning ml-3">调班管理</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+    <script>
+        $(function() {
+            $('input[type="checkbox"]').change(function() {
+                var user_id = $(this).attr('name').split('_')[1];
+                var day = $(this).attr('name').split('_')[2];
+                if ($(this).is(':checked')) {
+                    $('#time-box-' + user_id + '-' + day).show();
+                } else {
+                    $('#time-box-' + user_id + '-' + day).hide();
+                }
+            });
+        });
+
+        function checkAll() {
+            $('input[type="checkbox"]').prop('checked', true);
+            $('div[id^="time-box-"]').show();
+        }
+
+        function uncheckAll() {
+            $('input[type="checkbox"]').prop('checked', false);
+            $('div[id^="time-box-"]').hide();
+        }
+    </script>
+{/block}
