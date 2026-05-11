@@ -93,20 +93,44 @@ class Event extends Admin
 
     public function edit($id = null)
     {
-        if ($id === null) $this->error('缺少参数');
+        if ($id === null) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '缺少参数']);
+            }
+            $this->error('缺少参数');
+        }
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
+            
+            if (empty($data['id'])) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => '缺少ID参数']);
+                }
+                $this->error('缺少ID参数');
+            }
 
             try {
                 EventAction::edit($data);
-                $this->success('编辑成功', cookie('__forward__'));
+                if ($this->request->isAjax()) {
+                    return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__') ?: url('index')]);
+                }
+                $this->success('编辑成功', cookie('__forward__') ?: url('index'));
             } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
                 $this->error($e->getMessage());
             }
         }
 
         $info = EventAction::getInfo($id);
+        if (!$info) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '工单不存在']);
+            }
+            $this->error('工单不存在');
+        }
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑工单')
