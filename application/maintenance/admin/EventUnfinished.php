@@ -26,18 +26,18 @@ class EventUnfinished extends Admin
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
-            $item['can_close'] = ($item['receiver_id'] == UID || $item['sender_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
-            $item['can_cancel'] = $item['sender_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_cancel'] = $item['creator_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
         }
 
         return ZBuilder::make('table')
             ->setPageTitle('未完结工单')
             ->setTableName('mt_event')
-            ->setSearch(['title' => '标题', 'sender_name' => '发单人', 'customer_name' => '客户'])
+            ->setSearch(['title' => '标题', 'creator_name' => '发单人', 'customer_name' => '客户'])
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '事件标题'],
-                ['sender_name', '发单人'],
+                ['creator_name', '发单人'],
                 ['receiver_name', '接单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],

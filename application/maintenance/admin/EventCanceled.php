@@ -25,7 +25,7 @@ class EventCanceled extends Admin
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
             $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
-            $item['can_active'] = $item['sender_id'] == UID;
+            $item['can_active'] = $item['creator_id'] == UID;
         }
 
         return ZBuilder::make('table')

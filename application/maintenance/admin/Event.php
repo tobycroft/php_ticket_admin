@@ -35,11 +35,11 @@ class Event extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('工单列表')
             ->setTableName('mt_event')
-            ->setSearch(['title' => '标题', 'sender_name' => '发单人', 'customer_name' => '客户'])
+            ->setSearch(['title' => '标题', 'creator_name' => '发单人', 'customer_name' => '客户'])
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '事件标题'],
-                ['sender_name', '发单人'],
+                ['creator_name', '发单人'],
                 ['receiver_name', '接单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
@@ -83,7 +83,7 @@ class Event extends Admin
             ->setPageTitle('新增工单')
             ->addFormItems([
                 ['text', 'title', '事件标题', '必填'],
-                ['text', 'sender_name', '发单人', '必填'],
+                ['text', 'creator_name', '发单人', '必填'],
                 ['text', 'contact_method', '对接方式', '最大长度255'],
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填', '', date('Y-m-d H:i:s')],
@@ -139,7 +139,7 @@ class Event extends Admin
             ->addFormItems([
                 ['hidden', 'id'],
                 ['text', 'title', '事件标题', '必填'],
-                ['text', 'sender_name', '发单人', '必填'],
+                ['text', 'creator_name', '发单人', '必填'],
                 ['text', 'contact_method', '对接方式', '最大长度255'],
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填'],

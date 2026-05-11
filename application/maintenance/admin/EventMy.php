@@ -27,12 +27,12 @@ class EventMy extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('我的工单')
             ->setTableName('mt_event')
-            ->setSearch(['title' => '标题', 'sender_name' => '发单人'])
+            ->setSearch(['title' => '标题', 'creator_name' => '发单人'])
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '事件标题'],
                 ['content', '事件描述'],
-                ['sender_name', '发单人'],
+                ['creator_name', '发单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
                 ['is_canceled_text', '状态'],
