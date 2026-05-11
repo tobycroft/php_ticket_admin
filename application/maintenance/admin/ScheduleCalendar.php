@@ -41,8 +41,8 @@ class ScheduleCalendar extends Admin
         }
 
         $days_in_month = date('t', $first_day);
+        
         $calendar_days = [];
-
         for ($i = 1; $i < $first_weekday; $i++) {
             $calendar_days[] = ['day' => 0, 'date' => '', 'weekday' => $i];
         }
@@ -54,6 +54,22 @@ class ScheduleCalendar extends Admin
                 $weekday = 7;
             }
             $calendar_days[] = ['day' => $day, 'date' => $date, 'weekday' => $weekday];
+        }
+
+        $calendar_weeks = [];
+        $current_week = [];
+        foreach ($calendar_days as $day) {
+            $current_week[] = $day;
+            if (count($current_week) == 7) {
+                $calendar_weeks[] = $current_week;
+                $current_week = [];
+            }
+        }
+        if (!empty($current_week)) {
+            while (count($current_week) < 7) {
+                $current_week[] = ['day' => 0, 'date' => '', 'weekday' => 0];
+            }
+            $calendar_weeks[] = $current_week;
         }
 
         $prev_year = $year;
@@ -81,6 +97,7 @@ class ScheduleCalendar extends Admin
         $this->assign('shift_list', $shift_list);
         $this->assign('user_list', $user_list);
         $this->assign('calendar_days', $calendar_days);
+        $this->assign('calendar_weeks', $calendar_weeks);
         $this->assign('schedule_map', $schedule_map);
         $this->assign('weekdays', $weekdays);
 

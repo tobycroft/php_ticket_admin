@@ -34,14 +34,7 @@
                                             <th rowspan="2" style="vertical-align:middle;width:150px;">班次</th>
                                             {foreach $weekdays as $key => $weekday}
                                                 {if $key > 0}
-                                                    <th colspan="1" class="text-center">{$weekday}</th>
-                                                {/if}
-                                            {/foreach}
-                                        </tr>
-                                        <tr>
-                                            {foreach $calendar_days as $day}
-                                                {if $day.day > 0}
-                                                    <th class="text-center">{$day.day}</th>
+                                                    <th class="text-center" colspan="1">{$weekday}</th>
                                                 {/if}
                                             {/foreach}
                                         </tr>
@@ -53,31 +46,34 @@
                                                     {$shift.name}<br>
                                                     <small>{$shift.start_time} - {$shift.end_time}</small>
                                                 </td>
-                                                {foreach $calendar_days as $day}
-                                                    {if $day.day > 0}
-                                                        <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
-                                                            <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
-                                                                {php $key = "{$day.date}_{$shift.id}";}
-                                                                {if isset($schedule_map[$key])}
-                                                                    {foreach $schedule_map[$key] as $user_id => $schedule}
-                                                                        <span class="label label-primary schedule-user" data-user-id="{$user_id}">
-                                                                            {$schedule.user_name}
-                                                                            <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$user_id}">
-                                                                                <i class="fa fa-times"></i>
-                                                                            </a>
-                                                                        </span>
-                                                                    {/foreach}
-                                                                {/if}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-default add-user-btn" 
-                                                                    data-date="{$day.date}" data-shift-id="{$shift.id}"
-                                                                    style="margin-top:5px;width:100%;">
-                                                                <i class="fa fa-plus"></i> 添加
-                                                            </button>
-                                                        </td>
-                                                    {else}
-                                                        <td></td>
-                                                    {/if}
+                                                {foreach $calendar_weeks as $week}
+                                                    {foreach $week as $day}
+                                                        {if $day.day > 0}
+                                                            <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
+                                                                <div class="day-header">{$day.day}</div>
+                                                                <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
+                                                                    {php $key = "{$day.date}_{$shift.id}";}
+                                                                    {if isset($schedule_map[$key])}
+                                                                        {foreach $schedule_map[$key] as $user_id => $schedule}
+                                                                            <span class="label label-primary schedule-user" data-user-id="{$user_id}">
+                                                                                {$schedule.user_name}
+                                                                                <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$user_id}">
+                                                                                    <i class="fa fa-times"></i>
+                                                                                </a>
+                                                                            </span>
+                                                                        {/foreach}
+                                                                    {/if}
+                                                                </div>
+                                                                <button type="button" class="btn btn-xs btn-default add-user-btn" 
+                                                                        data-date="{$day.date}" data-shift-id="{$shift.id}"
+                                                                        style="margin-top:5px;width:100%;">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </td>
+                                                        {else}
+                                                            <td></td>
+                                                        {/if}
+                                                    {/foreach}
                                                 {/foreach}
                                             </tr>
                                         {/foreach}
@@ -120,6 +116,41 @@
         </div>
     </div>
 </div>
+
+<style>
+.schedule-cell {
+    min-height: 80px;
+    vertical-align: top;
+    padding: 5px;
+}
+
+.day-header {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.schedule-users {
+    margin-bottom: 5px;
+}
+
+.schedule-user {
+    display: block;
+    margin-bottom: 2px;
+    padding: 2px 5px;
+    font-size: 12px;
+}
+
+.remove-user {
+    margin-left: 3px;
+    color: white;
+}
+
+.remove-user:hover {
+    color: #ffcccc;
+}
+</style>
 
 <script>
 function changeMonth(year, month) {
