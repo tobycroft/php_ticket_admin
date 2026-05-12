@@ -72,6 +72,7 @@
                                                                     {eq name="has_schedule" value="0"}
                                                                         <button type="button" class="btn btn-xs btn-default add-user-btn" 
                                                                                 data-date="{$day.date}" data-shift-id="{$shift.id}"
+                                                                                data-shift-color="{$shift.color}" data-shift-name="{$shift.name}"
                                                                                 style="width:100%;">
                                                                             <i class="fa fa-plus"></i> {$shift.name}
                                                                         </button>
@@ -106,6 +107,8 @@
             <div class="modal-body">
                 <input type="hidden" id="modal-date">
                 <input type="hidden" id="modal-shift-id">
+                <input type="hidden" id="modal-shift-color">
+                <input type="hidden" id="modal-shift-name">
                 <div class="checkbox-list">
                     {volist name="user_list" id="user"}
                         <label class="checkbox-inline">
@@ -173,11 +176,15 @@ document.addEventListener('DOMContentLoaded', function() {
     $(document).on('click', '.add-user-btn', function() {
         var date = $(this).data('date');
         var shift_id = $(this).data('shift-id');
+        var shift_color = $(this).data('shift-color');
+        var shift_name = $(this).data('shift-name');
         
-        console.log('Add user clicked:', date, shift_id);
+        console.log('Add user clicked:', date, shift_id, shift_color, shift_name);
         
         $('#modal-date').val(date);
         $('#modal-shift-id').val(shift_id);
+        $('#modal-shift-color').val(shift_color);
+        $('#modal-shift-name').val(shift_name);
         
         $('.user-checkbox').prop('checked', false);
         
@@ -205,6 +212,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var date = $(this).data('date');
         var shift_id = $(this).data('shift-id');
         var user_id = $(this).data('user-id');
+        var shift_color = $(this).data('shift-color');
+        var shift_name = $(this).data('shift-name');
         
         $.ajax({
             url: "{:url('saveSchedule')}",
@@ -216,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(res) {
                 if (res.code == 1) {
-                    $('#schedule-' + date + '-' + shift_id).html('<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>');
+                    $('#schedule-' + date + '-' + shift_id).html('<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" data-shift-color="' + shift_color + '" data-shift-name="' + shift_name + '" style="width:100%;"><i class="fa fa-plus"></i> ' + shift_name + '</button>');
                 }
             }
         });
@@ -225,9 +234,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $(document).on('click', '.save-schedule-btn', function() {
         var date = $('#modal-date').val();
         var shift_id = $('#modal-shift-id').val();
+        var shift_color = $('#modal-shift-color').val();
+        var shift_name = $('#modal-shift-name').val();
         var user_ids = [];
         
-        console.log('Save schedule called:', date, shift_id);
+        console.log('Save schedule called:', date, shift_id, shift_color, shift_name);
         
         $('.user-checkbox:checked').each(function() {
             user_ids.push($(this).val());
@@ -249,18 +260,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     var html = '';
                     $.each(user_ids, function(index, user_id) {
                         var nickname = $('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
-                        html += '<span class="label schedule-label" style="background-color:#4CAF50;" data-user-id="' + user_id + '">' + nickname + 
-                                 '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '">' +
+                        html += '<span class="label schedule-label" style="background-color:' + shift_color + ';" data-user-id="' + user_id + '">' + nickname + 
+                                 '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '" data-shift-color="' + shift_color + '" data-shift-name="' + shift_name + '">' +
                                  '<i class="fa fa-times"></i></a></span>';
                     });
                     if (html == '') {
-                        html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>';
+                        html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" data-shift-color="' + shift_color + '" data-shift-name="' + shift_name + '" style="width:100%;"><i class="fa fa-plus"></i> ' + shift_name + '</button>';
                     }
                     $('#schedule-' + date + '-' + shift_id).html(html);
                     
                     $('#userModal').modal('hide');
                 }
-                alert(res.msg);
             }
         });
     });
