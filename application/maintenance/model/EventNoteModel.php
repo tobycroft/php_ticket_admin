@@ -13,7 +13,6 @@ class EventNoteModel extends Model
     protected $type = [
         'event_id' => 'integer',
         'user_id' => 'integer',
-        'create_time' => 'datetime',
     ];
 
     // 重命名方法避免与父类静态方法冲突

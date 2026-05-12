@@ -15,8 +15,6 @@ class EventFlowModel extends Model
         'from_user_id' => 'integer',
         'to_user_id' => 'integer',
         'status' => 'integer',
-        'create_time' => 'datetime',
-        'handle_time' => 'datetime',
     ];
 
     public function getEvent()
