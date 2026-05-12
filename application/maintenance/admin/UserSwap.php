@@ -5,6 +5,7 @@ namespace app\maintenance\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\maintenance\model\UserSwapModel;
+use app\maintenance\model\DailyScheduleModel;
 use app\user\model\User as UserModel;
 
 class UserSwap extends Admin
@@ -21,6 +22,7 @@ class UserSwap extends Admin
         foreach ($data_list as &$item) {
             $item['status_text'] = isset($status_list[$item['status']]) ? $status_list[$item['status']] : '';
             $item['can_approve'] = $item['status'] == 0;
+            $item['can_edit'] = $item['status'] == 0;
         }
 
         return ZBuilder::make('table')
@@ -38,7 +40,7 @@ class UserSwap extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
-            ->addRightButtons(['edit', 'delete', 'approve' => ['title' => '批准', 'icon' => 'fa fa-check', 'class' => 'btn btn-xs btn-success', 'href' => url('approve', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times', 'class' => 'btn btn-xs btn-danger', 'href' => url('reject', ['id' => '__id__']), 'condition' => 'can_approve']])
+            ->addRightButtons(['edit' => ['title' => '编辑', 'icon' => 'fa fa-edit', 'condition' => 'can_edit'], 'delete', 'approve' => ['title' => '批准', 'icon' => 'fa fa-check', 'class' => 'btn btn-xs btn-success', 'href' => url('approve', ['id' => '__id__']), 'condition' => 'can_approve'], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times', 'class' => 'btn btn-xs btn-danger', 'href' => url('reject', ['id' => '__id__']), 'condition' => 'can_approve']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -196,7 +198,7 @@ class UserSwap extends Admin
             $this->error('该申请已处理');
         }
 
-//        try {
+        try {
             UserSwapModel::update([
                 'id' => $id,
                 'status' => 1,
@@ -205,16 +207,29 @@ class UserSwap extends Admin
                 'approve_time' => date('Y-m-d H:i:s')
             ]);
 
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => '批准成功']);
+            $schedule = DailyScheduleModel::where('user_id', $info['user_id'])
+                ->where('schedule_date', $info['swap_date'])
+                ->where('status', 1)
+                ->find();
+
+            if ($schedule) {
+                DailyScheduleModel::update([
+                    'id' => $schedule['id'],
+                    'user_id' => $info['target_user_id'],
+                    'user_name' => $info['target_user_name']
+                ]);
             }
-            $this->success('批准成功');
-//        } catch (\Exception $e) {
-//            if ($this->request->isAjax()) {
-//                return json(['code' => 0, 'msg' => $e->getMessage()]);
-//            }
-//            $this->error($e->getMessage());
-//        }
+
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '批准成功，已替换排班人员']);
+            }
+            $this->success('批准成功，已替换排班人员');
+        } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
+            $this->error($e->getMessage());
+        }
     }
 
     public function reject($id = null)
