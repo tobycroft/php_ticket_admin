@@ -85,10 +85,7 @@ class SwapPending extends Admin
 
             \think\Db::commit();
             $this->success('批准成功，已替换排班人员', url('index'));
-        } catch (\Exception $e) {
-            if ($e instanceof \think\exception\HttpResponseException) {
-                throw $e;
-            }
+        } catch (\ErrorException $e) {
             \think\Db::rollback();
             $this->error('操作失败: ' . $e->getMessage());
         }
