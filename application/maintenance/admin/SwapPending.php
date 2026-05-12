@@ -59,7 +59,7 @@ class SwapPending extends Admin
             $this->error('该申请已处理');
         }
 
-        try {
+//        try {
             \think\Db::startTrans();
 
             UserSwapModel::update([
@@ -99,10 +99,10 @@ class SwapPending extends Admin
             ];
             $response = \think\Response::create($result, $type)->options(['jump_template' => $this->app['config']->get('dispatch_success_tmpl')]);
             throw new \think\exception\HttpResponseException($response);
-        } catch (\Exception $e) {
-            \think\Db::rollback();
-            $this->error($e->getMessage());
-        }
+//        } catch (\Exception $e) {
+//            \think\Db::rollback();
+//            $this->error($e->getMessage());
+//        }
     }
 
     public function reject($id = null)
