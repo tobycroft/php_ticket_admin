@@ -46,6 +46,10 @@ class ContactMethod extends Admin
                 $this->error('请输入对接方式名称');
             }
 
+            if (!isset($data['status'])) {
+                $data['status'] = 1;
+            }
+
             try {
                 ContactMethodModel::create($data);
                 $this->success('添加成功', url('index'));
