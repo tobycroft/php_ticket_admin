@@ -60,6 +60,8 @@ class SwapPending extends Admin
         }
 
         try {
+            \think\Db::startTrans();
+
             UserSwapModel::update([
                 'id' => $id,
                 'status' => 1,
@@ -81,11 +83,14 @@ class SwapPending extends Admin
                 ]);
             }
 
+            \think\Db::commit();
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '批准成功，已替换排班人员']);
             }
             $this->success('批准成功，已替换排班人员', url('index'));
         } catch (\Exception $e) {
+            \think\Db::rollback();
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
@@ -109,6 +114,8 @@ class SwapPending extends Admin
         }
 
         try {
+            \think\Db::startTrans();
+
             UserSwapModel::update([
                 'id' => $id,
                 'status' => 2,
@@ -117,11 +124,14 @@ class SwapPending extends Admin
                 'approve_time' => date('Y-m-d H:i:s')
             ]);
 
+            \think\Db::commit();
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '拒绝成功']);
             }
             $this->success('拒绝成功', url('index'));
         } catch (\Exception $e) {
+            \think\Db::rollback();
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
