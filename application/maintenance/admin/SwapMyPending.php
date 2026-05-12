@@ -80,14 +80,8 @@ class SwapMyPending extends Admin
 
             try {
                 UserSwapModel::create($data);
-                if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '申请成功', 'url' => url('index')]);
-                }
                 $this->success('申请成功', url('index'));
             } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
                 $this->error($e->getMessage());
             }
         }
@@ -151,14 +145,8 @@ class SwapMyPending extends Admin
 
             try {
                 UserSwapModel::update($data);
-                if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '修改成功', 'url' => url('index')]);
-                }
                 $this->success('修改成功', url('index'));
             } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
                 $this->error($e->getMessage());
             }
         }
@@ -185,14 +173,8 @@ class SwapMyPending extends Admin
 
         try {
             UserSwapModel::where('user_id', UID)->whereIn('id', $ids)->delete();
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => '删除成功']);
-            }
             $this->success('删除成功');
         } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
             $this->error($e->getMessage());
         }
     }
