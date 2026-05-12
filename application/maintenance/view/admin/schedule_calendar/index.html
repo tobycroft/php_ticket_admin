@@ -61,11 +61,11 @@
                                                                             {eq name="schedule.shift_id" value="$shift.id"}
                                                                                 {assign name="has_schedule" value="1"}
                                                                                 <span class="label schedule-label" style="background-color:{$shift.color};" data-user-id="{$schedule.user_id}">
-                                                                                    {$schedule.user_name}
-                                                                                    <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}">
-                                                                                        <i class="fa fa-times"></i>
-                                                                                    </a>
-                                                                                </span>
+                                                                        {$schedule.user_name}
+                                                                        <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}" data-shift-color="{$shift.color}" data-shift-name="{$shift.name}">
+                                                                            <i class="fa fa-times"></i>
+                                                                        </a>
+                                                                    </span>
                                                                             {/eq}
                                                                         {/eq}
                                                                     {/volist}
