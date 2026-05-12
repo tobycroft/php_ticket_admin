@@ -85,16 +85,10 @@ class SwapPending extends Admin
 
             \think\Db::commit();
 
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => '批准成功，已替换排班人员']);
-            }
-            $this->success('批准成功，已替换排班人员', url('index'));
+            return json(['code' => 1, 'msg' => '批准成功，已替换排班人员', 'url' => url('index')->build()]);
         } catch (\Exception $e) {
             \think\Db::rollback();
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage()]);
         }
     }
 
@@ -126,16 +120,10 @@ class SwapPending extends Admin
 
             \think\Db::commit();
 
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => '拒绝成功']);
-            }
-            $this->success('拒绝成功', url('index'));
+            return json(['code' => 1, 'msg' => '拒绝成功', 'url' => url('index')->build()]);
         } catch (\Exception $e) {
             \think\Db::rollback();
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage()]);
         }
     }
 
