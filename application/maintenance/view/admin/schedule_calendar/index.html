@@ -40,43 +40,53 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {foreach $shift_list as $shift}
-                                            <tr>
-                                                <td style="background-color:{$shift.color};color:white;font-weight:bold;">
-                                                    {$shift.name}<br>
-                                                    <small>{$shift.start_time} - {$shift.end_time}</small>
-                                                </td>
-                                                {foreach $calendar_weeks as $week}
-                                                    {foreach $week as $day}
-                                                        {if $day.day > 0}
-                                                            <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
-                                                                <div class="day-header">{$day.day}</div>
-                                                                <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
-                                                                    {php $key = "{$day.date}_{$shift.id}";}
-                                                                    {if isset($schedule_map[$key])}
-                                                                        {foreach $schedule_map[$key] as $user_id => $schedule}
-                                                                            <span class="label label-primary schedule-user" data-user-id="{$user_id}">
-                                                                                {$schedule.user_name}
-                                                                                <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$user_id}">
-                                                                                    <i class="fa fa-times"></i>
-                                                                                </a>
-                                                                            </span>
-                                                                        {/foreach}
-                                                                    {/if}
-                                                                </div>
-                                                                <button type="button" class="btn btn-xs btn-default add-user-btn" 
-                                                                        data-date="{$day.date}" data-shift-id="{$shift.id}"
-                                                                        style="margin-top:5px;width:100%;">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </button>
-                                                            </td>
-                                                        {else}
-                                                            <td></td>
-                                                        {/if}
+                                        {if !empty($shift_list)}
+                                            {foreach $shift_list as $shift}
+                                                <tr>
+                                                    <td style="background-color:{$shift.color};color:white;font-weight:bold;">
+                                                        {$shift.name}<br>
+                                                        <small>{$shift.start_time} - {$shift.end_time}</small>
+                                                    </td>
+                                                    {foreach $calendar_weeks as $week}
+                                                        {foreach $week as $day}
+                                                            {if $day.day > 0}
+                                                                <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
+                                                                    <div class="day-header">{$day.day}</div>
+                                                                    <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
+                                                                        {php $key = "{$day.date}_{$shift.id}";}
+                                                                        {if isset($schedule_map[$key]) && !empty($schedule_map[$key])}
+                                                                            {foreach $schedule_map[$key] as $user_id => $schedule}
+                                                                                <span class="label label-primary schedule-user" data-user-id="{$user_id}">
+                                                                                    {$schedule.user_name}
+                                                                                    <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$user_id}">
+                                                                                        <i class="fa fa-times"></i>
+                                                                                    </a>
+                                                                                </span>
+                                                                            {/foreach}
+                                                                        {else}
+                                                                            <span class="text-muted text-sm">暂无排班</span>
+                                                                        {/if}
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-xs btn-default add-user-btn" 
+                                                                            data-date="{$day.date}" data-shift-id="{$shift.id}"
+                                                                            style="margin-top:5px;width:100%;">
+                                                                        <i class="fa fa-plus"></i> 添加
+                                                                    </button>
+                                                                </td>
+                                                            {else}
+                                                                <td class="empty-cell"></td>
+                                                            {/if}
+                                                        {/foreach}
                                                     {/foreach}
-                                                {/foreach}
+                                                </tr>
+                                            {/foreach}
+                                        {else}
+                                            <tr>
+                                                <td colspan="8" class="text-center text-warning">
+                                                    <i class="fa fa-info-circle"></i> 暂无班次数据，请先在 <a href="{:url('ShiftPattern/index')}">班次管理</a> 中添加班次
+                                                </td>
                                             </tr>
-                                        {/foreach}
+                                        {/if}
                                     </tbody>
                                 </table>
                             </div>
