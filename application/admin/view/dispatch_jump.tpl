@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>跳转提示 | {:config('web_site_title')} - ThinkPHP</title>
+    <title>跳转提示 | <?php echo(config('web_site_title'));?> - ThinkPHP</title>
 
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
@@ -29,14 +29,14 @@
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
             <!-- Error Titles -->
-            <h1 class="font-w300 {$code? 'text-success' : 'text-city'} push-10 animated flipInX"><i
-                        class="fa fa-{$code? 'check' : 'times'}-circle"></i> {$msg}</h1>
+            <h1 class="font-w300 <?php echo($code ? 'text-success' : 'text-city'); ?> push-10 animated flipInX"><i
+                        class="fa fa-<?php echo($code ? 'check' : 'times'); ?>-circle"></i> <?php echo(strip_tags($msg));?></h1>
             <p class="font-w300 push-20 animated fadeInUp">页面自动 <a id="href" href="<?php echo($url);?>">跳转</a> 等待时间： <b
                         id="wait"><?php echo($wait);?></b>秒</p>
             <div class="push-50">
                 <a class="btn btn-minw btn-rounded btn-success" href="<?php echo($url);?>"><i class="fa fa-external-link-square"></i> 立即跳转</a>
                 <button class="btn btn-minw btn-rounded btn-warning" type="button" onclick="stop()"><i class="fa fa-ban"></i> 禁止跳转</button>
-                <a class="btn btn-minw btn-rounded btn-default" href="{$Request.baseFile}"><i class="fa fa-home"></i> 返回首页</a>
+                <a class="btn btn-minw btn-rounded btn-default" href="<?php echo(request()->baseFile());?>"><i class="fa fa-home"></i> 返回首页</a>
             </div>
             <!-- END Error Titles -->
 
@@ -56,7 +56,7 @@
     (function () {
         let wait = document.getElementById('wait'),
             href = document.getElementById('href').href,
-            pop = '{$Request.param._pop}'; //获取窗口索引
+            pop = '<?php echo(request()->param('_pop'));?>'; //获取窗口索引
 
         let interval = setInterval(function () {
             let time = --wait.innerHTML;
