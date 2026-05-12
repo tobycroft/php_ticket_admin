@@ -85,10 +85,10 @@ class SwapPending extends Admin
 
             \think\Db::commit();
 
-            return json(['code' => 1, 'msg' => '批准成功，已替换排班人员', 'url' => url('index')]);
+            $this->success('批准成功，已替换排班人员', url('index'));
         } catch (\Exception $e) {
             \think\Db::rollback();
-            return json(['code' => 0, 'msg' => $e->getMessage()]);
+            $this->error($e->getMessage());
         }
     }
 
@@ -120,10 +120,10 @@ class SwapPending extends Admin
 
             \think\Db::commit();
 
-            return json(['code' => 1, 'msg' => '拒绝成功', 'url' => url('index')]);
+            $this->success('拒绝成功', url('index'));
         } catch (\Exception $e) {
             \think\Db::rollback();
-            return json(['code' => 0, 'msg' => $e->getMessage()]);
+            $this->error($e->getMessage());
         }
     }
 
