@@ -35,29 +35,25 @@ class ScheduleCalendar extends Admin
 
         $first_day = strtotime("$year-$month-01");
         $last_day = strtotime(date('Y-m-t', $first_day));
-        $first_weekday = date('w', $first_day);
-        if ($first_weekday == 0) {
-            $first_weekday = 7;
-        }
-
+        
         $days_in_month = date('t', $first_day);
         
         $calendar_days = [];
-        for ($i = 1; $i < $first_weekday; $i++) {
-            $calendar_days[] = ['day' => 0, 'date' => '', 'weekday' => $i];
-        }
-
+        
         for ($day = 1; $day <= $days_in_month; $day++) {
             $date = date('Y-m-d', strtotime("$year-$month-$day"));
             $weekday = date('w', strtotime($date));
-            if ($weekday == 0) {
-                $weekday = 7;
-            }
             $calendar_days[] = ['day' => $day, 'date' => $date, 'weekday' => $weekday];
         }
-
+        
         $calendar_weeks = [];
         $current_week = [];
+        
+        $first_weekday = date('w', $first_day);
+        for ($i = 0; $i < $first_weekday; $i++) {
+            $current_week[] = ['day' => 0, 'date' => '', 'weekday' => $i];
+        }
+        
         foreach ($calendar_days as $day) {
             $current_week[] = $day;
             if (count($current_week) == 7) {
@@ -65,6 +61,7 @@ class ScheduleCalendar extends Admin
                 $current_week = [];
             }
         }
+        
         if (!empty($current_week)) {
             while (count($current_week) < 7) {
                 $current_week[] = ['day' => 0, 'date' => '', 'weekday' => 0];
