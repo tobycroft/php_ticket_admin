@@ -30,15 +30,15 @@
         <div class="col-sm-6 col-sm-offset-3">
             <!-- Error Titles -->
             <h1 class="font-w300 {$code? 'text-success' : 'text-city'} push-10 animated flipInX"><i
-                        class="fa fa-{{$code? 'check' : 'times'}}-circle"></i> <?php echo($code);?>-{$msg}</h1>
-                <p class="font-w300 push-20 animated fadeInUp">页面自动 <a id="href" href="<?php echo($url);?>">跳转</a> 等待时间： <b
-                            id="wait"><?php echo($wait);?></b>秒</p>
-                <div class="push-50">
-                    <a class="btn btn-minw btn-rounded btn-success" href="<?php echo($url);?>"><i class="fa fa-external-link-square"></i> 立即跳转</a>
-                    <button class="btn btn-minw btn-rounded btn-warning" type="button" onclick="stop()"><i class="fa fa-ban"></i> 禁止跳转</button>
-                    <a class="btn btn-minw btn-rounded btn-default" href="{$Request.baseFile}"><i class="fa fa-home"></i> 返回首页</a>
-                </div>
-                <!-- END Error Titles -->
+                        class="fa fa-{$code? 'check' : 'times'}-circle"></i> {$msg}</h1>
+            <p class="font-w300 push-20 animated fadeInUp">页面自动 <a id="href" href="<?php echo($url);?>">跳转</a> 等待时间： <b
+                        id="wait"><?php echo($wait);?></b>秒</p>
+            <div class="push-50">
+                <a class="btn btn-minw btn-rounded btn-success" href="<?php echo($url);?>"><i class="fa fa-external-link-square"></i> 立即跳转</a>
+                <button class="btn btn-minw btn-rounded btn-warning" type="button" onclick="stop()"><i class="fa fa-ban"></i> 禁止跳转</button>
+                <a class="btn btn-minw btn-rounded btn-default" href="{$Request.baseFile}"><i class="fa fa-home"></i> 返回首页</a>
+            </div>
+            <!-- END Error Titles -->
 
         </div>
     </div>
