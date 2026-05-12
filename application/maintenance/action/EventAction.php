@@ -175,7 +175,7 @@ class EventAction
         $update_data = [
             'id' => $flow_id,
             'status' => $status,
-            'handle_time' => time(),
+            'handle_time' => date('Y-m-d H:i:s'),
         ];
 
         if ($status == 2 && $reason) {
