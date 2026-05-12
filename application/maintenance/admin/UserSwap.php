@@ -202,7 +202,7 @@ class UserSwap extends Admin
                 'status' => 1,
                 'approver_id' => UID,
                 'approver_name' => get_nickname(UID),
-                'approve_time' => time()
+                'approve_time' => date('Y-m-d H:i:s')
             ]);
 
             if ($this->request->isAjax()) {
@@ -238,7 +238,7 @@ class UserSwap extends Admin
                 'status' => 2,
                 'approver_id' => UID,
                 'approver_name' => get_nickname(UID),
-                'approve_time' => time()
+                'approve_time' => date('Y-m-d H:i:s')
             ]);
 
             if ($this->request->isAjax()) {
