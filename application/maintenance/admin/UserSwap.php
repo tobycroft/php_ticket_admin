@@ -21,8 +21,8 @@ class UserSwap extends Admin
 
         foreach ($data_list as &$item) {
             $item['status_text'] = isset($status_list[$item['status']]) ? $status_list[$item['status']] : '';
-            $item['can_approve'] = $item['status'] == 0;
-            $item['can_edit'] = $item['status'] == 0;
+            $item['can_approve'] = $item['status'] == 0 ? '1' : '0';
+            $item['can_edit'] = $item['status'] == 0 ? '1' : '0';
         }
 
         return ZBuilder::make('table')
