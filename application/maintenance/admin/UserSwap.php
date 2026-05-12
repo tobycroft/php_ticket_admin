@@ -84,7 +84,7 @@ class UserSwap extends Admin
             }
         }
 
-        $user_list = UserModel::where('status', 1)->column('nickname', 'id');
+        $user_list = UserModel::where('status', 1)->whereIn('role', [3, 4, 5, 6, 7])->column('nickname', 'id');
 
         return ZBuilder::make('form')
             ->setPageTitle('新增调班')
@@ -147,7 +147,7 @@ class UserSwap extends Admin
             }
         }
 
-        $user_list = UserModel::where('status', 1)->column('nickname', 'id');
+        $user_list = UserModel::where('status', 1)->whereIn('role', [3, 4, 5, 6, 7])->column('nickname', 'id');
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑调班')

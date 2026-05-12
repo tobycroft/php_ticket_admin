@@ -350,7 +350,7 @@ class Event extends Admin
             }
         }
 
-        $users = UserModel::where('status', 1)->column('id,nickname');
+        $users = UserModel::where('status', 1)->whereIn('role', [3, 4, 5, 6, 7])->column('id,nickname');
 
         return ZBuilder::make('form')
             ->setPageTitle('推送工单')
