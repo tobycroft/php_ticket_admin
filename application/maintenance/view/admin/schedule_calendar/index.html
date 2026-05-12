@@ -168,7 +168,8 @@ function changeMonth(year, month) {
     window.location.href = "{:url('index')}?year=" + year + "&month=" + month;
 }
 
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
+    var $ = jQuery;
     $(document).on('click', '.add-user-btn', function() {
         var date = $(this).data('date');
         var shift_id = $(this).data('shift-id');
@@ -220,49 +221,48 @@ $(function() {
             }
         });
     });
-});
-
 function saveSchedule() {
-    var date = $('#modal-date').val();
-    var shift_id = $('#modal-shift-id').val();
-    var user_ids = [];
-    
-    console.log('saveSchedule called:', date, shift_id);
-    
-    $('.user-checkbox:checked').each(function() {
-        user_ids.push($(this).val());
-    });
-    
-    console.log('Selected users:', user_ids);
-    
-    $.ajax({
-        url: "{:url('saveSchedule')}",
-        type: 'POST',
-        data: {
-            date: date,
-            shift_id: shift_id,
-            user_ids: user_ids
-        },
-        success: function(res) {
-            console.log('saveSchedule response:', res);
-            if (res.code == 1) {
-                var html = '';
-                $.each(user_ids, function(index, user_id) {
-                    var nickname = $('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
-                    html += '<span class="label schedule-label" style="background-color:#4CAF50;" data-user-id="' + user_id + '">' + nickname + 
-                             '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '">' +
-                             '<i class="fa fa-times"></i></a></span>';
-                });
-                if (html == '') {
-                    html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>';
+        var date = jQuery('#modal-date').val();
+        var shift_id = jQuery('#modal-shift-id').val();
+        var user_ids = [];
+        
+        console.log('saveSchedule called:', date, shift_id);
+        
+        jQuery('.user-checkbox:checked').each(function() {
+            user_ids.push(jQuery(this).val());
+        });
+        
+        console.log('Selected users:', user_ids);
+        
+        jQuery.ajax({
+            url: "{:url('saveSchedule')}",
+            type: 'POST',
+            data: {
+                date: date,
+                shift_id: shift_id,
+                user_ids: user_ids
+            },
+            success: function(res) {
+                console.log('saveSchedule response:', res);
+                if (res.code == 1) {
+                    var html = '';
+                    jQuery.each(user_ids, function(index, user_id) {
+                        var nickname = jQuery('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
+                        html += '<span class="label schedule-label" style="background-color:#4CAF50;" data-user-id="' + user_id + '">' + nickname + 
+                                 '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '">' +
+                                 '<i class="fa fa-times"></i></a></span>';
+                    });
+                    if (html == '') {
+                        html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>';
+                    }
+                    jQuery('#schedule-' + date + '-' + shift_id).html(html);
+                    
+                    jQuery('#userModal').modal('hide');
                 }
-                $('#schedule-' + date + '-' + shift_id).html(html);
-                
-                $('#userModal').modal('hide');
+                alert(res.msg);
             }
-            alert(res.msg);
-        }
-    });
-}
+        });
+    }
+});
 </script>
 {/block}
