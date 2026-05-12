@@ -22,7 +22,7 @@ class EventMy extends Admin
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
-            $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
+            $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
             $item['can_close'] = !$item['is_closed'] && !$item['is_canceled'];
         }
 

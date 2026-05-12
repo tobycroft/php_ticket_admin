@@ -26,8 +26,8 @@ class Event extends Admin
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
-            $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
-            $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
+            $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
+            $item['end_time_text'] = $item['end_time'] ? $item['end_time'] : '';
             $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
             $item['can_cancel'] = $item['creator_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
             $item['can_reopen'] = $item['is_closed'] && !$item['is_canceled'];
@@ -179,17 +179,17 @@ class Event extends Admin
         $notes = EventAction::getNotes($id);
         $flows = EventAction::getFlows($id);
 
-        $info['start_time_text'] = $info['start_time'] ? date('Y-m-d H:i:s', $info['start_time']) : '';
-        $info['end_time_text'] = $info['end_time'] ? date('Y-m-d H:i:s', $info['end_time']) : '';
+        $info['start_time_text'] = $info['start_time'] ? $info['start_time'] : '';
+        $info['end_time_text'] = $info['end_time'] ? $info['end_time'] : '';
         $info['is_closed_text'] = $info['is_closed'] ? '已结单' : '未结单';
 
         foreach ($notes as &$note) {
-            $note['create_time_text'] = $note['create_time'] ? date('Y-m-d H:i:s', $note['create_time']) : '';
+            $note['create_time_text'] = $note['create_time'] ? $note['create_time'] : '';
         }
 
         foreach ($flows as &$flow) {
-            $flow['create_time_text'] = $flow['create_time'] ? date('Y-m-d H:i:s', $flow['create_time']) : '';
-            $flow['handle_time_text'] = $flow['handle_time'] ? date('Y-m-d H:i:s', $flow['handle_time']) : '';
+            $flow['create_time_text'] = $flow['create_time'] ? $flow['create_time'] : '';
+            $flow['handle_time_text'] = $flow['handle_time'] ? $flow['handle_time'] : '';
             $flow['status_text'] = ['待处理', '已处理', '已退回'][$flow['status']];
         }
 

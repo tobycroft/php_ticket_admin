@@ -20,8 +20,8 @@ class EventSent extends Admin
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
-            $item['start_time_text'] = $item['start_time'] ? date('Y-m-d H:i:s', $item['start_time']) : '';
-            $item['end_time_text'] = $item['end_time'] ? date('Y-m-d H:i:s', $item['end_time']) : '';
+            $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
+            $item['end_time_text'] = $item['end_time'] ? $item['end_time'] : '';
             $item['can_close'] = !$item['is_closed'] && !$item['is_canceled'];
             $item['can_cancel'] = !$item['is_closed'] && !$item['is_canceled'];
         }
