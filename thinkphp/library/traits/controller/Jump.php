@@ -47,7 +47,7 @@ trait Jump
         }
 
         $result = [
-            'code' => '0',
+            'code' => "1",
             'msg' => $msg,
             'data' => $data,
             'url' => $url,
@@ -58,7 +58,7 @@ trait Jump
             $type = 'jump';
         }
 
-        $response = Response::create($result, $type)->header($header)->options(['jump_template' => $this->app['config']->get('dispatch_error_tmpl')]);
+        $response = Response::create($result, $type)->header($header)->options(['jump_template' => $this->app['config']->get('dispatch_success_tmpl')]);
 
         throw new HttpResponseException($response);
     }
@@ -83,7 +83,7 @@ trait Jump
         }
 
         $result = [
-            'code' => "1",
+            'code' => "0",
             'msg' => $msg,
             'data' => $data,
             'url' => $url,
