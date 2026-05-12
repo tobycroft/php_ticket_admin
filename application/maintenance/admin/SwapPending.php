@@ -68,7 +68,7 @@ class SwapPending extends Admin
                 'approve_time' => date('Y-m-d H:i:s')
             ]);
 
-            $schedule = DailyScheduleModel::where('user_id', $info['user_id'])
+            $schedule = DailyScheduleModel::where('user_id', $info['target_user_id'])
                 ->where('schedule_date', $info['swap_date'])
                 ->where('status', 1)
                 ->find();
@@ -76,8 +76,8 @@ class SwapPending extends Admin
             if ($schedule) {
                 DailyScheduleModel::update([
                     'id' => $schedule['id'],
-                    'user_id' => $info['target_user_id'],
-                    'user_name' => $info['target_user_name']
+                    'user_id' => $info['user_id'],
+                    'user_name' => $info['user_name']
                 ]);
             }
 
