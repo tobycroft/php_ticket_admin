@@ -28,6 +28,14 @@
 <div class="content bg-white text-center pulldown overflow-hidden">
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
+            <!-- Debug Info -->
+            <div style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; text-align: left; font-family: monospace;">
+                Debug Info:<br>
+                code = [<?php var_export($code); ?>] (type: <?php echo(gettype($code)); ?>)<br>
+                msg = [<?php var_export($msg); ?>]<br>
+                url = [<?php var_export($url); ?>]<br>
+                wait = [<?php var_export($wait); ?>]
+            </div>
             <!-- Error Titles -->
             <h1 class="font-w300 <?php echo($code ? 'text-success' : 'text-city'); ?> push-10 animated flipInX"><i
                         class="fa fa-<?php echo($code ? 'check' : 'times'); ?>-circle"></i> <?php echo(strip_tags($msg));?></h1>
