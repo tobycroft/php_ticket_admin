@@ -20,7 +20,7 @@ class ScheduleCalendar extends Admin
         }
 
         $shift_list = ShiftPatternModel::getActiveList();
-        $user_list = UserModel::where('status', 1)->select();
+        $user_list = UserModel::where('status', 1)->whereIn('role', [3, 4, 5, 6, 7])->select();
 
         $schedules = DailyScheduleModel::getByMonth($year, $month);
 
