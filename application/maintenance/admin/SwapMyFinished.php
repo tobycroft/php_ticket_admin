@@ -27,6 +27,7 @@ class SwapMyFinished extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('我已批准的调班')
             ->setTableName('mt_user_swap')
+            ->addTopButtons([])
             ->addColumns([
                 ['id', 'ID'],
                 ['target_user_name', '调换对象'],
