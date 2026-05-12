@@ -42,42 +42,42 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {volist name="shift_list" id="shift"}
+                                        {volist name="calendar_weeks" id="week"}
                                             <tr>
-                                                <td style="background-color:{$shift.color};color:white;font-weight:bold;vertical-align:middle;">
-                                                    {$shift.name}<br>
-                                                    <small>{$shift.start_time} - {$shift.end_time}</small>
+                                                <td style="vertical-align:middle;">
+                                                    <strong>第{$key}周</strong>
                                                 </td>
-                                                {volist name="week_1" id="day"}
+                                                {volist name="week" id="day"}
                                                     {eq name="day.day" value="0"}
                                                         <td class="empty-cell"></td>
                                                     {else}
-                                                        <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
+                                                        <td class="schedule-cell" data-date="{$day.date}">
                                                             <div class="day-header">{$day.day}</div>
-                                                            <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
-                                                                {assign name="has_schedule" value="0"}
-                                                                {volist name="schedule_list" id="schedule"}
-                                                                    {eq name="schedule.schedule_date" value="$day.date"}
-                                                                        {eq name="schedule.shift_id" value="$shift.id"}
-                                                                            {assign name="has_schedule" value="1"}
-                                                                            <span class="label label-primary schedule-user" data-user-id="{$schedule.user_id}">
-                                                                                {$schedule.user_name}
-                                                                                <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}">
-                                                                                    <i class="fa fa-times"></i>
-                                                                                </a>
-                                                                            </span>
+                                                            {volist name="shift_list" id="shift"}
+                                                                <div class="shift-schedule" id="schedule-{$day.date}-{$shift.id}" style="margin-bottom:3px;">
+                                                                    {assign name="has_schedule" value="0"}
+                                                                    {volist name="schedule_list" id="schedule"}
+                                                                        {eq name="schedule.schedule_date" value="$day.date"}
+                                                                            {eq name="schedule.shift_id" value="$shift.id"}
+                                                                                {assign name="has_schedule" value="1"}
+                                                                                <span class="label schedule-label" style="background-color:{$shift.color};" data-user-id="{$schedule.user_id}">
+                                                                                    {$schedule.user_name}
+                                                                                    <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}">
+                                                                                        <i class="fa fa-times"></i>
+                                                                                    </a>
+                                                                                </span>
+                                                                            {/eq}
                                                                         {/eq}
+                                                                    {/volist}
+                                                                    {eq name="has_schedule" value="0"}
+                                                                        <button type="button" class="btn btn-xs btn-default add-user-btn" 
+                                                                                data-date="{$day.date}" data-shift-id="{$shift.id}"
+                                                                                style="width:100%;">
+                                                                            <i class="fa fa-plus"></i> {$shift.name}
+                                                                        </button>
                                                                     {/eq}
-                                                                {/volist}
-                                                                {eq name="has_schedule" value="0"}
-                                                                    <span class="text-muted text-sm">暂无排班</span>
-                                                                {/eq}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-default add-user-btn" 
-                                                                    data-date="{$day.date}" data-shift-id="{$shift.id}"
-                                                                    style="margin-top:5px;width:100%;">
-                                                                <i class="fa fa-plus"></i> 添加
-                                                            </button>
+                                                                </div>
+                                                            {/volist}
                                                         </td>
                                                     {/eq}
                                                 {/volist}
@@ -125,7 +125,7 @@
 
 <style>
 .schedule-cell {
-    min-height: 80px;
+    min-height: 100px;
     vertical-align: top;
     padding: 5px;
 }
@@ -137,15 +137,12 @@
     text-align: center;
 }
 
-.schedule-users {
-    margin-bottom: 5px;
-}
-
-.schedule-user {
+.schedule-label {
     display: block;
     margin-bottom: 2px;
     padding: 2px 5px;
     font-size: 12px;
+    color: white;
 }
 
 .remove-user {
@@ -159,6 +156,10 @@
 
 .empty-cell {
     background-color: #f5f5f5;
+}
+
+.shift-schedule {
+    margin-bottom: 3px;
 }
 </style>
 
@@ -208,7 +209,7 @@ $(function() {
             },
             success: function(res) {
                 if (res.code == 1) {
-                    $('#schedule-' + date + '-' + shift_id).empty().html('<span class="text-muted text-sm">暂无排班</span>');
+                    $('#schedule-' + date + '-' + shift_id).html('<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>');
                 }
             }
         });
@@ -237,12 +238,12 @@ function saveSchedule() {
                 var html = '';
                 $.each(user_ids, function(index, user_id) {
                     var nickname = $('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
-                    html += '<span class="label label-primary schedule-user" data-user-id="' + user_id + '">' + nickname + 
+                    html += '<span class="label schedule-label" style="background-color:#4CAF50;" data-user-id="' + user_id + '">' + nickname + 
                              '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '">' +
                              '<i class="fa fa-times"></i></a></span>';
                 });
                 if (html == '') {
-                    html = '<span class="text-muted text-sm">暂无排班</span>';
+                    html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>';
                 }
                 $('#schedule-' + date + '-' + shift_id).html(html);
                 
@@ -261,7 +262,7 @@ function saveSchedule() {
                         },
                         success: function(r) {
                             if (r.code == 1) {
-                                $('#schedule-' + d + '-' + s_id).html('<span class="text-muted text-sm">暂无排班</span>');
+                                $('#schedule-' + d + '-' + s_id).html('<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + d + '" data-shift-id="' + s_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>');
                             }
                         }
                     });
