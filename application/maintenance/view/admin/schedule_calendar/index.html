@@ -169,9 +169,11 @@ function changeMonth(year, month) {
 }
 
 $(function() {
-    $('.add-user-btn').click(function() {
+    $(document).on('click', '.add-user-btn', function() {
         var date = $(this).data('date');
         var shift_id = $(this).data('shift-id');
+        
+        console.log('Add user clicked:', date, shift_id);
         
         $('#modal-date').val(date);
         $('#modal-shift-id').val(shift_id);
@@ -183,18 +185,22 @@ $(function() {
             type: 'GET',
             data: {date: date, shift_id: shift_id},
             success: function(res) {
+                console.log('getSchedule response:', res);
                 if (res.code == 1) {
                     $.each(res.data, function(index, user_id) {
                         $('.user-checkbox[value="' + user_id + '"]').prop('checked', true);
                     });
                 }
+            },
+            error: function(xhr, status, error) {
+                console.log('getSchedule error:', error);
             }
         });
         
         $('#userModal').modal('show');
     });
     
-    $('.remove-user').click(function() {
+    $(document).on('click', '.remove-user', function() {
         var date = $(this).data('date');
         var shift_id = $(this).data('shift-id');
         var user_id = $(this).data('user-id');
@@ -221,9 +227,13 @@ function saveSchedule() {
     var shift_id = $('#modal-shift-id').val();
     var user_ids = [];
     
+    console.log('saveSchedule called:', date, shift_id);
+    
     $('.user-checkbox:checked').each(function() {
         user_ids.push($(this).val());
     });
+    
+    console.log('Selected users:', user_ids);
     
     $.ajax({
         url: "{:url('saveSchedule')}",
@@ -234,6 +244,7 @@ function saveSchedule() {
             user_ids: user_ids
         },
         success: function(res) {
+            console.log('saveSchedule response:', res);
             if (res.code == 1) {
                 var html = '';
                 $.each(user_ids, function(index, user_id) {
@@ -246,27 +257,6 @@ function saveSchedule() {
                     html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>';
                 }
                 $('#schedule-' + date + '-' + shift_id).html(html);
-                
-                $('.remove-user').click(function() {
-                    var d = $(this).data('date');
-                    var s_id = $(this).data('shift-id');
-                    var u_id = $(this).data('user-id');
-                    
-                    $.ajax({
-                        url: "{:url('saveSchedule')}",
-                        type: 'POST',
-                        data: {
-                            date: d,
-                            shift_id: s_id,
-                            user_ids: []
-                        },
-                        success: function(r) {
-                            if (r.code == 1) {
-                                $('#schedule-' + d + '-' + s_id).html('<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + d + '" data-shift-id="' + s_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>');
-                            }
-                        }
-                    });
-                });
                 
                 $('#userModal').modal('hide');
             }
