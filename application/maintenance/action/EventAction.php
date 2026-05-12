@@ -48,6 +48,10 @@ class EventAction
         $data['receiver_id'] = UID;
         $data['receiver_name'] = get_nickname(UID);
         
+        if (isset($data['contact_method']) && is_array($data['contact_method'])) {
+            $data['contact_method'] = implode(',', $data['contact_method']);
+        }
+        
         if ($event = EventModel::create($data)) {
             action_log('event_add', 'mt_event', $event['id'], UID);
             return $event;
@@ -58,6 +62,10 @@ class EventAction
 
     public static function edit($data)
     {
+        if (isset($data['contact_method']) && is_array($data['contact_method'])) {
+            $data['contact_method'] = implode(',', $data['contact_method']);
+        }
+        
         if (EventModel::update($data)) {
             action_log('event_edit', 'mt_event', $data['id'], UID);
             return true;

@@ -5,6 +5,7 @@ namespace app\maintenance\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\maintenance\action\EventAction;
+use app\maintenance\model\ContactMethodModel;
 use app\user\model\User as UserModel;
 
 class Event extends Admin
@@ -89,12 +90,14 @@ class Event extends Admin
             5 => '<span class="label label-red">5 - 紧急</span>',
         ];
 
+        $contact_method_list = ContactMethodModel::where('status', 1)->column('name', 'id');
+
         return ZBuilder::make('form')
             ->setPageTitle('新增工单')
             ->addFormItems([
                 ['text', 'title', '事件标题', '必填'],
                 ['text', 'creator_name', '发单人', '必填'],
-                ['text', 'contact_method', '对接方式', '最大长度255'],
+                ['checkbox', 'contact_method', '对接方式', '可多选', $contact_method_list],
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填', '', date('Y-m-d H:i:s')],
                 ['text', 'customer_name', '对接客户'],
@@ -153,13 +156,19 @@ class Event extends Admin
             5 => '<span class="label label-red">5 - 紧急</span>',
         ];
 
+        $contact_method_list = ContactMethodModel::where('status', 1)->column('name', 'id');
+
+        if (!empty($info['contact_method'])) {
+            $info['contact_method'] = explode(',', $info['contact_method']);
+        }
+
         return ZBuilder::make('form')
             ->setPageTitle('编辑工单')
             ->addFormItems([
                 ['hidden', 'id'],
                 ['text', 'title', '事件标题', '必填'],
                 ['text', 'creator_name', '发单人', '必填'],
-                ['text', 'contact_method', '对接方式', '最大长度255'],
+                ['checkbox', 'contact_method', '对接方式', '可多选', $contact_method_list],
                 ['ueditor', 'content', '事件描述'],
                 ['datetime', 'start_time', '开始时间', '必填'],
                 ['text', 'customer_name', '对接客户'],
