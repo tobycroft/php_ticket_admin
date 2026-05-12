@@ -184,7 +184,7 @@ class SwapMyPending extends Admin
         }
 
         try {
-            UserSwapModel::where('user_id', UID)->destroy($ids);
+            UserSwapModel::where('user_id', UID)->whereIn('id', $ids)->delete();
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '删除成功']);
             }
