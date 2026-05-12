@@ -31,7 +31,7 @@
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th style="vertical-align:middle;width:150px;">班次</th>
+                                            <th style="width:150px;">班次</th>
                                             <th class="text-center">星期一</th>
                                             <th class="text-center">星期二</th>
                                             <th class="text-center">星期三</th>
@@ -44,44 +44,42 @@
                                     <tbody>
                                         {volist name="shift_list" id="shift"}
                                             <tr>
-                                                <td style="background-color:{$shift.color};color:white;font-weight:bold;">
+                                                <td style="background-color:{$shift.color};color:white;font-weight:bold;vertical-align:middle;">
                                                     {$shift.name}<br>
                                                     <small>{$shift.start_time} - {$shift.end_time}</small>
                                                 </td>
-                                                {volist name="calendar_weeks" id="week"}
-                                                    {volist name="week" id="day"}
-                                                        {eq name="day.day" value="0"}
-                                                            <td class="empty-cell"></td>
-                                                        {else}
-                                                            <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
-                                                                <div class="day-header">{$day.day}</div>
-                                                                <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
-                                                                    {assign name="has_schedule" value="0"}
-                                                                    {volist name="schedule_list" id="schedule"}
-                                                                        {eq name="schedule.schedule_date" value="$day.date"}
-                                                                            {eq name="schedule.shift_id" value="$shift.id"}
-                                                                                {assign name="has_schedule" value="1"}
-                                                                                <span class="label label-primary schedule-user" data-user-id="{$schedule.user_id}">
-                                                                                    {$schedule.user_name}
-                                                                                    <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}">
-                                                                                        <i class="fa fa-times"></i>
-                                                                                    </a>
-                                                                                </span>
-                                                                            {/eq}
+                                                {volist name="week_1" id="day"}
+                                                    {eq name="day.day" value="0"}
+                                                        <td class="empty-cell"></td>
+                                                    {else}
+                                                        <td class="schedule-cell" data-date="{$day.date}" data-shift-id="{$shift.id}">
+                                                            <div class="day-header">{$day.day}</div>
+                                                            <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
+                                                                {assign name="has_schedule" value="0"}
+                                                                {volist name="schedule_list" id="schedule"}
+                                                                    {eq name="schedule.schedule_date" value="$day.date"}
+                                                                        {eq name="schedule.shift_id" value="$shift.id"}
+                                                                            {assign name="has_schedule" value="1"}
+                                                                            <span class="label label-primary schedule-user" data-user-id="{$schedule.user_id}">
+                                                                                {$schedule.user_name}
+                                                                                <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}">
+                                                                                    <i class="fa fa-times"></i>
+                                                                                </a>
+                                                                            </span>
                                                                         {/eq}
-                                                                    {/volist}
-                                                                    {eq name="has_schedule" value="0"}
-                                                                        <span class="text-muted text-sm">暂无排班</span>
                                                                     {/eq}
-                                                                </div>
-                                                                <button type="button" class="btn btn-xs btn-default add-user-btn" 
-                                                                        data-date="{$day.date}" data-shift-id="{$shift.id}"
-                                                                        style="margin-top:5px;width:100%;">
-                                                                    <i class="fa fa-plus"></i> 添加
-                                                                </button>
-                                                            </td>
-                                                        {/eq}
-                                                    {/volist}
+                                                                {/volist}
+                                                                {eq name="has_schedule" value="0"}
+                                                                    <span class="text-muted text-sm">暂无排班</span>
+                                                                {/eq}
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-default add-user-btn" 
+                                                                    data-date="{$day.date}" data-shift-id="{$shift.id}"
+                                                                    style="margin-top:5px;width:100%;">
+                                                                <i class="fa fa-plus"></i> 添加
+                                                            </button>
+                                                        </td>
+                                                    {/eq}
                                                 {/volist}
                                             </tr>
                                         {/volist}
