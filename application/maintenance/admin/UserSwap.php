@@ -196,7 +196,7 @@ class UserSwap extends Admin
             $this->error('该申请已处理');
         }
 
-        try {
+//        try {
             UserSwapModel::update([
                 'id' => $id,
                 'status' => 1,
@@ -209,12 +209,12 @@ class UserSwap extends Admin
                 return json(['code' => 1, 'msg' => '批准成功']);
             }
             $this->success('批准成功');
-        } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
-        }
+//        } catch (\Exception $e) {
+//            if ($this->request->isAjax()) {
+//                return json(['code' => 0, 'msg' => $e->getMessage()]);
+//            }
+//            $this->error($e->getMessage());
+//        }
     }
 
     public function reject($id = null)
