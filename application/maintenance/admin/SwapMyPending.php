@@ -27,7 +27,7 @@ class SwapMyPending extends Admin
         }
 
         return ZBuilder::make('table')
-            ->setPageTitle('我的待审核调班')
+            ->setPageTitle('我的待审核申请')
             ->setTableName('mt_user_swap')
             ->addColumns([
                 ['id', 'ID'],
@@ -37,7 +37,7 @@ class SwapMyPending extends Admin
                 ['status_text', '状态'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add')
+            ->addTopButtons(['add' => ['title' => '新增申请调班']])
             ->addRightButtons(['edit', 'delete'])
             ->setRowList($data_list)
             ->fetch();
@@ -89,7 +89,7 @@ class SwapMyPending extends Admin
         $user_list = UserModel::where('status', 1)->whereIn('role', [3, 4, 5, 6, 7])->where('id', '<>', UID)->column('nickname', 'id');
 
         return ZBuilder::make('form')
-            ->setPageTitle('新增调班申请')
+            ->setPageTitle('新增申请调班')
             ->addFormItems([
                 ['select', 'target_user_id', '调换对象', '必填', $user_list],
                 ['date', 'swap_date', '调换日期', '必填'],
