@@ -19,9 +19,9 @@ class UserSwapModel extends Model
         'target_user_id' => 'integer',
         'status' => 'integer',
         'approver_id' => 'integer',
-        'approve_time' => 'integer',
-        'create_time' => 'integer',
-        'update_time' => 'integer',
+        'approve_time' => 'datetime',
+        'create_time' => 'datetime',
+        'update_time' => 'datetime',
     ];
 
     public static function getStatusList()

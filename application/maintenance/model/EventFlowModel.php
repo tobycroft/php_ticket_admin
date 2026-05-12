@@ -19,11 +19,10 @@ class EventFlowModel extends Model
         'from_user_id' => 'integer',
         'to_user_id' => 'integer',
         'status' => 'integer',
-        'create_time' => 'integer',
-        'handle_time' => 'integer',
+        'create_time' => 'datetime',
+        'handle_time' => 'datetime',
     ];
 
-    // 重命名方法避免与父类静态方法冲突
     public function getEvent()
     {
         return $this->belongsTo('EventModel', 'event_id', 'id');

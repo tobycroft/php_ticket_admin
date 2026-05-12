@@ -19,9 +19,8 @@ class UserLeaveModel extends Model
         'type' => 'integer',
         'status' => 'integer',
         'approver_id' => 'integer',
-        'approve_time' => 'integer',
-        'create_time' => 'integer',
-        'update_time' => 'integer',
+        'create_time' => 'datetime',
+        'update_time' => 'datetime',
     ];
 
     public static function getTypeList()

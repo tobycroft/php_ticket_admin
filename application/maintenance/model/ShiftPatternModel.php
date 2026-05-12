@@ -13,14 +13,13 @@ class ShiftPatternModel extends Model
         'start_time' => 'time',
         'end_time' => 'time',
         'status' => 'integer',
-        'create_time' => 'integer',
-        'update_time' => 'integer',
+        'create_time' => 'datetime',
+        'update_time' => 'datetime',
     ];
 
     protected $autoWriteTimestamp = true;
     protected $createTime = 'create_time';
     protected $updateTime = 'update_time';
-    protected $dateFormat = 'timestamp';
 
     public static function getStatusList()
     {

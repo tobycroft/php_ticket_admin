@@ -15,8 +15,8 @@ class EventModel extends Model
     protected $updateTime = 'update_time';
 
     protected $type = [
-        'start_time' => 'integer',
-        'end_time' => 'integer',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
         'creator_id' => 'integer',
         'receiver_id' => 'integer',
         'closer_id' => 'integer',
@@ -24,8 +24,8 @@ class EventModel extends Model
         'is_canceled' => 'integer',
         'receive_type' => 'integer',
         'status' => 'integer',
-        'create_time' => 'integer',
-        'update_time' => 'integer',
+        'create_time' => 'datetime',
+        'update_time' => 'datetime',
     ];
 
     public function notes()
