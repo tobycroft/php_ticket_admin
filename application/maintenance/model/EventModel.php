@@ -8,11 +8,7 @@ class EventModel extends Model
 {
     protected $table = 'mt_event';
 
-    protected $autoWriteTimestamp = true;
-
-    protected $createTime = 'create_time';
-
-    protected $updateTime = 'update_time';
+    protected $autoWriteTimestamp = false;
 
     protected $type = [
         'start_time' => 'datetime',

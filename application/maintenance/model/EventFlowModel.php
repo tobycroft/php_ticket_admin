@@ -8,11 +8,7 @@ class EventFlowModel extends Model
 {
     protected $table = 'mt_event_flow';
 
-    protected $autoWriteTimestamp = true;
-
-    protected $createTime = 'create_time';
-
-    protected $updateTime = false;
+    protected $autoWriteTimestamp = false;
 
     protected $type = [
         'event_id' => 'integer',

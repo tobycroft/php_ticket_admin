@@ -8,11 +8,7 @@ class UserSwapModel extends Model
 {
     protected $table = 'mt_user_swap';
 
-    protected $autoWriteTimestamp = true;
-
-    protected $createTime = 'create_time';
-
-    protected $updateTime = 'update_time';
+    protected $autoWriteTimestamp = false;
 
     protected $type = [
         'user_id' => 'integer',
