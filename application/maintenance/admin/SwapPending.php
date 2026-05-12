@@ -84,19 +84,10 @@ class SwapPending extends Admin
             }
 
             \think\Db::commit();
-
-            // 调试：检查配置是否正确
-            $success_tmpl = $this->app['config']->get('dispatch_success_tmpl');
-            if (empty($success_tmpl)) {
-                // 如果配置为空，使用默认模板
-                $this->error('dispatch_success_tmpl 配置为空');
-            }
-
             $this->success('批准成功，已替换排班人员', url('index'));
         } catch (\ErrorException $e) {
             \think\Db::rollback();
-
-            $this->error('操作失败: ' . $e->getMessage() . $e->getTraceAsString());
+            $this->error('操作失败: ' . $e->getMessage());
         }
     }
 
