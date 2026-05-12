@@ -47,7 +47,7 @@ trait Jump
         }
 
         $result = [
-            'code' => "0",
+            'code' => '1',
             'msg' => $msg,
             'data' => $data,
             'url' => $url,
@@ -83,7 +83,7 @@ trait Jump
         }
 
         $result = [
-            'code' => "1",
+            'code' => "0",
             'msg' => $msg,
             'data' => $data,
             'url' => $url,
