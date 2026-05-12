@@ -73,7 +73,7 @@ class EventAction
             'is_closed' => 1,
             'closer_id' => UID,
             'closer_name' => get_nickname(UID),
-            'end_time' => time(),
+            'end_time' => date('Y-m-d H:i:s'),
         ];
         
         if (EventModel::update($data)) {
@@ -91,7 +91,7 @@ class EventAction
             'is_closed' => 0,
             'closer_id' => 0,
             'closer_name' => '',
-            'end_time' => 0,
+            'end_time' => null,
         ];
         
         if (EventModel::update($data)) {

@@ -440,7 +440,7 @@ class Event extends Admin
                     if ($data['value']) {
                         EventAction::close($data['pk']);
                     } else {
-                        EventAction::edit(['id' => $data['pk'], 'is_closed' => 0, 'end_time' => 0, 'closer_id' => 0, 'closer_name' => '']);
+                        EventAction::edit(['id' => $data['pk'], 'is_closed' => 0, 'end_time' => null, 'closer_id' => 0, 'closer_name' => '']);
                     }
                 } else {
                     EventAction::edit(['id' => $data['pk'], $data['name'] => $data['value']]);
