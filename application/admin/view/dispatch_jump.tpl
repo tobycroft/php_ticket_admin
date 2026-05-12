@@ -29,8 +29,8 @@
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
             <!-- Error Titles -->
-            <h1 class="font-w300 {$code? 'text-success' : 'text-city'} push-10 animated flipInX"><i
-                        class="fa fa-{$code? 'check' : 'times'}-circle"></i> <?php echo(strip_tags($msg));?></h1>
+            <h1 class="font-w300 <?php echo($code ? 'text-success' : 'text-city'); ?> push-10 animated flipInX"><i
+                        class="fa fa-<?php echo($code ? 'check' : 'times'); ?>-circle"></i> <?php echo(strip_tags($msg));?></h1>
             <p class="font-w300 push-20 animated fadeInUp">页面自动 <a id="href" href="<?php echo($url);?>">跳转</a> 等待时间： <b
                         id="wait"><?php echo($wait);?></b>秒</p>
             <div class="push-50">
