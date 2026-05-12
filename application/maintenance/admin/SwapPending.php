@@ -4,8 +4,8 @@ namespace app\maintenance\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
-use app\maintenance\model\UserSwapModel;
 use app\maintenance\model\DailyScheduleModel;
+use app\maintenance\model\UserSwapModel;
 
 class SwapPending extends Admin
 {
@@ -59,7 +59,7 @@ class SwapPending extends Admin
             $this->error('该申请已处理');
         }
 
-try {
+        try {
             \think\Db::startTrans();
 
             UserSwapModel::update([
@@ -91,11 +91,12 @@ try {
                 // 如果配置为空，使用默认模板
                 $this->error('dispatch_success_tmpl 配置为空');
             }
-            
+
             $this->success('批准成功，已替换排班人员', url('index'));
         } catch (\Exception $e) {
             \think\Db::rollback();
-            $this->error('操作失败: ' . $e->getMessage());
+
+            $this->error('操作失败: ' . $e->getMessage() . $e->getTraceAsString());
         }
     }
 
