@@ -99,6 +99,7 @@ class ScheduleCalendar extends Admin
         $this->assign('calendar_days', $calendar_days);
         $this->assign('calendar_weeks', $calendar_weeks);
         $this->assign('schedule_map', $schedule_map);
+        $this->assign('schedule_list', $schedules);
         $this->assign('weekdays', $weekdays);
 
         return $this->fetch();
