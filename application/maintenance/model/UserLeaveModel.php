@@ -4,7 +4,7 @@ namespace app\maintenance\model;
 
 use think\Model;
 
-class LeaveModel extends Model
+class UserLeaveModel extends Model
 {
     protected $table = 'mt_user_leave';
 

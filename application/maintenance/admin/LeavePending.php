@@ -4,7 +4,7 @@ namespace app\maintenance\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
-use app\maintenance\model\LeaveModel;
+use app\maintenance\model\UserLeaveModel;
 use app\maintenance\model\DailyScheduleModel;
 
 class LeavePending extends Admin
@@ -16,10 +16,10 @@ class LeavePending extends Admin
         $map = [
             ['status', '=', 0]
         ];
-        $data_list = LeaveModel::where($map)->order('create_time desc')->paginate();
+        $data_list = UserLeaveModel::where($map)->order('create_time desc')->paginate();
 
-        $type_list = LeaveModel::getTypeList();
-        $status_list = LeaveModel::getStatusList();
+        $type_list = UserLeaveModel::getTypeList();
+        $status_list = UserLeaveModel::getStatusList();
 
         foreach ($data_list as &$item) {
             $item['type_text'] = isset($type_list[$item['leave_type']]) ? $type_list[$item['leave_type']] : '';
@@ -50,7 +50,7 @@ class LeavePending extends Admin
             $this->error('参数错误');
         }
 
-        $info = LeaveModel::where('id', $id)->find();
+        $info = UserLeaveModel::where('id', $id)->find();
         if (!$info) {
             $this->error('记录不存在');
         }
@@ -62,7 +62,7 @@ class LeavePending extends Admin
         try {
             \think\Db::startTrans();
 
-            LeaveModel::update([
+            UserLeaveModel::update([
                 'id' => $id,
                 'status' => 1,
                 'approver_id' => UID,
@@ -99,7 +99,7 @@ class LeavePending extends Admin
             $this->error('参数错误');
         }
 
-        $info = LeaveModel::where('id', $id)->find();
+        $info = UserLeaveModel::where('id', $id)->find();
         if (!$info) {
             $this->error('记录不存在');
         }
@@ -109,7 +109,7 @@ class LeavePending extends Admin
         }
 
         try {
-            LeaveModel::update([
+            UserLeaveModel::update([
                 'id' => $id,
                 'status' => 2,
                 'approver_id' => UID,
@@ -128,13 +128,13 @@ class LeavePending extends Admin
             $this->error('参数错误');
         }
 
-        $info = LeaveModel::where('id', $id)->find();
+        $info = UserLeaveModel::where('id', $id)->find();
         if (!$info) {
             $this->error('记录不存在');
         }
 
-        $type_list = LeaveModel::getTypeList();
-        $status_list = LeaveModel::getStatusList();
+        $type_list = UserLeaveModel::getTypeList();
+        $status_list = UserLeaveModel::getStatusList();
 
         $info['type_text'] = isset($type_list[$info['leave_type']]) ? $type_list[$info['leave_type']] : '';
         $info['status_text'] = isset($status_list[$info['status']]) ? $status_list[$info['status']] : '';

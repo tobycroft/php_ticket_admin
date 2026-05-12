@@ -4,7 +4,7 @@ namespace app\maintenance\admin;
 
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
-use app\maintenance\model\LeaveModel;
+use app\maintenance\model\UserLeaveModel;
 use app\maintenance\model\DailyScheduleModel;
 use app\user\model\User as UserModel;
 
@@ -18,10 +18,10 @@ class LeaveMyPending extends Admin
             ['user_id', '=', UID],
             ['status', '=', 0]
         ];
-        $data_list = LeaveModel::where($map)->order('create_time desc')->paginate();
+        $data_list = UserLeaveModel::where($map)->order('create_time desc')->paginate();
 
-        $type_list = LeaveModel::getTypeList();
-        $status_list = LeaveModel::getStatusList();
+        $type_list = UserLeaveModel::getTypeList();
+        $status_list = UserLeaveModel::getStatusList();
 
         foreach ($data_list as &$item) {
             $item['type_text'] = isset($type_list[$item['leave_type']]) ? $type_list[$item['leave_type']] : '';
@@ -94,14 +94,14 @@ class LeaveMyPending extends Admin
             $data['status'] = 0;
 
             try {
-                LeaveModel::create($data);
+                UserLeaveModel::create($data);
                 $this->success('申请成功', url('index'));
             } catch (\ErrorException $e) {
                 $this->error($e->getMessage());
             }
         }
 
-        $type_list = LeaveModel::getTypeList();
+        $type_list = UserLeaveModel::getTypeList();
 
         return ZBuilder::make('form')
             ->setPageTitle('新增请假申请')
@@ -120,7 +120,7 @@ class LeaveMyPending extends Admin
             $this->error('参数错误');
         }
 
-        $info = LeaveModel::where('id', $id)->where('user_id', UID)->find();
+        $info = UserLeaveModel::where('id', $id)->where('user_id', UID)->find();
         if (!$info) {
             $this->error('记录不存在');
         }
@@ -171,14 +171,14 @@ class LeaveMyPending extends Admin
             }
 
             try {
-                LeaveModel::update($data);
+                UserLeaveModel::update($data);
                 $this->success('修改成功', url('index'));
             } catch (\ErrorException $e) {
                 $this->error($e->getMessage());
             }
         }
 
-        $type_list = LeaveModel::getTypeList();
+        $type_list = UserLeaveModel::getTypeList();
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑请假申请')
@@ -200,7 +200,7 @@ class LeaveMyPending extends Admin
         }
 
         try {
-            LeaveModel::where('user_id', UID)->whereIn('id', $ids)->delete();
+            UserLeaveModel::where('user_id', UID)->whereIn('id', $ids)->delete();
             $this->success('删除成功');
         } catch (\ErrorException $e) {
             $this->error($e->getMessage());
