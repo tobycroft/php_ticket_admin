@@ -59,7 +59,7 @@ class SwapPending extends Admin
             $this->error('该申请已处理');
         }
 
-//        try {
+try {
             \think\Db::startTrans();
 
             UserSwapModel::update([
