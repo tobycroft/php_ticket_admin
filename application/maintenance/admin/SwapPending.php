@@ -85,7 +85,20 @@ class SwapPending extends Admin
 
             \think\Db::commit();
 
-            $this->success('批准成功，已替换排班人员');
+            // 直接返回跳转响应，绕过可能有问题的 success 方法
+            $type = $this->getResponseType();
+            if ('html' == strtolower($type)) {
+                $type = 'jump';
+            }
+            $result = [
+                'code' => 1,
+                'msg' => '批准成功，已替换排班人员',
+                'data' => '',
+                'url' => url('index'),
+                'wait' => 3,
+            ];
+            $response = \think\Response::create($result, $type)->options(['jump_template' => $this->app['config']->get('dispatch_success_tmpl')]);
+            throw new \think\exception\HttpResponseException($response);
         } catch (\Exception $e) {
             \think\Db::rollback();
             $this->error($e->getMessage());
