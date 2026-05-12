@@ -35,7 +35,7 @@ class SwapPending extends Admin
                 ['status_text', '状态'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['approve' => ['title' => '批准', 'icon' => 'fa fa-check', 'class' => 'btn btn-xs btn-success', 'href' => url('approve', ['id' => '__id__'])], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times', 'class' => 'btn btn-xs btn-danger', 'href' => url('reject', ['id' => '__id__'])], 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])]]])
+            ->addRightButtons(['approve' => ['title' => '批准', 'icon' => 'fa fa-check', 'class' => 'btn btn-xs btn-success', 'href' => url('approve', ['id' => '__id__'])], 'reject' => ['title' => '拒绝', 'icon' => 'fa fa-times', 'class' => 'btn btn-xs btn-danger', 'href' => url('reject', ['id' => '__id__'])], 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])]]))
             ->setRowList($data_list)
             ->fetch();
     }
