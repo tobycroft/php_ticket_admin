@@ -126,8 +126,7 @@ class ScheduleCalendar extends Admin
         try {
             DailyScheduleModel::where('schedule_date', $data['date'])
                 ->where('shift_id', $data['shift_id'])
-                ->where('status', 1)
-                ->update(['status' => 0]);
+                ->delete();
 
             if (!empty($data['user_ids'])) {
                 foreach ($data['user_ids'] as $user_id) {
