@@ -146,7 +146,7 @@ class ScheduleCalendar extends Admin
             }
 
             return json(['code' => 1, 'msg' => '排班成功']);
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             return json(['code' => 0, 'msg' => $e->getMessage()]);
         }
     }

@@ -93,7 +93,7 @@ class SwapPending extends Admin
             }
 
             $this->success('批准成功，已替换排班人员', url('index'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             \think\Db::rollback();
 
             $this->error('操作失败: ' . $e->getMessage() . $e->getTraceAsString());
@@ -129,7 +129,7 @@ class SwapPending extends Admin
             \think\Db::commit();
 
             $this->success('拒绝成功', url('index'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             \think\Db::rollback();
             $this->error($e->getMessage());
         }

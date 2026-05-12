@@ -155,7 +155,7 @@ class EventAction
             
             action_log('event_push', 'mt_event', $event_id, UID);
             return true;
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             Db::rollback();
             throw $e;
         }

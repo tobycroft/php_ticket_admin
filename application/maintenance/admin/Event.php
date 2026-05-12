@@ -73,7 +73,7 @@ class Event extends Admin
                     return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')]);
                 }
                 $this->success('创建成功', url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -82,12 +82,12 @@ class Event extends Admin
         }
 
         $priority_list = [
-                1 => '<span class="label label-default">1 - 普通</span>',
-                2 => '<span class="label label-info">2 - 低</span>',
-                3 => '<span class="label label-warning">3 - 中</span>',
-                4 => '<span class="label label-danger">4 - 高</span>',
-                5 => '<span class="label label-red">5 - 紧急</span>',
-            ];
+            1 => '<span class="label label-default">1 - 普通</span>',
+            2 => '<span class="label label-info">2 - 低</span>',
+            3 => '<span class="label label-warning">3 - 中</span>',
+            4 => '<span class="label label-danger">4 - 高</span>',
+            5 => '<span class="label label-red">5 - 紧急</span>',
+        ];
 
         return ZBuilder::make('form')
             ->setPageTitle('新增工单')
@@ -115,7 +115,7 @@ class Event extends Admin
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
-            
+
             if (empty($data['id'])) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => '缺少ID参数']);
@@ -129,7 +129,7 @@ class Event extends Admin
                     return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__') ?: url('index')]);
                 }
                 $this->success('编辑成功', cookie('__forward__') ?: url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -146,12 +146,12 @@ class Event extends Admin
         }
 
         $priority_list = [
-                1 => '<span class="label label-default">1 - 普通</span>',
-                2 => '<span class="label label-info">2 - 低</span>',
-                3 => '<span class="label label-warning">3 - 中</span>',
-                4 => '<span class="label label-danger">4 - 高</span>',
-                5 => '<span class="label label-red">5 - 紧急</span>',
-            ];
+            1 => '<span class="label label-default">1 - 普通</span>',
+            2 => '<span class="label label-info">2 - 低</span>',
+            3 => '<span class="label label-warning">3 - 中</span>',
+            4 => '<span class="label label-danger">4 - 高</span>',
+            5 => '<span class="label label-red">5 - 紧急</span>',
+        ];
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑工单')
@@ -224,7 +224,7 @@ class Event extends Admin
                 return json(['code' => 1, 'msg' => '接单成功', 'url' => cookie('__forward__')]);
             }
             $this->success('接单成功', cookie('__forward__'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
@@ -247,7 +247,7 @@ class Event extends Admin
                 return json(['code' => 1, 'msg' => '标注已完成', 'url' => cookie('__forward__')]);
             }
             $this->success('标注已完成', cookie('__forward__'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
@@ -270,7 +270,7 @@ class Event extends Admin
                 return json(['code' => 1, 'msg' => '标注未完成', 'url' => cookie('__forward__')]);
             }
             $this->success('标注未完成', cookie('__forward__'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
@@ -293,7 +293,7 @@ class Event extends Admin
                 return json(['code' => 1, 'msg' => '作废成功', 'url' => cookie('__forward__')]);
             }
             $this->success('作废成功', cookie('__forward__'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
@@ -316,7 +316,7 @@ class Event extends Admin
                 return json(['code' => 1, 'msg' => '激活成功', 'url' => cookie('__forward__')]);
             }
             $this->success('激活成功', cookie('__forward__'));
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
@@ -342,7 +342,7 @@ class Event extends Admin
                     return json(['code' => 1, 'msg' => '推送成功', 'url' => cookie('__forward__')]);
                 }
                 $this->success('推送成功', cookie('__forward__'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -379,7 +379,7 @@ class Event extends Admin
                     return json(['code' => 1, 'msg' => '添加备注成功', 'url' => url('detail', ['id' => $id])]);
                 }
                 $this->success('添加备注成功', url('detail', ['id' => $id]));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -412,13 +412,13 @@ class Event extends Admin
             if ($type == 'delete') {
                 try {
                     EventAction::delete($id);
-                } catch (\Exception $e) {
+                } catch (\ErrorException $e) {
                     $this->error($e->getMessage());
                 }
             } else {
                 try {
                     EventAction::edit(['id' => $id, 'status' => $type == 'enable' ? 1 : 0]);
-                } catch (\Exception $e) {
+                } catch (\ErrorException $e) {
                     $this->error($e->getMessage());
                 }
             }
@@ -434,7 +434,7 @@ class Event extends Admin
             if (empty($data['pk']) || empty($data['name']) || !isset($data['value'])) {
                 return json(['code' => 0, 'msg' => '缺少参数']);
             }
-            
+
             try {
                 if ($data['name'] == 'is_closed') {
                     if ($data['value']) {
@@ -446,7 +446,7 @@ class Event extends Admin
                     EventAction::edit(['id' => $data['pk'], $data['name'] => $data['value']]);
                 }
                 return json(['code' => 1, 'msg' => '操作成功']);
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
         }

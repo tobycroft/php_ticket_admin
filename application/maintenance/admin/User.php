@@ -59,7 +59,7 @@ class User extends Admin
                     return json(['code' => 1, 'msg' => '新增成功', 'url' => url('index')]);
                 }
                 $this->success('新增成功', url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -118,7 +118,7 @@ class User extends Admin
                     return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__')]);
                 }
                 $this->success('编辑成功', cookie('__forward__'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -173,7 +173,7 @@ class User extends Admin
                 return json(['code' => 1, 'msg' => '操作成功']);
             }
             $this->success('操作成功');
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }

@@ -81,7 +81,7 @@ class SwapMyPending extends Admin
             try {
                 UserSwapModel::create($data);
                 $this->success('申请成功', url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 $this->error($e->getMessage());
             }
         }
@@ -146,7 +146,7 @@ class SwapMyPending extends Admin
             try {
                 UserSwapModel::update($data);
                 $this->success('修改成功', url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 $this->error($e->getMessage());
             }
         }
@@ -174,7 +174,7 @@ class SwapMyPending extends Admin
         try {
             UserSwapModel::where('user_id', UID)->whereIn('id', $ids)->delete();
             $this->success('删除成功');
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             $this->error($e->getMessage());
         }
     }

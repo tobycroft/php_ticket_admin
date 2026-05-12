@@ -63,7 +63,7 @@ class ShiftPattern extends Admin
                     return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')]);
                 }
                 $this->success('创建成功', url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -116,7 +116,7 @@ class ShiftPattern extends Admin
                     return json(['code' => 1, 'msg' => '修改成功', 'url' => url('index')]);
                 }
                 $this->success('修改成功', url('index'));
-            } catch (\Exception $e) {
+            } catch (\ErrorException $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
@@ -151,7 +151,7 @@ class ShiftPattern extends Admin
                 return json(['code' => 1, 'msg' => '删除成功']);
             }
             $this->success('删除成功');
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
