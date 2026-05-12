@@ -5,6 +5,7 @@ namespace app\maintenance\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\maintenance\model\UserSwapModel;
+use app\maintenance\model\DailyScheduleModel;
 use app\user\model\User as UserModel;
 
 class SwapMyPending extends Admin
@@ -62,6 +63,14 @@ class SwapMyPending extends Admin
             $target_user = UserModel::where('id', $data['target_user_id'])->find();
             if (!$target_user) {
                 $this->error('调换对象不存在');
+            }
+
+            $has_schedule = DailyScheduleModel::where('user_id', $data['target_user_id'])
+                ->where('schedule_date', $data['swap_date'])
+                ->where('status', 1)
+                ->find();
+            if (!$has_schedule) {
+                $this->error('调换对象当天没有排班，无法申请调班');
             }
 
             $data['user_id'] = UID;
@@ -128,6 +137,14 @@ class SwapMyPending extends Admin
             $target_user = UserModel::where('id', $data['target_user_id'])->find();
             if (!$target_user) {
                 $this->error('调换对象不存在');
+            }
+
+            $has_schedule = DailyScheduleModel::where('user_id', $data['target_user_id'])
+                ->where('schedule_date', $data['swap_date'])
+                ->where('status', 1)
+                ->find();
+            if (!$has_schedule) {
+                $this->error('调换对象当天没有排班，无法申请调班');
             }
 
             $data['target_user_name'] = $target_user['nickname'];
