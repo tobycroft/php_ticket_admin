@@ -54,7 +54,7 @@
                                                                     <div class="day-header">{$day.day}</div>
                                                                     <div class="schedule-users" id="schedule-{$day.date}-{$shift.id}">
                                                                         {if isset($schedule_map["{$day.date}_{$shift.id}"]) && !empty($schedule_map["{$day.date}_{$shift.id}"])}
-                                                                            {foreach $schedule_map[$key] as $user_id => $schedule}
+                                                                            {foreach $schedule_map["{$day.date}_{$shift.id}"] as $user_id => $schedule}
                                                                                 <span class="label label-primary schedule-user" data-user-id="{$user_id}">
                                                                                     {$schedule.user_name}
                                                                                     <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$user_id}">
