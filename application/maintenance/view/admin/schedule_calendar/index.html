@@ -117,7 +117,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onclick="saveSchedule()">保存</button>
+                <button type="button" class="btn btn-primary save-schedule-btn">保存</button>
             </div>
         </div>
     </div>
@@ -221,20 +221,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-function saveSchedule() {
-        var date = jQuery('#modal-date').val();
-        var shift_id = jQuery('#modal-shift-id').val();
+    
+    $(document).on('click', '.save-schedule-btn', function() {
+        var date = $('#modal-date').val();
+        var shift_id = $('#modal-shift-id').val();
         var user_ids = [];
         
-        console.log('saveSchedule called:', date, shift_id);
+        console.log('Save schedule called:', date, shift_id);
         
-        jQuery('.user-checkbox:checked').each(function() {
-            user_ids.push(jQuery(this).val());
+        $('.user-checkbox:checked').each(function() {
+            user_ids.push($(this).val());
         });
         
         console.log('Selected users:', user_ids);
         
-        jQuery.ajax({
+        $.ajax({
             url: "{:url('saveSchedule')}",
             type: 'POST',
             data: {
@@ -243,11 +244,11 @@ function saveSchedule() {
                 user_ids: user_ids
             },
             success: function(res) {
-                console.log('saveSchedule response:', res);
+                console.log('Save schedule response:', res);
                 if (res.code == 1) {
                     var html = '';
-                    jQuery.each(user_ids, function(index, user_id) {
-                        var nickname = jQuery('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
+                    $.each(user_ids, function(index, user_id) {
+                        var nickname = $('.user-checkbox[value="' + user_id + '"]').parent().text().trim();
                         html += '<span class="label schedule-label" style="background-color:#4CAF50;" data-user-id="' + user_id + '">' + nickname + 
                                  '<a href="javascript:void(0);" class="remove-user" data-date="' + date + '" data-shift-id="' + shift_id + '" data-user-id="' + user_id + '">' +
                                  '<i class="fa fa-times"></i></a></span>';
@@ -255,14 +256,14 @@ function saveSchedule() {
                     if (html == '') {
                         html = '<button type="button" class="btn btn-xs btn-default add-user-btn" data-date="' + date + '" data-shift-id="' + shift_id + '" style="width:100%;"><i class="fa fa-plus"></i> 添加</button>';
                     }
-                    jQuery('#schedule-' + date + '-' + shift_id).html(html);
+                    $('#schedule-' + date + '-' + shift_id).html(html);
                     
-                    jQuery('#userModal').modal('hide');
+                    $('#userModal').modal('hide');
                 }
                 alert(res.msg);
             }
         });
-    }
+    });
 });
 </script>
 {/block}
