@@ -7,7 +7,7 @@ use app\common\builder\ZBuilder;
 use app\maintenance\model\UserSwapModel;
 use app\user\model\User as UserModel;
 
-class SwapMy extends Admin
+class SwapMyPending extends Admin
 {
     public function index()
     {
