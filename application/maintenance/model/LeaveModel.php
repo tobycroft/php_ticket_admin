@@ -4,7 +4,7 @@ namespace app\maintenance\model;
 
 use think\Model;
 
-class UserLeaveModel extends Model
+class LeaveModel extends Model
 {
     protected $table = 'mt_user_leave';
 
@@ -12,7 +12,7 @@ class UserLeaveModel extends Model
 
     protected $type = [
         'user_id' => 'integer',
-        'type' => 'integer',
+        'leave_type' => 'integer',
         'status' => 'integer',
         'approver_id' => 'integer',
     ];
