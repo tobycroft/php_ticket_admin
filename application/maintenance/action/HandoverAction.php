@@ -141,13 +141,14 @@ class HandoverAction
             $user_id = UID;
         }
         
-        $map = [
-            ['is_closed', '=', 0],
-            ['is_canceled', '=', 0],
-            ['receiver_id', '=', $user_id],
-        ];
-        
-        return EventModel::where($map)->order('create_time desc')->select();
+        return EventModel::where(function($query) use ($user_id) {
+            $query->where('is_closed', 0)
+                  ->where('is_canceled', 0)
+                  ->where(function($q) use ($user_id) {
+                      $q->where('receiver_id', $user_id)
+                        ->whereOr('creator_id', $user_id);
+                  });
+        })->order('create_time desc')->select();
     }
 
     public static function getUnclaimedHandovers()

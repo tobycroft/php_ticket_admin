@@ -62,6 +62,7 @@ class Handover extends Admin
             }
         }
 
+        $default_title = date('Y年m月d日 H点') . ' ' . get_nickname(UID) . '的交接';
 
         $events = HandoverAction::getAvailableEvents();
         
@@ -70,7 +71,10 @@ class Handover extends Admin
             $event_options[$event['id']] = $event['title'];
         }
 
-        $users = UserModel::where('status', 1)->select();
+        $maintenance_role_ids = [4, 5, 6, 7];
+        $users = UserModel::where('status', 1)
+            ->where('role', 'in', $maintenance_role_ids)
+            ->select();
         $user_options = [0 => '无人（公开交接）'];
         foreach ($users as $user) {
             $user_options[$user['id']] = $user['nickname'];
@@ -79,8 +83,8 @@ class Handover extends Admin
         return ZBuilder::make('form')
             ->setPageTitle('创建交接')
             ->addFormItems([
-                ['text', 'title', '交接标题', '必填', true],
-                ['textarea', 'description', '交接说明'],
+                ['text', 'title', '交接标题', '必填', true, '', $default_title],
+                ['ueditor', 'description', '交接说明'],
                 ['select', 'default_receiver_id', '默认接收人', '选择默认接收人，不选择则为公开交接', false, $user_options],
                 ['select', 'event_ids', '交接工单', '选择要交接的工单', true, $event_options, 'multiple'],
             ])
