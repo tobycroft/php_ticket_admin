@@ -84,6 +84,7 @@
                                 <th>ID</th>
                                 <th>标题</th>
                                 <th>发单人</th>
+                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,6 +93,7 @@
                                 <td>{$event.id}</td>
                                 <td>{$event.title}</td>
                                 <td>{$event.creator_name}</td>
+                                <td><a href="{:url('Event/detail', ['id' => $event.id])}" class="btn btn-xs btn-info" title="查看详情"><i class="fa fa-eye"></i> 查看详情</a></td>
                             </tr>
                             {/volist}
                         </tbody>
