@@ -263,6 +263,17 @@ class HandoverAction
         ])->order('create_time desc')->select();
     }
 
+    public static function getMyReceivedHandovers($user_id = null)
+    {
+        if ($user_id === null) {
+            $user_id = UID;
+        }
+        
+        return HandoverModel::where([
+            ['actual_receiver_id', '=', $user_id],
+        ])->order('create_time desc')->select();
+    }
+
     public static function getMyUnclaimedHandovers($user_id = null)
     {
         if ($user_id === null) {
