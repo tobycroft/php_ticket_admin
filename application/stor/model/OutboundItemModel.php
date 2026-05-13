@@ -6,7 +6,7 @@ use think\Model;
 
 class OutboundItemModel extends Model
 {
-    protected $name = 'stor_outbound_item';
+    protected $table = 'stor_outbound_item';
 
     public static function addItems($outboundId, $items)
     {

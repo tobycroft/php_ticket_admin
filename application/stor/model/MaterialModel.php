@@ -6,7 +6,7 @@ use think\Model;
 
 class MaterialModel extends Model
 {
-    protected $name = 'stor_material';
+    protected $table = 'stor_material';
 
     protected $autoWriteTimestamp = false;
 

@@ -6,7 +6,7 @@ use think\Model;
 
 class OutboundModel extends Model
 {
-    protected $name = 'stor_outbound';
+    protected $table = 'stor_outbound';
 
     protected $autoWriteTimestamp = false;
 

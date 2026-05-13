@@ -6,7 +6,7 @@ use think\Model;
 
 class InventoryModel extends Model
 {
-    protected $name = 'stor_inventory';
+    protected $table = 'stor_inventory';
 
     protected $autoWriteTimestamp = false;
 

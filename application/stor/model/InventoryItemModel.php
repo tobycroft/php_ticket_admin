@@ -6,7 +6,7 @@ use think\Model;
 
 class InventoryItemModel extends Model
 {
-    protected $name = 'stor_inventory_item';
+    protected $table = 'stor_inventory_item';
 
     public static function addItems($inventoryId, $items)
     {

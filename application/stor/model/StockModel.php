@@ -6,7 +6,7 @@ use think\Model;
 
 class StockModel extends Model
 {
-    protected $name = 'stor_stock';
+    protected $table = 'stor_stock';
 
     protected $autoWriteTimestamp = false;
 

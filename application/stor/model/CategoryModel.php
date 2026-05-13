@@ -6,7 +6,7 @@ use think\Model;
 
 class CategoryModel extends Model
 {
-    protected $name = 'stor_category';
+    protected $table = 'stor_category';
 
     protected $autoWriteTimestamp = false;
 

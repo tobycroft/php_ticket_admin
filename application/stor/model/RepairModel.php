@@ -6,7 +6,7 @@ use think\Model;
 
 class RepairModel extends Model
 {
-    protected $name = 'stor_repair';
+    protected $table = 'stor_repair';
 
     protected $autoWriteTimestamp = false;
 
