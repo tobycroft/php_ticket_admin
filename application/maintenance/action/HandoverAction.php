@@ -141,7 +141,7 @@ class HandoverAction
             $user_id = UID;
         }
         
-        return EventModel::where(function($query) use ($user_id) {
+        $events = EventModel::where(function($query) use ($user_id) {
             $query->where('is_closed', 0)
                   ->where('is_canceled', 0)
                   ->where(function($q) use ($user_id) {
@@ -149,14 +149,46 @@ class HandoverAction
                         ->whereOr('creator_id', $user_id);
                   });
         })->order('create_time desc')->select();
+        
+        foreach ($events as &$event) {
+            $last_handover = HandoverModel::where(function($query) use ($event) {
+                $query->where('event_ids', '=', $event['id'])
+                      ->whereOr('event_ids', 'like', $event['id'] . ',%')
+                      ->whereOr('event_ids', 'like', '%,' . $event['id'])
+                      ->whereOr('event_ids', 'like', '%,' . $event['id'] . ',%');
+            })->order('create_time desc')->find();
+            if ($last_handover) {
+                $event['last_handover'] = $last_handover['creator_name'] . ' ' . $last_handover['create_time'];
+            } else {
+                $event['last_handover'] = '';
+            }
+        }
+        
+        return $events;
     }
 
     public static function getAllAvailableEvents()
     {
-        return EventModel::where([
+        $events = EventModel::where([
             ['is_closed', '=', 0],
             ['is_canceled', '=', 0],
         ])->order('create_time desc')->select();
+        
+        foreach ($events as &$event) {
+            $last_handover = HandoverModel::where(function($query) use ($event) {
+                $query->where('event_ids', '=', $event['id'])
+                      ->whereOr('event_ids', 'like', $event['id'] . ',%')
+                      ->whereOr('event_ids', 'like', '%,' . $event['id'])
+                      ->whereOr('event_ids', 'like', '%,' . $event['id'] . ',%');
+            })->order('create_time desc')->find();
+            if ($last_handover) {
+                $event['last_handover'] = $last_handover['creator_name'] . ' ' . $last_handover['create_time'];
+            } else {
+                $event['last_handover'] = '';
+            }
+        }
+        
+        return $events;
     }
 
     public static function getUnclaimedHandovers()
@@ -226,6 +258,19 @@ class HandoverAction
         
         return HandoverModel::where([
             ['creator_id', '=', $user_id],
+            ['status', '>', 0],
+        ])->order('create_time desc')->select();
+    }
+
+    public static function getMyUnclaimedHandovers($user_id = null)
+    {
+        if ($user_id === null) {
+            $user_id = UID;
+        }
+        
+        return HandoverModel::where([
+            ['default_receiver_id', '=', $user_id],
+            ['status', '=', 0],
         ])->order('create_time desc')->select();
     }
 

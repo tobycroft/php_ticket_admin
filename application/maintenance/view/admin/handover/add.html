@@ -1,0 +1,86 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">创建交接</h3>
+                </div>
+                <form class="form-horizontal" method="post" action="{:url('Handover/add')}">
+                    <div class="block-content">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交接标题</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="title" class="form-control" value="{$form_data.title}" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交接说明</label>
+                            <div class="col-sm-10">
+                                {:Ueditor('description', '', '80%', '300px')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">默认接收人</label>
+                            <div class="col-sm-10">
+                                <select name="default_receiver_id" class="form-control">
+                                    <option value="0">无人（公开交接）</option>
+                                    {volist name="user_options" id="name" key="id"}
+                                    <option value="{$id}">{$name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交接工单</label>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="50"><input type="checkbox" id="checkAll"></th>
+                                                        <th>工单标题</th>
+                                                        <th>发单人</th>
+                                                        <th>最后交接</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {volist name="events" id="event"}
+                                                    <tr>
+                                                        <td><input type="checkbox" name="event_ids[]" value="{$event.id}"></td>
+                                                        <td>{$event.title}</td>
+                                                        <td>{$event.creator_name}</td>
+                                                        <td>{$event.last_handover|default='无'}</td>
+                                                    </tr>
+                                                    {/volist}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="block-footer">
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                                <button type="button" class="btn btn-default" onclick="history.back(-1);">返回</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function() {
+            $('#checkAll').click(function() {
+                $('input[name="event_ids[]"]').prop('checked', $(this).prop('checked'));
+            });
+        });
+    </script>
+{/block}

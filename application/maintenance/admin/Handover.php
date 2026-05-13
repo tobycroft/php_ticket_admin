@@ -61,31 +61,22 @@ class Handover extends Admin
         $default_title = date('Y年m月d日 H:i') . ' ' . session('user_auth.nickname') . '的交接';
 
         $events = UID == 1 ? HandoverAction::getAllAvailableEvents() : HandoverAction::getAvailableEvents();
-        
-        $event_options = [];
-        foreach ($events as $event) {
-            $event_options[$event['id']] = $event['title'];
-        }
 
         $maintenance_role_ids = [4, 5, 6, 7];
         $users = UserModel::where('status', 1)
             ->where('role', 'in', $maintenance_role_ids)
             ->select();
-        $user_options = [0 => '无人（公开交接）'];
+        $user_options = [];
         foreach ($users as $user) {
             $user_options[$user['id']] = $user['nickname'];
         }
 
-        return ZBuilder::make('form')
-            ->setPageTitle('创建交接')
-            ->addFormItems([
-                ['text', 'title', '交接标题', '必填'],
-                ['ueditor', 'description', '交接说明', ''],
-                ['select', 'default_receiver_id', '默认接收人', '选择默认接收人，不选择则为公开交接', $user_options],
-                ['checkbox', 'event_ids', '交接工单', '选择要交接的工单（可多选）', $event_options],
-            ])
-            ->setFormData(['title' => $default_title])
-            ->fetch();
+        $this->assign('form_data', ['title' => $default_title]);
+        $this->assign('events', $events);
+        $this->assign('user_options', $user_options);
+        $this->assign('page_title', '创建交接');
+
+        return $this->fetch('handover/add');
     }
 
     public function detail($id = null)
