@@ -118,6 +118,15 @@ class Handover extends Admin
 
         $description_html = !empty($handover['description']) ? $handover['description'] : '<span class="text-muted">暂无说明</span>';
 
+        $events_html = '<table class="table table-hover"><thead><tr><th>ID</th><th>标题</th><th>发单人</th></tr></thead><tbody>' . 
+            implode('', array_map(function($e) { 
+                return '<tr><td>' . $e['id'] . '</td><td>' . $e['title'] . '</td><td>' . $e['creator_name'] . '</td></tr>'; 
+            }, $events)) . 
+            '</tbody></table>';
+
+        $extra_html = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">交接说明</h3></div><div class="panel-body">' . $description_html . '</div></div>' .
+                      '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">交接工单列表</h3></div><div class="panel-body">' . $events_html . '</div></div>';
+
         return ZBuilder::make('form')
             ->setPageTitle('交接详情')
             ->addFormItems([
@@ -131,12 +140,7 @@ class Handover extends Admin
                 ['static', 'receive_time', '接收时间'],
             ])
             ->setFormData($handover)
-            ->setExtraHtml('<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">交接说明</h3></div><div class="panel-body">' . $description_html . '</div></div>')
-            ->setExtraHtml('<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">交接工单列表</h3></div><div class="panel-body"><table class="table table-hover"><thead><tr><th>ID</th><th>标题</th><th>发单人</th></tr></thead><tbody>' . 
-                implode('', array_map(function($e) { 
-                    return '<tr><td>' . $e['id'] . '</td><td>' . $e['title'] . '</td><td>' . $e['creator_name'] . '</td></tr>'; 
-                }, $events)) . 
-                '</tbody></table></div></div>')
+            ->setExtraHtml($extra_html)
             ->fetch();
     }
 
