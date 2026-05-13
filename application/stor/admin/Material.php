@@ -186,7 +186,7 @@ class Material extends Admin
         return $this->setStatus('disable', $ids);
     }
 
-    private function setStatus($type, $ids)
+    public function setStatus($type, $ids)
     {
         $ids = (array)$ids;
         try {
