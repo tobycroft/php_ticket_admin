@@ -129,7 +129,12 @@ class Handover extends Admin
             $this->error('参数错误');
         }
 
-        HandoverAction::receive($id);
+        try {
+            HandoverAction::receive($id);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+        
         $this->success('接收交接成功', url('Handover/index'));
     }
 
@@ -139,7 +144,12 @@ class Handover extends Admin
             $this->error('参数错误');
         }
 
-        HandoverAction::complete($id);
+        try {
+            HandoverAction::complete($id);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+        
         $this->success('完成交接成功', url('Handover/index'));
     }
 
@@ -149,7 +159,12 @@ class Handover extends Admin
             $this->error('参数错误');
         }
 
-        HandoverAction::delete($id);
+        try {
+            HandoverAction::delete($id);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+        
         $this->success('删除交接成功', url('Handover/index'));
     }
 }
