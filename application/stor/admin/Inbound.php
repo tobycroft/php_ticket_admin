@@ -79,8 +79,9 @@ class Inbound extends Admin
             ->addFormItems([
                 ['text', 'supplier', '供应商'],
                 ['textarea', 'remark', '备注'],
-                ['html', 'items', '入库明细', '', '<div id="inbound-items"></div>']
+                ['hidden', 'items', '']
             ])
+            ->setExtraHtml('<div id="inbound-items"></div>')
             ->fetch();
     }
 
@@ -150,9 +151,9 @@ class Inbound extends Admin
                 ['static', 'code', '入库单号'],
                 ['static', 'supplier', '供应商'],
                 ['static', 'remark', '备注'],
-                ['static', 'create_time', '创建时间', 'datetime'],
-                ['html', 'items', '入库明细', '', $this->renderItems($items)]
+                ['static', 'create_time', '创建时间', 'datetime']
             ])
+            ->setExtraHtml($this->renderItems($items))
             ->setFormData($info)
             ->fetch();
     }
