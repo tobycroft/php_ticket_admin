@@ -44,7 +44,7 @@ class Handover extends Admin
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Handover/detail', ['id' => '__id__'])], 'receive' => ['title' => '接收交接', 'icon' => 'fa fa-handshake-o', 'class' => 'btn btn-xs btn-success', 'href' => url('Handover/receive', ['id' => '__id__']), 'condition' => 'can_receive'], 'cancel' => ['title' => '作废交接', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-warning', 'href' => url('Handover/cancel', ['id' => '__id__']), 'condition' => 'can_cancel'], 'delete' => ['title' => '删除', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Handover/delete', ['id' => '__id__'])]]))
+            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Handover/detail', ['id' => '__id__'])], 'receive' => ['title' => '接收交接', 'icon' => 'fa fa-handshake-o', 'class' => 'btn btn-xs btn-success', 'href' => url('Handover/receive', ['id' => '__id__']), 'condition' => 'can_receive'], 'cancel' => ['title' => '作废交接', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-warning', 'href' => url('Handover/cancel', ['id' => '__id__']), 'condition' => 'can_cancel'], 'delete' => ['title' => '删除', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Handover/delete', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
