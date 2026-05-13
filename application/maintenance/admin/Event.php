@@ -39,6 +39,7 @@ class Event extends Admin
             ->setPageTitle('工单列表')
             ->setTableName('mt_event')
             ->setSearch(['title' => '标题', 'creator_name' => '发单人', 'customer_name' => '客户'])
+            ->addTimeFilter('start_time', '开始时间')
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '事件标题'],

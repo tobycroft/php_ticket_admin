@@ -61,7 +61,11 @@
                                                                             {eq name="schedule.shift_id" value="$shift.id"}
                                                                                 {assign name="has_schedule" value="1"}
                                                                                 <span class="label schedule-label" style="background-color:{$shift.color};" data-user-id="{$schedule.user_id}">
-                                                                        {$schedule.user_name}
+                                                                        <div style="display:flex;align-items:center;">
+                                                                            <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:{$schedule.user_color|default='#ffffff'}; margin-right:4px;"></span>
+                                                                            {$schedule.user_name}
+                                                                        </div>
+                                                                        <div style="font-size:10px;opacity:0.9;">{$shift.start_time} - {$shift.end_time}</div>
                                                                         <a href="javascript:void(0);" class="remove-user" data-date="{$day.date}" data-shift-id="{$shift.id}" data-user-id="{$schedule.user_id}" data-shift-color="{$shift.color}" data-shift-name="{$shift.name}">
                                                                             <i class="fa fa-times"></i>
                                                                         </a>
@@ -113,6 +117,7 @@
                     {volist name="user_list" id="user"}
                         <label class="checkbox-inline">
                             <input type="checkbox" class="user-checkbox" value="{$user.id}">
+                            <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background-color:{$user.color|default='#337ab7'}; margin-right:3px;"></span>
                             {$user.nickname}
                         </label>
                     {/volist}

@@ -41,6 +41,8 @@ class DailyScheduleModel extends Model
         return self::where('schedule_date', '>=', $start_date)
             ->where('schedule_date', '<=', $end_date)
             ->where('status', 1)
+            ->join('dp_admin_user u', 'u.id = mt_daily_schedule.user_id', 'LEFT')
+            ->field('mt_daily_schedule.*, u.color as user_color')
             ->select();
     }
 
