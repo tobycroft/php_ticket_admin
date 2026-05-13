@@ -297,6 +297,39 @@ class HandoverAction
         ])->order('create_time desc')->select();
     }
 
+    public static function getMyUnfinishedHandoverCount($user_id = null)
+    {
+        if ($user_id === null) {
+            $user_id = UID;
+        }
+        
+        return HandoverModel::where([
+            ['default_receiver_id', '=', $user_id],
+            ['status', '=', 0],
+        ])->count();
+    }
+
+    public static function getUnassignedHandoverCount()
+    {
+        return HandoverModel::where([
+            ['default_receiver_id', '=', 0],
+            ['status', '=', 0],
+        ])->count();
+    }
+
+    public static function hasHandoverToday($user_id = null)
+    {
+        if ($user_id === null) {
+            $user_id = UID;
+        }
+        
+        $today = date('Y-m-d');
+        return HandoverModel::where([
+            ['creator_id', '=', $user_id],
+            ['create_time', 'like', $today . '%'],
+        ])->count() > 0;
+    }
+
     public static function edit($id, $data)
     {
         $handover = HandoverModel::where('id', $id)->find();
