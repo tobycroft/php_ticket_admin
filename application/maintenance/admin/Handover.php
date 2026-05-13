@@ -66,7 +66,8 @@ class Handover extends Admin
             }
         }
 
-        $events = EventAction::getAvailableEvents();
+
+        $events = HandoverAction::getAvailableEvents();
         
         $event_options = [];
         foreach ($events as $event) {
