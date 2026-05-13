@@ -179,8 +179,12 @@ class HandoverAction
         $start_time = $month . '-01 00:00:00';
         $end_time = date('Y-m-t', strtotime($month)) . ' 23:59:59';
         
+        $maintenance_role_ids = [4, 5, 6, 7];
+        $maintenance_user_ids = UserModel::where('role', 'in', $maintenance_role_ids)->column('id');
+        
         return HandoverModel::where([
             ['create_time', 'between', [$start_time, $end_time]],
+            ['creator_id', 'in', $maintenance_user_ids],
         ])->count();
     }
 

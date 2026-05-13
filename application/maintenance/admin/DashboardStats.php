@@ -17,7 +17,11 @@ class DashboardStats extends Admin
         $current_count = HandoverAction::getHandoverStatsByMonth($current_month);
         $last_count = HandoverAction::getHandoverStatsByMonth($last_month);
 
-        $users = UserModel::where('status', 1)->select();
+        $maintenance_role_ids = [4, 5, 6, 7];
+        
+        $users = UserModel::where('status', 1)
+            ->where('role', 'in', $maintenance_role_ids)
+            ->select();
         
         $user_stats = [];
         $users_without_handover = [];
