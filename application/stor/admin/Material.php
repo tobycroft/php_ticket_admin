@@ -26,12 +26,14 @@ class Material extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('物料管理')
             ->setTableName('stor_material')
-            ->setSearch(['code' => '物料编码', 'name' => '物料名称', 'spec' => '规格型号'])
+            ->setSearch(['code' => '物料SN', 'name' => '物料名称', 'purchaser' => '购买人'])
             ->addColumns([
                 ['id', 'ID'],
-                ['code', '物料编码'],
+                ['code', '物料SN'],
                 ['name', '物料名称'],
-                ['spec', '规格型号'],
+                ['purchaser', '购买人'],
+                ['purchase_date', '购入日期', 'date'],
+                ['warranty_end', '保修期截止', 'date'],
                 ['category_id', '所属分类', $category_map],
                 ['unit', '单位'],
                 ['need_sn', '是否SN管理', ['否', '是']],
@@ -84,9 +86,11 @@ class Material extends Admin
             ->setPageTitle('新增物料')
             ->addFormItems([
                 ['select', 'category_id', '所属分类', '必填', $category_options],
-                ['text', 'code', '物料编码', '必填，唯一'],
+                ['text', 'code', '物料SN', '必填，唯一'],
                 ['text', 'name', '物料名称', '必填'],
-                ['text', 'spec', '规格型号'],
+                ['text', 'purchaser', '购买人'],
+                ['date', 'purchase_date', '购入日期'],
+                ['date', 'warranty_end', '保修期截止'],
                 ['text', 'unit', '单位', '', '个'],
                 ['radio', 'need_sn', '是否需要SN码', '', ['不需要', '需要'], 0],
                 ['text', 'safe_stock', '安全库存', '', 0],
@@ -143,9 +147,11 @@ class Material extends Admin
             ->addFormItems([
                 ['hidden', 'id'],
                 ['select', 'category_id', '所属分类', '必填', $category_options],
-                ['text', 'code', '物料编码', '必填，唯一'],
+                ['text', 'code', '物料SN', '必填，唯一'],
                 ['text', 'name', '物料名称', '必填'],
-                ['text', 'spec', '规格型号'],
+                ['text', 'purchaser', '购买人'],
+                ['date', 'purchase_date', '购入日期'],
+                ['date', 'warranty_end', '保修期截止'],
                 ['text', 'unit', '单位'],
                 ['radio', 'need_sn', '是否需要SN码', '', ['不需要', '需要']],
                 ['text', 'safe_stock', '安全库存'],
