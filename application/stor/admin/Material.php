@@ -26,12 +26,12 @@ class Material extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('物料管理')
             ->setTableName('stor_material')
-            ->setSearch(['code' => '物料SN', 'name' => '物料名称', 'purchaser' => '购买人'])
+            ->setSearch(['code' => '物料SN', 'name' => '物料名称', 'seller' => '销售方'])
             ->addColumns([
                 ['id', 'ID'],
                 ['code', '物料SN'],
                 ['name', '物料名称'],
-                ['purchaser', '购买人'],
+                ['seller', '销售方'],
                 ['purchase_date', '购入日期', 'date'],
                 ['warranty_end', '保修期截止', 'date'],
                 ['category_id', '所属分类', $category_map],
@@ -89,7 +89,7 @@ class Material extends Admin
                 ['select', 'category_id', '所属分类', '必填', $category_options],
                 ['text', 'code', '物料SN'],
                 ['text', 'name', '物料名称', '必填'],
-                ['text', 'purchaser', '购买人'],
+                ['text', 'seller', '销售方'],
                 ['date', 'purchase_date', '购入日期'],
                 ['date', 'warranty_end', '保修期截止'],
                 ['text', 'unit', '单位', '', '个'],
@@ -98,6 +98,7 @@ class Material extends Admin
                 ['text', 'max_stock', '最大库存', '', 0],
                 ['text', 'location', '存放位置'],
                 ['textarea', 'remark', '备注'],
+                ['picture', 'image', '物料图片'],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
             ->fetch();
@@ -151,7 +152,7 @@ class Material extends Admin
                 ['select', 'category_id', '所属分类', '必填', $category_options],
                 ['text', 'code', '物料SN'],
                 ['text', 'name', '物料名称', '必填'],
-                ['text', 'purchaser', '购买人'],
+                ['text', 'seller', '销售方'],
                 ['date', 'purchase_date', '购入日期'],
                 ['date', 'warranty_end', '保修期截止'],
                 ['text', 'unit', '单位'],
@@ -160,6 +161,7 @@ class Material extends Admin
                 ['text', 'max_stock', '最大库存'],
                 ['text', 'location', '存放位置'],
                 ['textarea', 'remark', '备注'],
+                ['picture', 'image', '物料图片'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
             ])
             ->setFormData($info)
