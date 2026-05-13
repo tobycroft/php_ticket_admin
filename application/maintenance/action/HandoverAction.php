@@ -206,4 +206,52 @@ class HandoverAction
     {
         return HandoverModel::getIsForcedList();
     }
+
+    public static function getTodayUnclaimedHandovers()
+    {
+        $today_start = date('Y-m-d') . ' 00:00:00';
+        $today_end = date('Y-m-d') . ' 23:59:59';
+        
+        return HandoverModel::where([
+            ['status', '=', 0],
+            ['create_time', 'between', [$today_start, $today_end]],
+        ])->order('create_time desc')->select();
+    }
+
+    public static function getMySentHandovers($user_id = null)
+    {
+        if ($user_id === null) {
+            $user_id = UID;
+        }
+        
+        return HandoverModel::where([
+            ['creator_id', '=', $user_id],
+        ])->order('create_time desc')->select();
+    }
+
+    public static function edit($id, $data)
+    {
+        $handover = HandoverModel::where('id', $id)->find();
+        if (!$handover) {
+            throw new \Exception('交接记录不存在');
+        }
+
+        if ($handover['status'] != 0) {
+            throw new \Exception('已处理的交接不能修改');
+        }
+
+        if (!empty($data['default_receiver_id'])) {
+            $receiver = UserModel::where('id', $data['default_receiver_id'])->find();
+            if ($receiver) {
+                $data['default_receiver_name'] = $receiver['nickname'];
+            }
+        }
+
+        if (HandoverModel::update($data)) {
+            action_log('handover_edit', 'mt_handover', $id, UID);
+            return true;
+        }
+
+        throw new \Exception('修改交接失败');
+    }
 }
