@@ -38,9 +38,9 @@ class DailyScheduleModel extends Model
     {
         $start_date = date('Y-m-01', strtotime("$year-$month-01"));
         $end_date = date('Y-m-t', strtotime("$year-$month-01"));
-        return self::where('schedule_date', '>=', $start_date)
-            ->where('schedule_date', '<=', $end_date)
-            ->where('status', 1)
+        return self::where('mt_daily_schedule.schedule_date', '>=', $start_date)
+            ->where('mt_daily_schedule.schedule_date', '<=', $end_date)
+            ->where('mt_daily_schedule.status', 1)
             ->join('dp_admin_user u', 'u.id = mt_daily_schedule.user_id', 'LEFT')
             ->field('mt_daily_schedule.*, u.color as user_color')
             ->select();
