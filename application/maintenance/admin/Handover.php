@@ -116,11 +116,12 @@ class Handover extends Admin
         $handover['status_text'] = isset($status_list[$handover['status']]) ? $status_list[$handover['status']] : '';
         $handover['is_forced_text'] = isset($is_forced_list[$handover['is_forced']]) ? $is_forced_list[$handover['is_forced']] : '';
 
+        $description_html = !empty($handover['description']) ? $handover['description'] : '<span class="text-muted">暂无说明</span>';
+
         return ZBuilder::make('form')
             ->setPageTitle('交接详情')
             ->addFormItems([
                 ['static', 'title', '交接标题'],
-                ['static', 'description', '交接说明'],
                 ['static', 'creator_name', '创建人'],
                 ['static', 'default_receiver_name', '默认接收人'],
                 ['static', 'actual_receiver_name', '实际接收人'],
@@ -130,6 +131,7 @@ class Handover extends Admin
                 ['static', 'receive_time', '接收时间'],
             ])
             ->setFormData($handover)
+            ->setExtraHtml('<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">交接说明</h3></div><div class="panel-body">' . $description_html . '</div></div>')
             ->setExtraHtml('<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">交接工单列表</h3></div><div class="panel-body"><table class="table table-hover"><thead><tr><th>ID</th><th>标题</th><th>发单人</th></tr></thead><tbody>' . 
                 implode('', array_map(function($e) { 
                     return '<tr><td>' . $e['id'] . '</td><td>' . $e['title'] . '</td><td>' . $e['creator_name'] . '</td></tr>'; 
