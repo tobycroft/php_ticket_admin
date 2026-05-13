@@ -74,6 +74,7 @@ class HandoverAction
             'actual_receiver_name' => get_nickname(UID),
             'is_forced' => $is_forced,
             'receive_time' => date('Y-m-d H:i:s'),
+            'update_time' => date('Y-m-d H:i:s'),
         ];
 
         if (HandoverModel::update($data)) {
@@ -108,6 +109,7 @@ class HandoverAction
         $data = [
             'id' => $id,
             'status' => 2,
+            'update_time' => date('Y-m-d H:i:s'),
         ];
 
         if (HandoverModel::update($data)) {

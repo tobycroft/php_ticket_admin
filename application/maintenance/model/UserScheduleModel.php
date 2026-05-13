@@ -18,8 +18,8 @@ class UserScheduleModel extends Model
         'user_id' => 'integer',
         'day_of_week' => 'integer',
         'status' => 'integer',
-        'create_time' => 'integer',
-        'update_time' => 'integer',
+        'create_time' => 'datetime',
+        'update_time' => 'datetime',
     ];
 
     public function user()
