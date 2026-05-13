@@ -126,6 +126,9 @@ class Handover extends Admin
 
         $status_list = HandoverAction::getStatusList();
         $is_forced_list = HandoverAction::getIsForcedList();
+        
+        $event_status_list = \app\maintenance\model\EventModel::getStatusList();
+        $event_closed_list = \app\maintenance\model\EventModel::getIsClosedList();
 
         $event_ids = explode(',', $handover['event_ids']);
         $events = [];
@@ -133,6 +136,8 @@ class Handover extends Admin
             if ($event_id) {
                 $event = EventAction::getInfo($event_id);
                 if ($event) {
+                    $event['status_text'] = isset($event_status_list[$event['status']]) ? $event_status_list[$event['status']] : '';
+                    $event['is_closed_text'] = isset($event_closed_list[$event['is_closed']]) ? $event_closed_list[$event['is_closed']] : '';
                     $events[] = $event;
                 }
             }
