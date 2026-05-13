@@ -141,17 +141,19 @@ class Category extends Admin
 
     public function enable($ids = [])
     {
-        return $this->setStatus('enable', $ids);
+        return $this->setStatus('enable');
     }
 
     public function disable($ids = [])
     {
-        return $this->setStatus('disable', $ids);
+        return $this->setStatus('disable');
     }
 
-    public function setStatus($type, $ids)
+    public function setStatus($type = '', $record = [])
     {
+        $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
+
         try {
             CategoryModel::setStatus($type, $ids);
         } catch (\Exception $e) {
@@ -160,6 +162,7 @@ class Category extends Admin
             }
             $this->error($e->getMessage());
         }
+        
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '操作成功']);
         }

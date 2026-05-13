@@ -178,17 +178,19 @@ class Material extends Admin
 
     public function enable($ids = [])
     {
-        return $this->setStatus('enable', $ids);
+        return $this->setStatus('enable');
     }
 
     public function disable($ids = [])
     {
-        return $this->setStatus('disable', $ids);
+        return $this->setStatus('disable');
     }
 
-    public function setStatus($type, $ids)
+    public function setStatus($type = '', $record = [])
     {
+        $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
+
         try {
             MaterialModel::setStatus($type, $ids);
         } catch (\Exception $e) {
