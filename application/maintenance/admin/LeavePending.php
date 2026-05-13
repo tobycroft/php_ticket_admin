@@ -88,9 +88,6 @@ class LeavePending extends Admin
 
             \think\Db::commit();
         } catch (\Exception $e) {
-            if ($e instanceof \think\exception\HttpResponseException) {
-                throw $e;
-            }
             \think\Db::rollback();
             $this->error($e->getMessage());
         }
