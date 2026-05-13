@@ -16,13 +16,13 @@ return [
     // 模块名[必填]
     'name' => 'stor',
     // 模块标题[必填]
-    'title' => '物资系统',
+    'title' => '仓管系统',
     // 模块唯一标识[必填]，格式：模块名.开发者标识.module
     'identifier' => 'storage.fc.module',
     // 模块图标[选填]
     'icon' => 'fa fa-fw fa-newspaper-o',
     // 模块描述[选填]
-    'description' => '物资管理模块',
+    'description' => '仓库管理模块',
     // 开发者[必填]
     'author' => 'FC',
     // 版本[必填],格式采用三段式：主版本号.次版本号.修订版本号
