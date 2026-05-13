@@ -82,7 +82,7 @@ class Handover extends Admin
                 ['text', 'title', '交接标题', '必填'],
                 ['ueditor', 'description', '交接说明', ''],
                 ['select', 'default_receiver_id', '默认接收人', '选择默认接收人，不选择则为公开交接', $user_options],
-                ['select', 'event_ids', '交接工单', '选择要交接的工单（可多选）', $event_options, 'multiple'],
+                ['checkbox', 'event_ids', '交接工单', '选择要交接的工单（可多选）', $event_options],
             ])
             ->setFormData(['title' => $default_title])
             ->fetch();
