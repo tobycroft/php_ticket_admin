@@ -53,7 +53,12 @@ class Handover extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
             
-            HandoverAction::add($data);
+            try {
+                HandoverAction::add($data);
+            } catch (\Exception $e) {
+                $this->error($e->getMessage());
+            }
+            
             $this->success('创建交接成功', url('Handover/index'));
         }
 
