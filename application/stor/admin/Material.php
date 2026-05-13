@@ -40,6 +40,7 @@ class Material extends Admin
                 ['safe_stock', '安全库存'],
                 ['max_stock', '最大库存'],
                 ['location', '存放位置'],
+                ['remark', '备注'],
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
             ])
@@ -86,18 +87,29 @@ class Material extends Admin
             ->setPageTitle('新增物料')
             ->addFormItems([
                 ['select', 'category_id', '所属分类', '必填', $category_options],
-                ['text', 'code', '物料SN', '必填，唯一'],
                 ['text', 'name', '物料名称', '必填'],
                 ['text', 'purchaser', '购买人'],
                 ['date', 'purchase_date', '购入日期'],
                 ['date', 'warranty_end', '保修期截止'],
                 ['text', 'unit', '单位', '', '个'],
                 ['radio', 'need_sn', '是否需要SN码', '', ['不需要', '需要'], 0],
+                ['text', 'code', '物料SN', '', '', '', 'style="display:none;"'],
                 ['text', 'safe_stock', '安全库存', '', 0],
                 ['text', 'max_stock', '最大库存', '', 0],
                 ['text', 'location', '存放位置'],
+                ['textarea', 'remark', '备注'],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
+            ->setExtraJs("
+                $('input[name=\"need_sn\"]').click(function(){
+                    if($(this).val() == '1'){
+                        $('input[name=\"code\"]').closest('.form-group').show();
+                    }else{
+                        $('input[name=\"code\"]').closest('.form-group').hide();
+                        $('input[name=\"code\"]').val('');
+                    }
+                });
+            ")
             ->fetch();
     }
 
@@ -142,23 +154,36 @@ class Material extends Admin
             $category_options[$item['id']] = $item['name'];
         }
 
-        return ZBuilder::make('form')
+        $code_style = $info['need_sn'] == 1 ? '' : 'style="display:none;"';
+            
+            return ZBuilder::make('form')
             ->setPageTitle('编辑物料')
             ->addFormItems([
                 ['hidden', 'id'],
                 ['select', 'category_id', '所属分类', '必填', $category_options],
-                ['text', 'code', '物料SN', '必填，唯一'],
                 ['text', 'name', '物料名称', '必填'],
                 ['text', 'purchaser', '购买人'],
                 ['date', 'purchase_date', '购入日期'],
                 ['date', 'warranty_end', '保修期截止'],
                 ['text', 'unit', '单位'],
                 ['radio', 'need_sn', '是否需要SN码', '', ['不需要', '需要']],
+                ['text', 'code', '物料SN', '', '', '', $code_style],
                 ['text', 'safe_stock', '安全库存'],
                 ['text', 'max_stock', '最大库存'],
                 ['text', 'location', '存放位置'],
+                ['textarea', 'remark', '备注'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
             ])
+            ->setExtraJs("
+                $('input[name=\"need_sn\"]').click(function(){
+                    if($(this).val() == '1'){
+                        $('input[name=\"code\"]').closest('.form-group').show();
+                    }else{
+                        $('input[name=\"code\"]').closest('.form-group').hide();
+                        $('input[name=\"code\"]').val('');
+                    }
+                });
+            ")
             ->setFormData($info)
             ->fetch();
     }
