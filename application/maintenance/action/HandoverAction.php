@@ -57,7 +57,9 @@ class HandoverAction
         }
 
         if ($handover['status'] != 0) {
-            throw new \Exception('该交接已被处理');
+            $status_list = self::getStatusList();
+            $status_text = isset($status_list[$handover['status']]) ? $status_list[$handover['status']] : '未知状态';
+            throw new \Exception('该交接已被处理，当前状态：' . $status_text);
         }
 
         $is_forced = 0;
