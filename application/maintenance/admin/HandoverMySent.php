@@ -21,8 +21,9 @@ class HandoverMySent extends Admin
         }
 
         return ZBuilder::make('table')
-            ->setPageTitle('我的已交接')
-            ->setPageTips('我创建的已处理交接记录', 'info')
+            ->setPageTitle('我的交接')
+            ->setPageTips('我创建的交接记录', 'info')
+            ->addTopButtons(['add' => ['title' => '新增交接', 'icon' => 'fa fa-plus', 'href' => url('Handover/add')]])
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '交接标题'],
