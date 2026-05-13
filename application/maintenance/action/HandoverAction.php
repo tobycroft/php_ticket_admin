@@ -151,6 +151,14 @@ class HandoverAction
         })->order('create_time desc')->select();
     }
 
+    public static function getAllAvailableEvents()
+    {
+        return EventModel::where([
+            ['is_closed', '=', 0],
+            ['is_canceled', '=', 0],
+        ])->order('create_time desc')->select();
+    }
+
     public static function getUnclaimedHandovers()
     {
         $map = [

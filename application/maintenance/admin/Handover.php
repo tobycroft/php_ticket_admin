@@ -62,9 +62,9 @@ class Handover extends Admin
             }
         }
 
-        $default_title = date('Y年m月d日 H点') . ' ' . session('user_auth.nickname') . '的交接';
+        $default_title = date('Y年m月d日 H:i') . ' ' . session('user_auth.nickname') . '的交接';
 
-        $events = HandoverAction::getAvailableEvents();
+        $events = UID == 1 ? HandoverAction::getAllAvailableEvents() : HandoverAction::getAvailableEvents();
         
         $event_options = [];
         foreach ($events as $event) {
