@@ -27,6 +27,7 @@ class User extends Admin
                 ['id', 'ID'],
                 ['username', '用户名'],
                 ['nickname', '昵称'],
+                ['color', '颜色', 'color'],
                 ['role', '角色', $role_list],
                 ['email', '邮箱'],
                 ['mobile', '手机号'],
@@ -75,6 +76,7 @@ class User extends Admin
             ->addFormItems([
                 ['text', 'username', '用户名', '必填，可由英文字母、数字组成'],
                 ['text', 'nickname', '昵称', '可以是中文'],
+                ['color', 'color', '颜色', '用于排班日历中标识该用户'],
                 ['select', 'role', '主角色', '', $role_list],
                 ['select', 'roles', '副角色', '可多选', $role_list, '', 'multiple'],
                 ['text', 'email', '邮箱', ''],
@@ -137,6 +139,7 @@ class User extends Admin
                 ['hidden', 'id'],
                 ['static', 'username', '用户名', '不可更改'],
                 ['text', 'nickname', '昵称', '可以是中文'],
+                ['color', 'color', '颜色', '用于排班日历中标识该用户'],
                 ['select', 'role', '主角色', '', $role_list],
                 ['select', 'roles', '副角色', '可多选', $role_list, '', 'multiple'],
                 ['text', 'email', '邮箱', ''],
