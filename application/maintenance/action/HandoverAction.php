@@ -269,6 +269,7 @@ class HandoverAction
         
         return HandoverModel::where([
             ['creator_id', '=', $user_id],
+            ['status', '<>', 2],
         ])->order('create_time desc')->select();
     }
 
@@ -280,6 +281,7 @@ class HandoverAction
         
         return HandoverModel::where([
             ['actual_receiver_id', '=', $user_id],
+            ['status', '<>', 2],
         ])->order('create_time desc')->select();
     }
 
