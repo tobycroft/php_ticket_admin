@@ -19,6 +19,10 @@ class User extends Admin
 
         $role_list = UserAction::getMaintenanceRoles();
 
+        foreach ($data_list as &$item) {
+            $item['color_text'] = '<span style="display:inline-block; width:20px; height:20px; border-radius:4px; background-color:' . ($item['color'] ?: '#337ab7') . '; border:1px solid #ddd;"></span>';
+        }
+
         return ZBuilder::make('table')
             ->setPageTitle('运维人员')
             ->setTableName('admin_user')
@@ -27,7 +31,7 @@ class User extends Admin
                 ['id', 'ID'],
                 ['username', '用户名'],
                 ['nickname', '昵称'],
-                ['color', '颜色', 'color'],
+                ['color_text', '颜色'],
                 ['role', '角色', $role_list],
                 ['email', '邮箱'],
                 ['mobile', '手机号'],
