@@ -1,0 +1,103 @@
+<?php
+
+namespace app\maintenance\admin;
+
+use app\admin\controller\Admin;
+use app\maintenance\model\ShiftPatternModel;
+use app\maintenance\model\DailyScheduleModel;
+use app\user\model\User as UserModel;
+
+class DashboardSchedule extends Admin
+{
+    public function index($year = null, $month = null)
+    {
+        if ($year === null) {
+            $year = date('Y');
+        }
+        if ($month === null) {
+            $month = date('m');
+        }
+
+        $shift_list = ShiftPatternModel::getActiveList();
+        $user_list = UserModel::where('status', 1)->whereIn('role', [3, 4, 5, 6, 7])->field('id, nickname, color')->select();
+
+        $schedules = DailyScheduleModel::getByMonth($year, $month);
+
+        $schedule_map = [];
+        foreach ($schedules as $schedule) {
+            $key = $schedule['schedule_date'] . '_' . $schedule['shift_id'];
+            if (!isset($schedule_map[$key])) {
+                $schedule_map[$key] = [];
+            }
+            $schedule_map[$key][$schedule['user_id']] = $schedule;
+        }
+
+        $first_day = strtotime("$year-$month-01");
+        $last_day = strtotime(date('Y-m-t', $first_day));
+        
+        $days_in_month = date('t', $first_day);
+        
+        $calendar_days = [];
+        
+        for ($day = 1; $day <= $days_in_month; $day++) {
+            $date = date('Y-m-d', strtotime("$year-$month-$day"));
+            $weekday = date('w', strtotime($date));
+            $calendar_days[] = ['day' => $day, 'date' => $date, 'weekday' => $weekday];
+        }
+        
+        $calendar_weeks = [];
+        $current_week = [];
+        
+        $first_weekday = date('w', $first_day);
+        for ($i = 0; $i < $first_weekday; $i++) {
+            $current_week[] = ['day' => 0, 'date' => '', 'weekday' => $i];
+        }
+        
+        foreach ($calendar_days as $day) {
+            $current_week[] = $day;
+            if (count($current_week) == 7) {
+                $calendar_weeks[] = $current_week;
+                $current_week = [];
+            }
+        }
+        
+        if (!empty($current_week)) {
+            while (count($current_week) < 7) {
+                $current_week[] = ['day' => 0, 'date' => '', 'weekday' => 0];
+            }
+            $calendar_weeks[] = $current_week;
+        }
+
+        $prev_year = $year;
+        $prev_month = $month - 1;
+        if ($prev_month < 1) {
+            $prev_month = 12;
+            $prev_year--;
+        }
+
+        $next_year = $year;
+        $next_month = $month + 1;
+        if ($next_month > 12) {
+            $next_month = 1;
+            $next_year++;
+        }
+
+        $weekdays = ['', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+
+        $this->assign('year', $year);
+        $this->assign('month', $month);
+        $this->assign('prev_year', $prev_year);
+        $this->assign('prev_month', $prev_month);
+        $this->assign('next_year', $next_year);
+        $this->assign('next_month', $next_month);
+        $this->assign('shift_list', $shift_list);
+        $this->assign('user_list', $user_list);
+        $this->assign('calendar_days', $calendar_days);
+        $this->assign('calendar_weeks', $calendar_weeks);
+        $this->assign('schedule_map', $schedule_map);
+        $this->assign('schedule_list', $schedules);
+        $this->assign('weekdays', $weekdays);
+
+        return $this->fetch();
+    }
+}
