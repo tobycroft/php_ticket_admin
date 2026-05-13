@@ -23,7 +23,7 @@ class HandoverModel extends Model
         return [
             0 => '待交接',
             1 => '已接收',
-            2 => '已完成',
+            2 => '已作废',
         ];
     }
 

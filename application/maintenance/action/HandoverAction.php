@@ -94,15 +94,15 @@ class HandoverAction
         throw new \Exception('接收交接失败');
     }
 
-    public static function complete($id)
+    public static function cancel($id)
     {
         $handover = HandoverModel::where('id', $id)->find();
         if (!$handover) {
             throw new \Exception('交接记录不存在');
         }
 
-        if ($handover['status'] != 1) {
-            throw new \Exception('交接未被接收，无法完成');
+        if ($handover['status'] == 2) {
+            throw new \Exception('交接已作废');
         }
 
         $data = [
@@ -111,11 +111,11 @@ class HandoverAction
         ];
 
         if (HandoverModel::update($data)) {
-            action_log('handover_complete', 'mt_handover', $id, UID);
+            action_log('handover_cancel', 'mt_handover', $id, UID);
             return true;
         }
 
-        throw new \Exception('完成交接失败');
+        throw new \Exception('作废交接失败');
     }
 
     public static function delete($id)
@@ -250,6 +250,13 @@ class HandoverAction
             ['status', '=', 0],
             ['create_time', 'between', [$today_start, $today_end]],
         ])->order('create_time desc')->select();
+    }
+
+    public static function getCanceledHandovers()
+    {
+        return HandoverModel::where([
+            ['status', '=', 2],
+        ])->order('update_time desc')->select();
     }
 
     public static function getMySentHandovers($user_id = null)

@@ -15,6 +15,7 @@ class Handover extends Admin
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
+        $map['status'] = ['<>', 2];
 
         $data_list = HandoverAction::getList($map);
 
@@ -25,7 +26,7 @@ class Handover extends Admin
             $item['status_text'] = isset($status_list[$item['status']]) ? $status_list[$item['status']] : '';
             $item['is_forced_text'] = isset($is_forced_list[$item['is_forced']]) ? $is_forced_list[$item['is_forced']] : '';
             $item['can_receive'] = $item['status'] == 0;
-            $item['can_complete'] = $item['status'] == 1 && ($item['actual_receiver_id'] == UID || $item['creator_id'] == UID);
+            $item['can_cancel'] = $item['status'] != 2 && ($item['creator_id'] == UID || UID == 1);
         }
 
         return ZBuilder::make('table')
@@ -43,7 +44,7 @@ class Handover extends Admin
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Handover/detail', ['id' => '__id__'])], 'receive' => ['title' => '接收交接', 'icon' => 'fa fa-handshake-o', 'class' => 'btn btn-xs btn-success', 'href' => url('Handover/receive', ['id' => '__id__']), 'condition' => 'can_receive'], 'complete' => ['title' => '完成交接', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-primary', 'href' => url('Handover/complete', ['id' => '__id__']), 'condition' => 'can_complete'], 'delete' => ['title' => '删除', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Handover/delete', ['id' => '__id__'])]])
+            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Handover/detail', ['id' => '__id__'])], 'receive' => ['title' => '接收交接', 'icon' => 'fa fa-handshake-o', 'class' => 'btn btn-xs btn-success', 'href' => url('Handover/receive', ['id' => '__id__']), 'condition' => 'can_receive'], 'cancel' => ['title' => '作废交接', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-warning', 'href' => url('Handover/cancel', ['id' => '__id__']), 'condition' => 'can_cancel'], 'delete' => ['title' => '删除', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Handover/delete', ['id' => '__id__'])]]))
             ->setRowList($data_list)
             ->fetch();
     }
@@ -143,19 +144,19 @@ class Handover extends Admin
         $this->success('接收交接成功', url('Handover/index'));
     }
 
-    public function complete($id = null)
+    public function cancel($id = null)
     {
         if ($id === null) {
             $this->error('参数错误');
         }
 
         try {
-            HandoverAction::complete($id);
+            HandoverAction::cancel($id);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
         
-        $this->success('完成交接成功', url('Handover/index'));
+        $this->success('作废交接成功', url('Handover/index'));
     }
 
     public function delete($id = null)
