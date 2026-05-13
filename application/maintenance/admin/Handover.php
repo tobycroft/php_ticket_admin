@@ -54,12 +54,8 @@ class Handover extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
             
-            try {
-                HandoverAction::add($data);
-                $this->success('创建交接成功', url('Handover/index'));
-            } catch (\Exception $e) {
-                $this->error($e->getMessage());
-            }
+            HandoverAction::add($data);
+            $this->success('创建交接成功', url('Handover/index'));
         }
 
         $default_title = date('Y年m月d日 H:i') . ' ' . session('user_auth.nickname') . '的交接';
@@ -148,12 +144,8 @@ class Handover extends Admin
             $this->error('参数错误');
         }
 
-        try {
-            HandoverAction::receive($id);
-            $this->success('接收交接成功', url('Handover/index'));
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-        }
+        HandoverAction::receive($id);
+        $this->success('接收交接成功', url('Handover/index'));
     }
 
     public function complete($id = null)
@@ -162,12 +154,8 @@ class Handover extends Admin
             $this->error('参数错误');
         }
 
-        try {
-            HandoverAction::complete($id);
-            $this->success('完成交接成功', url('Handover/index'));
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-        }
+        HandoverAction::complete($id);
+        $this->success('完成交接成功', url('Handover/index'));
     }
 
     public function delete($id = null)
@@ -176,11 +164,7 @@ class Handover extends Admin
             $this->error('参数错误');
         }
 
-        try {
-            HandoverAction::delete($id);
-            $this->success('删除交接成功', url('Handover/index'));
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-        }
+        HandoverAction::delete($id);
+        $this->success('删除交接成功', url('Handover/index'));
     }
 }
