@@ -70,13 +70,26 @@ class User extends Admin
         }
 
         $role_list = UserAction::getMaintenanceRoles();
+        
+        $color_list = [
+            '#337ab7' => '蓝色',
+            '#5cb85c' => '绿色',
+            '#f0ad4e' => '橙色',
+            '#d9534f' => '红色',
+            '#5bc0de' => '天蓝色',
+            '#9932cc' => '紫色',
+            '#ff69b4' => '粉色',
+            '#00CED1' => '青色',
+            '#FFD700' => '金色',
+            '#8B4513' => '棕色',
+        ];
 
         return ZBuilder::make('form')
             ->setPageTitle('新增运维人员')
             ->addFormItems([
                 ['text', 'username', '用户名', '必填，可由英文字母、数字组成'],
                 ['text', 'nickname', '昵称', '可以是中文'],
-                ['color', 'color', '颜色', '用于排班日历中标识该用户'],
+                ['select', 'color', '颜色', '用于排班日历中标识该用户', $color_list, '', '', '#337ab7'],
                 ['select', 'role', '主角色', '', $role_list],
                 ['select', 'roles', '副角色', '可多选', $role_list, '', 'multiple'],
                 ['text', 'email', '邮箱', ''],
@@ -132,6 +145,19 @@ class User extends Admin
 
         $info = UserAction::getInfo($id);
         $role_list = UserAction::getMaintenanceRoles();
+        
+        $color_list = [
+            '#337ab7' => '蓝色',
+            '#5cb85c' => '绿色',
+            '#f0ad4e' => '橙色',
+            '#d9534f' => '红色',
+            '#5bc0de' => '天蓝色',
+            '#9932cc' => '紫色',
+            '#ff69b4' => '粉色',
+            '#00CED1' => '青色',
+            '#FFD700' => '金色',
+            '#8B4513' => '棕色',
+        ];
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑运维人员')
@@ -139,7 +165,7 @@ class User extends Admin
                 ['hidden', 'id'],
                 ['static', 'username', '用户名', '不可更改'],
                 ['text', 'nickname', '昵称', '可以是中文'],
-                ['color', 'color', '颜色', '用于排班日历中标识该用户'],
+                ['select', 'color', '颜色', '用于排班日历中标识该用户', $color_list],
                 ['select', 'role', '主角色', '', $role_list],
                 ['select', 'roles', '副角色', '可多选', $role_list, '', 'multiple'],
                 ['text', 'email', '邮箱', ''],
