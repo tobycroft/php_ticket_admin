@@ -135,9 +135,9 @@ class Inventory extends Admin
             ->setPageTitle('录入盘点数据')
             ->addFormItems([
                 ['hidden', 'id'],
-                ['static', 'code', '盘点单号'],
-                ['html', 'items', '盘点明细', '', $this->renderItems($items)]
+                ['static', 'code', '盘点单号']
             ])
+            ->setExtraHtml($this->renderItems($items))
             ->setFormData($info)
             ->fetch();
     }
@@ -170,9 +170,9 @@ class Inventory extends Admin
                 ['static', 'code', '盘点单号'],
                 ['static', 'status_text', '状态'],
                 ['static', 'remark', '备注'],
-                ['static', 'create_time', '创建时间', 'datetime'],
-                ['html', 'items', '盘点明细', '', $this->renderItems($items)]
+                ['static', 'create_time', '创建时间', 'datetime']
             ])
+            ->setExtraHtml($this->renderItems($items))
             ->setFormData($info)
             ->fetch();
     }
