@@ -101,7 +101,7 @@ class Event extends Admin
                 ['text', 'creator_name', '发单人', '必填'],
                 ['checkbox', 'contact_method', '对接方式', '可多选', $contact_method_list],
                 ['ueditor', 'content', '事件描述'],
-                ['datetime', 'start_time', '开始时间', '必填', '', date('Y-m-d H:i:s')],
+                ['datetime', 'start_time', '开始时间', '必填', '', date('Y-m-d 08:30:00')],
                 ['text', 'customer_name', '对接客户'],
                 ['select', 'priority', '优先级', '', $priority_list, 1],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
