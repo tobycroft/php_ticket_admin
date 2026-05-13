@@ -1,0 +1,106 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">交接详情</h3>
+                </div>
+                <div class="block-content">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交接标题</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.title}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交接说明</label>
+                            <div class="col-sm-10">
+                                <div class="form-control-static">{$handover.description|raw|default='<span class="text-muted">暂无说明</span>'}</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">创建人</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.creator_name|default='-'}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">默认接收人</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.default_receiver_name|default='无人（公开交接）'}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">实际接收人</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.actual_receiver_name|default='-'}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">状态</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.status_text}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">交接类型</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.is_forced_text}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">创建时间</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.create_time|default='-'}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">接收时间</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$handover.receive_time|default='-'}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <a href="javascript:history.back(-1);" class="btn btn-default">返回</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">交接工单列表</h3>
+                </div>
+                <div class="block-content">
+                    {if condition="!empty($events)"}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>标题</th>
+                                <th>发单人</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="events" id="event"}
+                            <tr>
+                                <td>{$event.id}</td>
+                                <td>{$event.title}</td>
+                                <td>{$event.creator_name}</td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                    {else}
+                    <div class="text-center text-muted py-10">暂无交接工单</div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
