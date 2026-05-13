@@ -67,7 +67,7 @@ class Event extends Admin
                 $this->error('请输入事件标题');
             }
 
-            $data['start_time'] = strtotime($data['start_time']);
+            $data['start_time'] = date('Y-m-d H:i:s', strtotime($data['start_time']));
 
             try {
                 $event = EventAction::add($data);
