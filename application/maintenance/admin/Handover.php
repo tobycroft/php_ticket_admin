@@ -62,7 +62,7 @@ class Handover extends Admin
             }
         }
 
-        $default_title = date('Y年m月d日 H点') . ' ' . get_nickname(UID) . '的交接';
+        $default_title = date('Y年m月d日 H点') . ' ' . session('user_auth.nickname') . '的交接';
 
         $events = HandoverAction::getAvailableEvents();
         
