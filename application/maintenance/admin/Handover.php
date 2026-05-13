@@ -27,6 +27,21 @@ class Handover extends Admin
             $item['is_forced_text'] = isset($is_forced_list[$item['is_forced']]) ? $is_forced_list[$item['is_forced']] : '';
             $item['can_receive'] = $item['status'] == 0;
             $item['can_cancel'] = $item['status'] != 2 && ($item['creator_id'] == UID || UID == 1);
+            
+            $event_ids = explode(',', $item['event_ids']);
+            $event_count = 0;
+            $completed_count = 0;
+            foreach ($event_ids as $event_id) {
+                if ($event_id) {
+                    $event_count++;
+                    $event = EventAction::getInfo($event_id);
+                    if ($event && $event['status'] == 2) {
+                        $completed_count++;
+                    }
+                }
+            }
+            $item['event_count'] = $event_count;
+            $item['event_status'] = $event_count > 0 ? ($completed_count . '/' . $event_count . ' 已完成') : '无工单';
         }
 
         return ZBuilder::make('table')
@@ -41,7 +56,11 @@ class Handover extends Admin
                 ['actual_receiver_name', '实际接收人'],
                 ['status_text', '状态'],
                 ['is_forced_text', '交接类型'],
+                ['event_count', '工单数'],
+                ['event_status', '工单状态'],
                 ['create_time', '创建时间'],
+                ['receive_time', '接收时间'],
+                ['update_time', '更新时间'],
                 ['right_button', '操作', 'btn']
             ])
             ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Handover/detail', ['id' => '__id__'])], 'receive' => ['title' => '接收交接', 'icon' => 'fa fa-handshake-o', 'class' => 'btn btn-xs btn-success', 'href' => url('Handover/receive', ['id' => '__id__']), 'condition' => 'can_receive'], 'cancel' => ['title' => '作废交接', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-warning', 'href' => url('Handover/cancel', ['id' => '__id__']), 'condition' => 'can_cancel'], 'delete' => ['title' => '删除', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Handover/delete', ['id' => '__id__'])]])
