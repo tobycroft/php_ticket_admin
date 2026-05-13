@@ -55,16 +55,17 @@ class User extends Admin
 
             try {
                 UserAction::add($data);
-                if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '新增成功', 'url' => url('index')]);
-                }
-                $this->success('新增成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
                 $this->error($e->getMessage());
             }
+            
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '新增成功', 'url' => url('index')]);
+            }
+            $this->success('新增成功', url('index'));
         }
 
         $role_list = UserAction::getMaintenanceRoles();
@@ -114,16 +115,17 @@ class User extends Admin
 
             try {
                 UserAction::edit($data);
-                if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__')]);
-                }
-                $this->success('编辑成功', cookie('__forward__'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
                 $this->error($e->getMessage());
             }
+            
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__')]);
+            }
+            $this->success('编辑成功', cookie('__forward__'));
         }
 
         $info = UserAction::getInfo($id);
@@ -169,16 +171,17 @@ class User extends Admin
 
         try {
             UserAction::setStatus($type, $ids);
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => '操作成功']);
-            }
-            $this->success('操作成功');
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
             $this->error($e->getMessage());
         }
+        
+        if ($this->request->isAjax()) {
+            return json(['code' => 1, 'msg' => '操作成功']);
+        }
+        $this->success('操作成功');
     }
 
     public function quickEdit($record = [])

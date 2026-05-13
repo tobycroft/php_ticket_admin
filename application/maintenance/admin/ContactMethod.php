@@ -12,27 +12,24 @@ class ContactMethod extends Admin
     {
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
-        $map = [];
-        $data_list = ContactMethodModel::where($map)->order('sort desc, id desc')->paginate();
+        $map = $this->getMap();
 
-        foreach ($data_list as &$item) {
-            $item['status_text'] = $item['status'] == 1 ? '启用' : '禁用';
-        }
+        $data_list = ContactMethodModel::where($map)->order('sort asc, id asc')->paginate();
 
         return ZBuilder::make('table')
             ->setPageTitle('对接方式管理')
             ->setTableName('mt_contact_method')
             ->setSearch(['name' => '对接方式名称'])
+            ->addTopButtons('add')
             ->addColumns([
                 ['id', 'ID'],
                 ['name', '对接方式名称'],
                 ['description', '描述'],
-                ['status_text', '状态'],
+                ['status', '状态', 'switch'],
                 ['sort', '排序'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons(['add', 'enable', 'disable', 'delete'])
-            ->addRightButtons(['edit', 'delete'])
+            ->addRightButtons(['edit', 'delete', 'enable', 'disable'])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -52,10 +49,11 @@ class ContactMethod extends Admin
 
             try {
                 ContactMethodModel::create($data);
-                $this->success('添加成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 $this->error($e->getMessage());
             }
+            
+            $this->success('添加成功', url('index'));
         }
 
         return ZBuilder::make('form')
@@ -89,10 +87,11 @@ class ContactMethod extends Admin
 
             try {
                 ContactMethodModel::update($data);
-                $this->success('修改成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 $this->error($e->getMessage());
             }
+            
+            $this->success('修改成功', url('index'));
         }
 
         return ZBuilder::make('form')
@@ -116,10 +115,11 @@ class ContactMethod extends Admin
 
         try {
             ContactMethodModel::whereIn('id', $ids)->delete();
-            $this->success('删除成功');
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+        
+        $this->success('删除成功');
     }
 
     public function enable($ids = null)
@@ -130,10 +130,11 @@ class ContactMethod extends Admin
 
         try {
             ContactMethodModel::whereIn('id', $ids)->update(['status' => 1]);
-            $this->success('启用成功');
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+        
+        $this->success('启用成功');
     }
 
     public function disable($ids = null)
@@ -144,9 +145,10 @@ class ContactMethod extends Admin
 
         try {
             ContactMethodModel::whereIn('id', $ids)->update(['status' => 0]);
-            $this->success('禁用成功');
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+        
+        $this->success('禁用成功');
     }
 }

@@ -87,7 +87,6 @@ class LeavePending extends Admin
             }
 
             \think\Db::commit();
-            $this->success('批准成功', url('index'));
         } catch (\Exception $e) {
             if ($e instanceof \think\exception\HttpResponseException) {
                 throw $e;
@@ -95,6 +94,8 @@ class LeavePending extends Admin
             \think\Db::rollback();
             $this->error($e->getMessage());
         }
+        
+        $this->success('批准成功', url('index'));
     }
 
     public function reject($id = null)
@@ -119,11 +120,11 @@ class LeavePending extends Admin
                 'approver_id' => UID,
                 'approver_name' => get_nickname(UID)
             ]);
-
-            $this->success('拒绝成功', url('index'));
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+        
+        $this->success('拒绝成功', url('index'));
     }
 
     public function detail($id = null)

@@ -144,11 +144,11 @@ class ScheduleCalendar extends Admin
                     }
                 }
             }
-
-            return json(['code' => 1, 'msg' => '排班成功']);
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             return json(['code' => 0, 'msg' => $e->getMessage()]);
         }
+        
+        return json(['code' => 1, 'msg' => '排班成功']);
     }
 
     public function getSchedule($date = '', $shift_id = '')

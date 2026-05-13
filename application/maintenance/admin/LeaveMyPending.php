@@ -95,10 +95,11 @@ class LeaveMyPending extends Admin
 
             try {
                 UserLeaveModel::create($data);
-                $this->success('申请成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 $this->error($e->getMessage());
             }
+            
+            $this->success('申请成功', url('index'));
         }
 
         $type_list = UserLeaveModel::getTypeList();
@@ -172,10 +173,11 @@ class LeaveMyPending extends Admin
 
             try {
                 UserLeaveModel::update($data);
-                $this->success('修改成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 $this->error($e->getMessage());
             }
+            
+            $this->success('修改成功', url('index'));
         }
 
         $type_list = UserLeaveModel::getTypeList();
@@ -201,9 +203,10 @@ class LeaveMyPending extends Admin
 
         try {
             UserLeaveModel::where('user_id', UID)->whereIn('id', $ids)->delete();
-            $this->success('删除成功');
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+        
+        $this->success('删除成功');
     }
 }

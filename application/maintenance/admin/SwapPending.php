@@ -84,11 +84,12 @@ class SwapPending extends Admin
             }
 
             \think\Db::commit();
-            $this->success('批准成功，已替换排班人员', url('index'));
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             \think\Db::rollback();
             $this->error('操作失败: ' . $e->getMessage());
         }
+        
+        $this->success('批准成功，已替换排班人员', url('index'));
     }
 
     public function reject($id = null)
@@ -118,12 +119,12 @@ class SwapPending extends Admin
             ]);
 
             \think\Db::commit();
-
-            $this->success('拒绝成功', url('index'));
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             \think\Db::rollback();
             $this->error($e->getMessage());
         }
+        
+        $this->success('拒绝成功', url('index'));
     }
 
     public function detail($id = null)

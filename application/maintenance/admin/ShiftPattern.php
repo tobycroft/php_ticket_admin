@@ -59,16 +59,17 @@ class ShiftPattern extends Admin
 
             try {
                 ShiftPatternModel::create($data);
-                if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')]);
-                }
-                $this->success('创建成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
                 $this->error($e->getMessage());
             }
+            
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')]);
+            }
+            $this->success('创建成功', url('index'));
         }
 
         return ZBuilder::make('form')
@@ -112,16 +113,17 @@ class ShiftPattern extends Admin
 
             try {
                 ShiftPatternModel::update($data);
-                if ($this->request->isAjax()) {
-                    return json(['code' => 1, 'msg' => '修改成功', 'url' => url('index')]);
-                }
-                $this->success('修改成功', url('index'));
-            } catch (\ErrorException $e) {
+            } catch (\Exception $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
                 }
                 $this->error($e->getMessage());
             }
+            
+            if ($this->request->isAjax()) {
+                return json(['code' => 1, 'msg' => '修改成功', 'url' => url('index')]);
+            }
+            $this->success('修改成功', url('index'));
         }
 
         return ZBuilder::make('form')
@@ -147,15 +149,16 @@ class ShiftPattern extends Admin
 
         try {
             ShiftPatternModel::destroy($ids);
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => '删除成功']);
-            }
-            $this->success('删除成功');
-        } catch (\ErrorException $e) {
+        } catch (\Exception $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
             $this->error($e->getMessage());
         }
+        
+        if ($this->request->isAjax()) {
+            return json(['code' => 1, 'msg' => '删除成功']);
+        }
+        $this->success('删除成功');
     }
 }
