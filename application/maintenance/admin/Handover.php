@@ -12,11 +12,6 @@ class Handover extends Admin
 {
     public function index()
     {
-        $this->redirect(url('Handover/list'));
-    }
-
-    public function list()
-    {
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
@@ -60,7 +55,7 @@ class Handover extends Admin
             
             try {
                 HandoverAction::add($data);
-                $this->success('创建交接成功', url('Handover/list'));
+                $this->success('创建交接成功', url('Handover/index'));
             } catch (\Exception $e) {
                 $this->error($e->getMessage());
             }
@@ -149,7 +144,7 @@ class Handover extends Admin
 
         try {
             HandoverAction::receive($id);
-            $this->success('接收交接成功', url('Handover/list'));
+            $this->success('接收交接成功', url('Handover/index'));
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -163,7 +158,7 @@ class Handover extends Admin
 
         try {
             HandoverAction::complete($id);
-            $this->success('完成交接成功', url('Handover/list'));
+            $this->success('完成交接成功', url('Handover/index'));
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -177,7 +172,7 @@ class Handover extends Admin
 
         try {
             HandoverAction::delete($id);
-            $this->success('删除交接成功', url('Handover/list'));
+            $this->success('删除交接成功', url('Handover/index'));
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
