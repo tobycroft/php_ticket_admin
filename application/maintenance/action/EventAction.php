@@ -134,6 +134,10 @@ class EventAction
             throw new \Exception('工单不存在');
         }
 
+        if ($event['is_closed'] == 1) {
+            throw new \Exception('工单已结单，无法推送');
+        }
+
         $to_user = UserModel::where('id', $to_user_id)->find();
         if (!$to_user) {
             throw new \Exception('接收人不存在');
