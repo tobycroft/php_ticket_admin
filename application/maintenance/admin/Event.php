@@ -77,7 +77,7 @@ class Event extends Admin
                 }
                 $this->error($e->getMessage());
             }
-            
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '创建成功', 'url' => url('index')]);
             }
@@ -101,7 +101,7 @@ class Event extends Admin
                 ['text', 'creator_name', '发单人', '必填'],
                 ['checkbox', 'contact_method', '对接方式', '可多选', $contact_method_list],
                 ['ueditor', 'content', '事件描述'],
-                ['datetime', 'start_time', '开始时间', '必填', 'Y-m-d H:i', date('Y-m-d 08:30')],
+                ['datetime', 'start_time', '开始时间', '必填', date('Y-m-d 08:30')],
                 ['text', 'customer_name', '对接客户'],
                 ['select', 'priority', '优先级', '', $priority_list, 1],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
@@ -136,7 +136,7 @@ class Event extends Admin
                 }
                 $this->error($e->getMessage());
             }
-            
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__') ?: url('index')]);
             }
@@ -238,7 +238,7 @@ class Event extends Admin
             }
             $this->error($e->getMessage());
         }
-        
+
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '接单成功', 'url' => cookie('__forward__')]);
         }
@@ -262,7 +262,7 @@ class Event extends Admin
             }
             $this->error($e->getMessage());
         }
-        
+
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '标注已完成', 'url' => cookie('__forward__')]);
         }
@@ -286,7 +286,7 @@ class Event extends Admin
             }
             $this->error($e->getMessage());
         }
-        
+
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '标注未完成', 'url' => cookie('__forward__')]);
         }
@@ -310,7 +310,7 @@ class Event extends Admin
             }
             $this->error($e->getMessage());
         }
-        
+
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '作废成功', 'url' => cookie('__forward__')]);
         }
@@ -334,7 +334,7 @@ class Event extends Admin
             }
             $this->error($e->getMessage());
         }
-        
+
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '激活成功', 'url' => cookie('__forward__')]);
         }
@@ -361,7 +361,7 @@ class Event extends Admin
                 }
                 $this->error($e->getMessage());
             }
-            
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '推送成功', 'url' => cookie('__forward__')]);
             }
@@ -399,7 +399,7 @@ class Event extends Admin
                 }
                 $this->error($e->getMessage());
             }
-            
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '添加备注成功', 'url' => url('detail', ['id' => $id])]);
             }
