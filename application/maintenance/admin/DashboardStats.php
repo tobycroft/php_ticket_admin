@@ -48,7 +48,6 @@ class DashboardStats extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('交接统计')
             ->setPageTips('运维交接统计分析', 'info')
-            ->addTopButtons(['add' => ['title' => '新增交接', 'icon' => 'fa fa-plus', 'href' => url('Handover/add')]])
             ->addColumns([
                 ['id', 'ID'],
                 ['nickname', '用户'],

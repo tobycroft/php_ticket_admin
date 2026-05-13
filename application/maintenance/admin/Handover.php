@@ -32,6 +32,7 @@ class Handover extends Admin
             ->setPageTitle('交接列表')
             ->setTableName('mt_handover')
             ->setSearch(['title' => '标题', 'creator_name' => '创建人'])
+            ->addTopButtons(['add' => ['title' => '新增交接', 'icon' => 'fa fa-plus', 'href' => url('Handover/add')]])
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '交接标题'],
