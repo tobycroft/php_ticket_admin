@@ -118,7 +118,7 @@ class Handover extends Admin
 
         return ZBuilder::make('form')
             ->setPageTitle('交接详情')
-            ->setFormItems([
+            ->addFormItems([
                 ['static', 'title', '交接标题'],
                 ['static', 'description', '交接说明'],
                 ['static', 'creator_name', '创建人'],
