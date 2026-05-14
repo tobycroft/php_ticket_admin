@@ -8,6 +8,7 @@ use app\stor\model\MaterialModel;
 use app\stor\model\MaterialSnModel;
 use app\stor\model\OutboundModel;
 use app\stor\model\OutboundItemModel;
+use app\stor\model\OutboundTypeModel;
 use app\stor\model\ProjectModel;
 use app\stor\model\StockModel;
 use app\stor\model\StockSnModel;
@@ -22,7 +23,11 @@ class Outbound extends Admin
 
         $data_list = OutboundModel::getList($map);
 
-        $type_map = [1 => '领用', 2 => '维修', 3 => '报废'];
+        $type_list = OutboundTypeModel::getList(['status' => 1]);
+        $type_map = [];
+        foreach ($type_list as $item) {
+            $type_map[$item['id']] = $item['name'];
+        }
 
         return ZBuilder::make('table')
             ->setPageTitle('出库管理')
@@ -103,10 +108,16 @@ class Outbound extends Admin
             $project_options[$item['id']] = $item['name'];
         }
 
+        $type_list = OutboundTypeModel::getList(['status' => 1]);
+        $type_options = [];
+        foreach ($type_list as $item) {
+            $type_options[$item['id']] = $item['name'];
+        }
+
         return ZBuilder::make('form')
             ->setPageTitle('新增出库')
             ->addFormItems([
-                ['radio', 'type', '出库类型', '', ['领用', '维修', '报废'], 1],
+                ['select', 'type', '出库类型', '', $type_options],
                 ['select', 'project_id', '所属项目', '', $project_options],
                 ['textarea', 'remark', '备注'],
                 ['hidden', 'items', '']
@@ -144,12 +155,18 @@ class Outbound extends Admin
 
         $info = OutboundModel::getInfo($id);
 
+        $type_list = OutboundTypeModel::getList(['status' => 1]);
+        $type_options = [];
+        foreach ($type_list as $item) {
+            $type_options[$item['id']] = $item['name'];
+        }
+
         return ZBuilder::make('form')
             ->setPageTitle('编辑出库单')
             ->addFormItems([
                 ['hidden', 'id'],
                 ['static', 'code', '出库单号'],
-                ['radio', 'type', '出库类型', '', ['领用', '维修', '报废']],
+                ['select', 'type', '出库类型', '', $type_options],
                 ['textarea', 'remark', '备注']
             ])
             ->setFormData($info)
@@ -175,8 +192,12 @@ class Outbound extends Admin
             $item['material_name'] = $material_map[$item['material_id']];
         }
 
-        $type_map = [1 => '领用', 2 => '维修', 3 => '报废'];
-        $info['type_text'] = $type_map[$info['type']];
+        $type_list = OutboundTypeModel::getList(['status' => 1]);
+        $type_map = [];
+        foreach ($type_list as $item) {
+            $type_map[$item['id']] = $item['name'];
+        }
+        $info['type_text'] = $type_map[$info['type']] ?? '未知';
 
         return ZBuilder::make('form')
             ->setPageTitle('出库单详情')
