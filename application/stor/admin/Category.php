@@ -12,7 +12,7 @@ class Category extends Admin
     {
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
-        $data_list = CategoryModel::getList(['status' => ['neq', 2]]);
+        $data_list = CategoryModel::getList(['status' => ['<>', 2]]);
 
         return ZBuilder::make('table')
             ->setPageTitle('物料分类')
