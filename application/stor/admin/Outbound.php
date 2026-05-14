@@ -210,8 +210,8 @@ class Outbound extends Admin
     private function renderItems($items)
     {
         $html = '<table class="table table-bordered"><thead><tr><th>物料</th><th>数量</th><th>SN码</th><th>备注</th></tr></thead><tbody>';
+        $sns = [];
         foreach ($items as $item) {
-            $sns = [];
             if (!empty($item['sns'])) {
                 $sns_str = trim($item['sns']);
                 if (strpos($sns_str, '"') === 0 && substr($sns_str, -1) === '"') {
