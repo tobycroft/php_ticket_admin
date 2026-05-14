@@ -20,15 +20,6 @@ class ProjectModel extends Model
         return self::where('id', $id)->find();
     }
 
-    public static function checkCodeExists($code, $id = null)
-    {
-        $query = self::where('code', $code);
-        if ($id) {
-            $query->where('id', '<>', $id);
-        }
-        return $query->count() > 0;
-    }
-
     public static function add($data)
     {
         $data['create_time'] = date('Y-m-d H:i:s');

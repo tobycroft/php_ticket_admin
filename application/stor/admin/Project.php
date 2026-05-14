@@ -19,14 +19,14 @@ class Project extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('项目管理')
             ->setTableName('stor_project')
-            ->setSearch(['code' => '项目编码', 'name' => '项目名称'])
+            ->setSearch(['name' => '项目名称'])
             ->addColumns([
                 ['id', 'ID'],
-                ['code', '项目编码'],
                 ['name', '项目名称'],
                 ['description', '项目描述'],
+                ['remark', '项目备注'],
                 ['status', '状态', 'switch'],
-                ['create_time', '创建时间', 'datetime'],
+                ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,enable,disable,delete')
@@ -39,13 +39,6 @@ class Project extends Admin
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
-
-            if (ProjectModel::checkCodeExists($data['code'])) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => '项目编码已存在']);
-                }
-                $this->error('项目编码已存在');
-            }
 
             try {
                 ProjectModel::add($data);
@@ -65,9 +58,9 @@ class Project extends Admin
         return ZBuilder::make('form')
             ->setPageTitle('新增项目')
             ->addFormItems([
-                ['text', 'code', '项目编码', '必填，唯一'],
                 ['text', 'name', '项目名称', '必填'],
                 ['textarea', 'description', '项目描述'],
+                ['textarea', 'remark', '项目备注'],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
             ->fetch();
@@ -84,13 +77,6 @@ class Project extends Admin
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
-
-            if (ProjectModel::checkCodeExists($data['code'], $data['id'])) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => '项目编码已存在']);
-                }
-                $this->error('项目编码已存在');
-            }
 
             try {
                 ProjectModel::edit($data);
@@ -113,9 +99,9 @@ class Project extends Admin
             ->setPageTitle('编辑项目')
             ->addFormItems([
                 ['hidden', 'id'],
-                ['text', 'code', '项目编码', '必填，唯一'],
                 ['text', 'name', '项目名称', '必填'],
                 ['textarea', 'description', '项目描述'],
+                ['textarea', 'remark', '项目备注'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
             ])
             ->setFormData($info)
