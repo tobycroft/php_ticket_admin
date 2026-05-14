@@ -107,17 +107,24 @@ class InboundBatch extends Admin
             $this->error('记录不存在');
         }
 
-        $info['sn_list'] = str_replace(',', '<br>', $info['sn_list']);
+        $snArray = explode(',', $info['sn_list']);
+        $snListHtml = '<ul class="list-unstyled sn-list">';
+        foreach ($snArray as $sn) {
+            $snListHtml .= '<li class="sn-item">' . htmlspecialchars($sn) . '</li>';
+        }
+        $snListHtml .= '</ul>';
+        $info['sn_list'] = $snListHtml;
 
         return ZBuilder::make('form')
             ->setPageTitle('批量入库记录详情')
             ->addFormItems([
                 ['static', 'material_name', '导入物料'],
                 ['static', 'sn_count', '导入数量'],
-                ['static', 'sn_list', '导入SN码'],
+                ['html', 'sn_list', '导入SN码'],
                 ['static', 'remark', '备注'],
                 ['static', 'create_time', '导入时间']
             ])
+            ->setExtraCss('.sn-list { max-height: 200px; overflow-y: auto; padding-left: 0; } .sn-list .sn-item { padding: 2px 8px; background: #f8f9fa; border-radius: 3px; margin-bottom: 2px; display: inline-block; margin-right: 4px; font-size: 12px; }')
             ->setFormData($info)
             ->fetch();
     }
