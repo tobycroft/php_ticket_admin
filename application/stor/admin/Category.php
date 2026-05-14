@@ -12,12 +12,12 @@ class Category extends Admin
     {
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
-        $data_list = CategoryModel::getTreeList();
+        $data_list = CategoryModel::getList();
 
         return ZBuilder::make('table')
             ->setPageTitle('物料分类')
             ->setTableName('stor_category')
-            ->setSearch(['name' => '分类名称'])
+            ->setSearch(['name' => '分类名称', 'code' => '分类编码'])
             ->addColumns([
                 ['id', 'ID'],
                 ['name', '分类名称'],
@@ -37,6 +37,13 @@ class Category extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
+            if (CategoryModel::checkCodeExists($data['code'])) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => '分类编码已存在']);
+                }
+                $this->error('分类编码已存在');
+            }
+
             try {
                 CategoryModel::add($data);
             } catch (\Exception $e) {
@@ -52,18 +59,11 @@ class Category extends Admin
             $this->success('新增成功', url('index'));
         }
 
-        $category_list = CategoryModel::getList(['status' => 1]);
-        $category_options = [0 => '顶级分类'];
-        foreach ($category_list as $item) {
-            $category_options[$item['id']] = $item['name'];
-        }
-
         return ZBuilder::make('form')
             ->setPageTitle('新增分类')
             ->addFormItems([
-                ['select', 'pid', '上级分类', '', $category_options],
                 ['text', 'name', '分类名称', '必填'],
-                ['text', 'code', '分类编码'],
+                ['text', 'code', '分类编码', '必填，唯一'],
                 ['text', 'sort', '排序', '', 0],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
@@ -82,6 +82,13 @@ class Category extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
+            if (CategoryModel::checkCodeExists($data['code'], $data['id'])) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => '分类编码已存在']);
+                }
+                $this->error('分类编码已存在');
+            }
+
             try {
                 CategoryModel::edit($data);
             } catch (\Exception $e) {
@@ -98,21 +105,13 @@ class Category extends Admin
         }
 
         $info = CategoryModel::getInfo($id);
-        $category_list = CategoryModel::getList(['status' => 1]);
-        $category_options = [0 => '顶级分类'];
-        foreach ($category_list as $item) {
-            if ($item['id'] != $id) {
-                $category_options[$item['id']] = $item['name'];
-            }
-        }
 
         return ZBuilder::make('form')
             ->setPageTitle('编辑分类')
             ->addFormItems([
                 ['hidden', 'id'],
-                ['select', 'pid', '上级分类', '', $category_options],
                 ['text', 'name', '分类名称', '必填'],
-                ['text', 'code', '分类编码'],
+                ['text', 'code', '分类编码', '必填，唯一'],
                 ['text', 'sort', '排序'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
             ])

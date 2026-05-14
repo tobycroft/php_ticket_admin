@@ -15,24 +15,6 @@ class CategoryModel extends Model
         return self::where($map)->order('sort ASC, id ASC')->select();
     }
 
-    public static function getTreeList($map = [])
-    {
-        $list = self::getList($map);
-        return self::buildTree($list);
-    }
-
-    private static function buildTree($list, $pid = 0)
-    {
-        $tree = [];
-        foreach ($list as $item) {
-            if ($item['pid'] == $pid) {
-                $item['children'] = self::buildTree($list, $item['id']);
-                $tree[] = $item;
-            }
-        }
-        return $tree;
-    }
-
     public static function getInfo($id)
     {
         return self::where('id', $id)->find();
@@ -53,10 +35,6 @@ class CategoryModel extends Model
 
     public static function scrap($id)
     {
-        $count = self::where('pid', $id)->count();
-        if ($count > 0) {
-            throw new \Exception('存在子分类，无法作废');
-        }
         return self::where('id', $id)->update(['status' => 2]);
     }
 
@@ -74,5 +52,14 @@ class CategoryModel extends Model
     public static function restore($id)
     {
         return self::where('id', $id)->update(['status' => 1]);
+    }
+
+    public static function checkCodeExists($code, $id = 0)
+    {
+        $map = ['code' => $code];
+        if ($id > 0) {
+            $map['id'] = ['neq', $id];
+        }
+        return self::where($map)->count() > 0;
     }
 }
