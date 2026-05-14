@@ -29,6 +29,7 @@ class Material extends Admin
             ->setSearch(['name' => '物料名称', 'seller' => '销售方'])
             ->addColumns([
                 ['id', 'ID'],
+                ['code', '物料编码'],
                 ['name', '物料名称'],
                 ['seller', '销售方'],
                 ['purchase_date', '购入日期', 'date'],
@@ -78,6 +79,7 @@ class Material extends Admin
             ->setPageTitle('新增物料')
             ->addFormItems([
                 ['select', 'category_id', '所属分类', '必填', $category_options],
+                ['text', 'code', '物料编码', '必填'],
                 ['text', 'name', '物料名称', '必填'],
                 ['text', 'seller', '销售方'],
                 ['date', 'purchase_date', '购入日期'],
@@ -132,6 +134,7 @@ class Material extends Admin
             ->addFormItems([
                 ['hidden', 'id'],
                 ['select', 'category_id', '所属分类', '必填', $category_options],
+                ['text', 'code', '物料编码', '只读', '', 'disabled'],
                 ['text', 'name', '物料名称', '必填'],
                 ['text', 'seller', '销售方'],
                 ['date', 'purchase_date', '购入日期'],
