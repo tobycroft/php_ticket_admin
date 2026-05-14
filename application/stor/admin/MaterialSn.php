@@ -79,7 +79,7 @@ class MaterialSn extends Admin
         $material_list = MaterialModel::getList(['status' => 1]);
         $material_options = [];
         foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'] . '(' . $item['code'] . ')';
+            $material_options[$item['id']] = $item['name'];
         }
 
         return ZBuilder::make('form')
@@ -125,7 +125,7 @@ class MaterialSn extends Admin
         $material_list = MaterialModel::getList(['status' => 1]);
         $material_options = [];
         foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'] . '(' . $item['code'] . ')';
+            $material_options[$item['id']] = $item['name'];
         }
 
         $project_list = ProjectModel::getList(['status' => 1]);
