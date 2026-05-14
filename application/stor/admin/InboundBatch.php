@@ -108,9 +108,9 @@ class InboundBatch extends Admin
         }
 
         $snArray = explode(',', $info['sn_list']);
-        $snTableHtml = '<table class="table table-striped table-bordered table-hover"><thead><tr><th>序号</th><th>SN码</th></tr></thead><tbody>';
-        foreach ($snArray as $index => $sn) {
-            $snTableHtml .= '<tr><td>' . ($index + 1) . '</td><td>' . htmlspecialchars($sn) . '</td></tr>';
+        $snTableHtml = '<table class="table table-striped table-bordered table-hover"><thead><tr><th>SN码</th></tr></thead><tbody>';
+        foreach ($snArray as $sn) {
+            $snTableHtml .= '<tr><td>' . htmlspecialchars($sn) . '</td></tr>';
         }
         $snTableHtml .= '</tbody></table>';
 
@@ -120,7 +120,7 @@ class InboundBatch extends Admin
                 ['static', 'material_name', '导入物料'],
                 ['static', 'sn_count', '导入数量']
             ])
-            ->setExtraHtml('<div class="form-group"><label class="col-sm-2 control-label">导入SN码</label><div class="col-sm-10">' . $snTableHtml . '</div></div>','form_top')
+            ->setExtraHtml('<div class="form-group"><label class="col-sm-2 control-label">导入SN码</label><div class="col-sm-10">' . $snTableHtml . '</div></div>')
             ->addFormItems([
                 ['static', 'remark', '备注'],
                 ['static', 'create_time', '导入时间']
