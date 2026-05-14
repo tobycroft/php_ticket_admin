@@ -8,34 +8,34 @@ use app\stor\model\InboundTypeModel;
 use app\stor\model\OutboundTypeModel;
 
 class InboundOutboundType extends Admin
-{
-    public function inboundTypeIndex()
     {
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
+        public function inboundTypeIndex()
+        {
+            cookie('__forward__', $_SERVER['REQUEST_URI']);
 
-        $map = $this->getMap();
+            $map = $this->getMap();
 
-        $data_list = InboundTypeModel::getList($map);
+            $data_list = InboundTypeModel::getList($map);
 
-        return ZBuilder::make('table')
-            ->setPageTitle('入库类型管理')
-            ->setTableName('stor_inbound_type')
-            ->setSearch(['name' => '类型名称'])
-            ->addColumns([
-                ['id', 'ID'],
-                ['name', '类型名称'],
-                ['remark', '备注'],
-                ['status', '状态', 'switch'],
-                ['create_time', '创建时间'],
-                ['right_button', '操作', 'btn']
-            ])
-            ->addTopButtons('add,enable,disable,delete')
-            ->addRightButtons('edit,delete')
-            ->setRowList($data_list)
-            ->fetch();
-    }
+            return ZBuilder::make('table')
+                ->setPageTitle('入库类型管理')
+                ->setTableName('stor_inbound_type')
+                ->setSearch(['name' => '类型名称'])
+                ->addColumns([
+                    ['id', 'ID'],
+                    ['name', '类型名称'],
+                    ['remark', '备注'],
+                    ['status', '状态', 'switch'],
+                    ['create_time', '创建时间'],
+                    ['right_button', '操作', 'btn']
+                ])
+                ->addTopButtons('add,enable,disable,delete')
+                ->addRightButtons('edit,delete')
+                ->setRowList($data_list)
+                ->fetch();
+        }
 
-    public function inboundTypeAdd()
+        public function inboundTypeAdd()
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
