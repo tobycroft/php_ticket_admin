@@ -35,7 +35,7 @@ class Repair extends Admin
             $this->success('维修申请已提交', url('RepairProcessing/index'));
         }
 
-        $sn_list = MaterialSnModel::where('status', 1)->whereNull('project_id')->select();
+        $sn_list = MaterialSnModel::where('status', '<>', 3)->select();
         $sn_options = ['' => '请选择SN码'];
         foreach ($sn_list as $item) {
             $material = MaterialModel::getInfo($item['material_id']);

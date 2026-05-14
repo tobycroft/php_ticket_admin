@@ -10,9 +10,9 @@ class RepairAction
 {
     public static function addRepair($sn, $problem)
     {
-        $snInfo = MaterialSnModel::where('sn', $sn)->where('status', 1)->find();
+        $snInfo = MaterialSnModel::where('sn', $sn)->where('status', '<>', 3)->find();
         if (!$snInfo) {
-            throw new \Exception('SN码不存在或已被使用');
+            throw new \Exception('SN码不存在或已报废');
         }
 
         $repairInfo = RepairModel::where('sn', $sn)->where('status', 2)->find();
