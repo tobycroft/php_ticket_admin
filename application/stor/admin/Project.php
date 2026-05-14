@@ -5,6 +5,8 @@ namespace app\stor\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\stor\model\ProjectModel;
+use app\stor\model\MaterialSnModel;
+use app\stor\model\MaterialModel;
 
 class Project extends Admin
 {
