@@ -53,13 +53,4 @@ class CategoryModel extends Model
     {
         return self::where('id', $id)->update(['status' => 1]);
     }
-
-    public static function checkCodeExists($code, $id = 0)
-    {
-        $map = ['code' => $code];
-        if ($id > 0) {
-            $map['id'] = ['neq', $id];
-        }
-        return self::where($map)->count() > 0;
-    }
 }
