@@ -187,4 +187,14 @@ class MaterialSnModel extends Model
             ->whereNull('project_id')
             ->count();
     }
+
+    public static function getScrapList()
+    {
+        return self::where('status', 3)->order('id DESC')->select();
+    }
+
+    public static function restore($id)
+    {
+        return self::where('id', $id)->update(['status' => 1, 'project_id' => null]);
+    }
 }

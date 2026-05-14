@@ -45,7 +45,7 @@ class MaterialSn extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,delete')
-            ->addRightButtons('edit,delete')
+            ->addRightButtons(['edit', 'delete', 'scrap' => ['title' => '报废', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['ids' => '__id__'])]]))
             ->setRowList($data_list)
             ->fetch();
     }
@@ -165,5 +165,28 @@ class MaterialSn extends Admin
             return json(['code' => 1, 'msg' => '删除成功']);
         }
         $this->success('删除成功');
+    }
+
+    public function scrap($ids = [])
+    {
+        $ids = (array)$ids;
+        foreach ($ids as $id) {
+            try {
+                $snInfo = MaterialSnModel::getInfo($id);
+                if (!$snInfo) {
+                    throw new \Exception('SN码不存在');
+                }
+                MaterialSnModel::scrapSn($snInfo['material_id'], $snInfo['sn']);
+            } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
+                $this->error($e->getMessage());
+            }
+        }
+        if ($this->request->isAjax()) {
+            return json(['code' => 1, 'msg' => '报废成功', 'url' => url('index')]);
+        }
+        $this->success('报废成功', url('index'));
     }
 }
