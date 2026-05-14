@@ -131,7 +131,7 @@ class InboundBatch extends Admin
                 ['static', 'create_time', '导入时间']
             ])
             ->setExtraHtml($buttonsHtml)
-            ->hideBtn()
+            ->addBtn()
             ->setFormData($info)
             ->fetch();
     }
