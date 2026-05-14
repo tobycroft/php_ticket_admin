@@ -108,15 +108,15 @@ class Category extends Admin
     public function scrap($ids = [])
     {
         $ids = (array)$ids;
-        foreach ($ids as $id) {
-            try {
+        try {
+            foreach ($ids as $id) {
                 CategoryModel::scrap($id);
-            } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
-                $this->error($e->getMessage());
             }
+        } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
+            }
+            $this->error($e->getMessage());
         }
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '作废成功']);
