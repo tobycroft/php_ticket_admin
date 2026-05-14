@@ -51,18 +51,28 @@ class CategoryModel extends Model
         return self::where('id', $data['id'])->update($data);
     }
 
-    public static function deleteById($id)
+    public static function scrap($id)
     {
         $count = self::where('pid', $id)->count();
         if ($count > 0) {
-            throw new \Exception('存在子分类，无法删除');
+            throw new \Exception('存在子分类，无法作废');
         }
-        return self::where('id', $id)->delete();
+        return self::where('id', $id)->update(['status' => 2]);
     }
 
     public static function setStatus($type, $ids)
     {
         $status = $type == 'enable' ? 1 : 0;
         return self::where('id', 'in', $ids)->update(['status' => $status]);
+    }
+
+    public static function getScrapList()
+    {
+        return self::where('status', 2)->order('id DESC')->select();
+    }
+
+    public static function restore($id)
+    {
+        return self::where('id', $id)->update(['status' => 1]);
     }
 }
