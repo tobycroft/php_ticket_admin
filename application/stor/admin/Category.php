@@ -105,13 +105,14 @@ class Category extends Admin
             ->fetch();
     }
 
-    public function scrap($ids = [])
+    public function scrap($id = null)
     {
-        $ids = (array)$ids;
+        if ($id === null) {
+            $id = $this->request->param('id');
+        }
+        
         try {
-            foreach ($ids as $id) {
-                CategoryModel::scrap($id);
-            }
+            CategoryModel::scrap($id);
         } catch (\Exception $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
