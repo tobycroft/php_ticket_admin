@@ -204,6 +204,7 @@ class Outbound extends Admin
             ])
             ->setExtraHtml($this->renderItems($items), 'form_top')
             ->setFormData($info)
+            ->hideBtn('submit')
             ->fetch();
     }
 
