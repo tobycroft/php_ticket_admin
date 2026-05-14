@@ -125,7 +125,7 @@ class InboundBatch extends Admin
                 ['static', 'material_name', '导入物料'],
                 ['static', 'sn_count', '导入数量']
             ])
-            ->setExtraHtml('<div class="form-group"><label class="col-sm-2 control-label">导入SN码</label><div class="col-sm-10">' . $snTableHtml . '</div></div>' . $buttonsHtml)
+            ->setExtraHtml('<div class="form-group"><label class="col-sm-2 control-label">导入SN码</label><div class="col-sm-10">' . $snTableHtml . '</div></div>' . $buttonsHtml, 'form_top')
             ->addFormItems([
                 ['static', 'remark', '备注'],
                 ['static', 'create_time', '导入时间']
