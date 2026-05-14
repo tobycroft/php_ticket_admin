@@ -26,7 +26,7 @@ class Category extends Admin
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add,enable,disable')
+            ->addTopButtons(['add', 'enable', 'disable', 'scrap' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-danger']])
             ->addRightButtons(['edit', 'scrap' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
@@ -105,15 +105,18 @@ class Category extends Admin
             ->fetch();
     }
 
-    public function scrap($id)
+    public function scrap($ids = [])
     {
-        try {
-            CategoryModel::scrap($id);
-        } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
+        $ids = (array)$ids;
+        foreach ($ids as $id) {
+            try {
+                CategoryModel::scrap($id);
+            } catch (\Exception $e) {
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $e->getMessage()]);
+                }
+                $this->error($e->getMessage());
             }
-            $this->error($e->getMessage());
         }
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '作废成功']);
