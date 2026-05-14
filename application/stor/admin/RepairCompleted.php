@@ -37,7 +37,7 @@ class RepairCompleted extends Admin
                 ['update_time', '完成时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]]])
+            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }

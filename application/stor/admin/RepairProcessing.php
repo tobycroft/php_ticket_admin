@@ -35,7 +35,7 @@ class RepairProcessing extends Admin
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['complete' => ['title' => '维修完毕', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('complete', ['id' => '__id__'])], 'scrap' => ['title' => '报废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])], 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]]])
+            ->addRightButtons(['complete' => ['title' => '维修完毕', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('complete', ['id' => '__id__'])], 'scrap' => ['title' => '报废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])], 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
