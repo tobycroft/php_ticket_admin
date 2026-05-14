@@ -114,6 +114,11 @@ class InboundBatch extends Admin
         }
         $snTableHtml .= '</tbody></table>';
 
+        $buttonsHtml = '<div class="form-group"><label class="col-sm-2 control-label"></label><div class="col-sm-10">
+            <a href="' . url('record') . '" class="btn btn-default"><i class="fa fa-arrow-left"></i> 返回</a>
+            <a href="' . url('/stor/material_sn/index') . '" class="btn btn-primary"><i class="fa fa-list"></i> 转到SN码管理</a>
+        </div></div>';
+
         return ZBuilder::make('form')
             ->setPageTitle('批量入库记录详情')
             ->addFormItems([
@@ -125,9 +130,8 @@ class InboundBatch extends Admin
                 ['static', 'remark', '备注'],
                 ['static', 'create_time', '导入时间']
             ])
+            ->setExtraHtml($buttonsHtml)
             ->hideBtn()
-            ->addButton('submit', '返回', url('record'), ['class' => 'btn btn-default', 'icon' => 'fa fa-arrow-left'])
-            ->addButton('submit', '转到SN码管理', url('/stor/material_sn/index'), ['class' => 'btn btn-primary', 'icon' => 'fa fa-list'])
             ->setFormData($info)
             ->fetch();
     }
