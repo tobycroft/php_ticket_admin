@@ -99,8 +99,10 @@ class Outbound extends Admin
 
         $material_list = MaterialModel::getList(['status' => 1]);
         $material_options = ['' => '请选择物料'];
+        $material_ids = [];
         foreach ($material_list as $item) {
             $material_options[$item['id']] = $item['name'] . ' (' . $item['category_id'] . ') - ' . $item['seller'];
+            $material_ids[] = $item['id'];
         }
 
         $project_list = ProjectModel::getList(['status' => 1]);
@@ -115,54 +117,76 @@ class Outbound extends Admin
             $type_options[$item['id']] = $item['name'];
         }
 
-        $sns_list = [];
-        $sn_table_html = '';
-        $show_sn_table = false;
-        $material_id = $this->request->get('material_id', '');
-        if (!empty($material_id)) {
-            $sns_list = MaterialSnModel::where('material_id', $material_id)
-                ->where('status', 1)
-                ->whereNull('project_id')
-                ->field('sn')
-                ->select();
-            
-            if (!empty($sns_list)) {
-                $sn_table_html = '<table class="table table-striped table-bordered"><thead><tr><th width="30"><input type="checkbox" id="check-all" onclick="checkAll(this)"></th><th>SN码</th></tr></thead><tbody>';
-                foreach ($sns_list as $sn_item) {
-                    $sn_table_html .= '<tr><td><input type="checkbox" name="sns[]" value="' . htmlspecialchars($sn_item['sn']) . '"></td><td>' . htmlspecialchars($sn_item['sn']) . '</td></tr>';
-                }
-                $sn_table_html .= '</tbody></table>';
-                $show_sn_table = true;
-            } else {
-                $sn_table_html = '<div class="alert alert-info">该物料暂无可用SN码</div>';
-                $show_sn_table = true;
-            }
-        }
-
-        return ZBuilder::make('form')
+        $builder = ZBuilder::make('form')
             ->setPageTitle('新增出库')
             ->addFormItems([
                 ['select', 'type', '出库类型', '', $type_options],
                 ['select', 'project_id', '所属项目', '', $project_options],
                 ['select', 'material_id', '物料列表', '', $material_options],
-                ['textarea', 'remark', '备注']
-            ])
-            ->setExtraHtml('<div id="sn-table-container" ' . ($show_sn_table ? '' : 'style="display: none;"') . '><div class="form-group"><label class="col-sm-2 control-label">可用SN码</label><div class="col-sm-10">' . $sn_table_html . '</div></div></div>')
-            ->setExtraJs("
-                $('#material_id').on('change', function() {
-                    var materialId = $(this).val();
-                    if (materialId) {
-                        window.location.href = '" . url('add') . "?material_id=' + materialId;
-                    } else {
-                        $('#sn-table-container').hide();
-                    }
-                });
-                
-                function checkAll(ele) {
-                    $('input[name=\"sns[]\"]').prop('checked', ele.checked);
+                ['textarea', 'remark', '备注'],
+                ['html', 'sn_container', '', '<div id="sn-select-area"><div class="alert alert-info">请先选择物料</div></div>']
+            ]);
+
+        foreach ($material_ids as $mid) {
+            $builder->setTrigger('material_id', $mid, 'sn_container');
+        }
+
+        return $builder->setExtraJs("
+            $('#material_id').on('change', function() {
+                var materialId = $(this).val();
+                if (materialId) {
+                    $.ajax({
+                        url: '" . url('getAvailableSns') . "',
+                        type: 'GET',
+                        data: {material_id: materialId},
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.code == 1) {
+                                var html = '';
+                                if (data.data.length > 0) {
+                                    html = '<table class=\"table table-striped table-bordered table-sm\"><thead><tr><th width=\"30\"><input type=\"checkbox\" id=\"check-all-sn\"></th><th>SN码</th></tr></thead><tbody>';
+                                    $.each(data.data, function(index, item) {
+                                        html += '<tr><td><input type=\"checkbox\" name=\"sns[]\" value=\"' + item.sn + '\"></td><td>' + item.sn + '</td></tr>';
+                                    });
+                                    html += '</tbody></table>';
+                                } else {
+                                    html = '<div class=\"alert alert-warning\">该物料暂无可用SN码</div>';
+                                }
+                                $('#sn-select-area').html(html);
+                                
+                                $('#check-all-sn').on('click', function() {
+                                    $('input[name=\"sns[]\"]').prop('checked', this.checked);
+                                });
+                            } else {
+                                $('#sn-select-area').html('<div class=\"alert alert-danger\">' + data.msg + '</div>');
+                            }
+                        },
+                        error: function() {
+                            $('#sn-select-area').html('<div class=\"alert alert-danger\">加载SN码失败</div>');
+                        }
+                    });
+                } else {
+                    $('#sn-select-area').html('<div class=\"alert alert-info\">请先选择物料</div>');
                 }
-            ")
-            ->fetch();
+            });
+        ")->fetch();
+    }
+
+    public function getAvailableSns()
+    {
+        $materialId = $this->request->get('material_id');
+        
+        if (!$materialId) {
+            return json(['code' => 0, 'msg' => '缺少参数']);
+        }
+        
+        $sns = MaterialSnModel::where('material_id', $materialId)
+            ->where('status', 1)
+            ->whereNull('project_id')
+            ->field('sn')
+            ->select();
+        
+        return json(['code' => 1, 'data' => $sns]);
     }
 
     public function edit($id = null)
