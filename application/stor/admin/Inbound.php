@@ -30,7 +30,7 @@ class Inbound extends Admin
                 ['code', '入库单号'],
                 ['supplier', '供应商'],
                 ['status', '状态', ['已作废', '正常']],
-                ['create_time', '创建时间', 'datetime'],
+                ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,delete')

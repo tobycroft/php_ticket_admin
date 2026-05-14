@@ -35,6 +35,7 @@ class Material extends Admin
                 ['warranty_end', '保修期截止'],
                 ['category_id', '所属分类', $category_map],
                 ['unit', '单位'],
+                ['current_stock', '当前库存'],
                 ['safe_stock', '安全库存'],
                 ['max_stock', '最大库存'],
                 ['location', '存放位置'],

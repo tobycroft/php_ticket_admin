@@ -12,7 +12,22 @@ class MaterialModel extends Model
 
     public static function getList($map = [])
     {
-        return self::where($map)->whereIn('status', [0, 1])->order('id DESC')->select();
+        $list = self::where($map)->whereIn('status', [0, 1])->order('id DESC')->select();
+        
+        foreach ($list as &$item) {
+            $item['current_stock'] = self::getCurrentStock($item['id']);
+        }
+        
+        return $list;
+    }
+
+    public static function getCurrentStock($materialId)
+    {
+        $stock = StockModel::getInfo($materialId);
+        if ($stock) {
+            return $stock['quantity'];
+        }
+        return 0;
     }
 
     public static function getInfo($id)

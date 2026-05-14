@@ -36,7 +36,7 @@ class Repair extends Admin
                 ['material_id', '物料', $material_map],
                 ['sn', 'SN码'],
                 ['status', '状态', $status_map],
-                ['create_time', '创建时间', 'datetime'],
+                ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
@@ -51,16 +51,19 @@ class Repair extends Admin
             $data = $this->request->post();
 
             try {
+                $snInfo = MaterialSnModel::where('sn', $data['sn'])->where('status', 1)->find();
+                if (!$snInfo) {
+                    throw new \Exception('SN码不存在或已被使用');
+                }
+                
                 RepairModel::add([
-                    'material_id' => $data['material_id'],
+                    'material_id' => $snInfo['material_id'],
                     'sn' => $data['sn'],
                     'problem' => $data['problem'],
                     'create_user' => UID
                 ]);
                 
-                if (!empty($data['sn'])) {
-                    StockSnModel::useSn($data['material_id'], [$data['sn']]);
-                }
+                StockSnModel::useSn($snInfo['material_id'], [$data['sn']]);
             } catch (\Exception $e) {
                 if ($this->request->isAjax()) {
                     return json(['code' => 0, 'msg' => $e->getMessage()]);
@@ -74,17 +77,10 @@ class Repair extends Admin
             $this->success('维修申请已提交', url('index'));
         }
 
-        $material_list = MaterialModel::getList(['status' => 1, 'need_sn' => 1]);
-        $material_options = [];
-        foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'] . '(' . $item['code'] . ')';
-        }
-
         return ZBuilder::make('form')
             ->setPageTitle('新增维修申请')
             ->addFormItems([
-                ['select', 'material_id', '物料', '必填（仅显示需要SN管理的物料）', $material_options],
-                ['text', 'sn', 'SN码', '必填'],
+                ['text', 'sn', 'SN码', '必填，输入SN码搜索'],
                 ['textarea', 'problem', '故障描述', '必填']
             ])
             ->fetch();
@@ -140,6 +136,11 @@ class Repair extends Admin
 
         $material = MaterialModel::getInfo($info['material_id']);
         $info['material_name'] = $material['name'];
+        $info['material_location'] = $material['location'];
+        $info['material_purchase_date'] = $material['purchase_date'];
+        $info['material_seller'] = $material['seller'];
+        $info['material_warranty_end'] = $material['warranty_end'];
+        $info['material_remark'] = $material['remark'];
 
         $status_map = [1 => '维修中', 2 => '已完成', 3 => '已报废'];
         $info['status_text'] = $status_map[$info['status']];
@@ -153,9 +154,10 @@ class Repair extends Admin
                 ['static', 'problem', '故障描述'],
                 ['static', 'status_text', '状态'],
                 ['static', 'repair_result', '维修结果'],
-                ['static', 'create_time', '创建时间', 'datetime'],
-                ['static', 'update_time', '更新时间', 'datetime']
+                ['static', 'create_time', '创建时间'],
+                ['static', 'update_time', '更新时间']
             ])
+            ->setExtraHtml('<div class="block"><div class="block-header bg-info"><h3 class="block-title"><i class="fa fa-info-circle mr-5"></i>物料信息</h3></div><div class="block-content"><table class="table table-bordered"><tr><th>存放位置</th><td>' . ($material['location'] ?: '-') . '</td></tr><tr><th>购入日期</th><td>' . ($material['purchase_date'] ?: '-') . '</td></tr><tr><th>销售方</th><td>' . ($material['seller'] ?: '-') . '</td></tr><tr><th>保修期截止</th><td>' . ($material['warranty_end'] ?: '-') . '</td></tr><tr><th>备注</th><td>' . ($material['remark'] ?: '-') . '</td></tr></table></div></div>')
             ->setFormData($info)
             ->fetch();
     }
