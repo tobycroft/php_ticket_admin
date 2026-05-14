@@ -37,7 +37,6 @@ class Outbound extends Admin
                 ['id', 'ID'],
                 ['code', '出库单号'],
                 ['type', '出库类型', $type_map],
-                ['status', '状态', ['已作废', '正常']],
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
