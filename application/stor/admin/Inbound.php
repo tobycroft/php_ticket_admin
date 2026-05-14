@@ -7,6 +7,7 @@ use app\common\builder\ZBuilder;
 use app\stor\model\InboundModel;
 use app\stor\model\InboundItemModel;
 use app\stor\model\MaterialModel;
+use app\stor\model\ProjectModel;
 use app\stor\model\StockModel;
 use app\stor\model\StockSnModel;
 
@@ -44,7 +45,7 @@ class Inbound extends Admin
             $data = $this->request->post();
 
             try {
-                $inboundId = InboundModel::add(['supplier' => $data['supplier'], 'remark' => $data['remark'], 'create_user' => UID]);
+                $inboundId = InboundModel::add(['supplier' => $data['supplier'], 'project_id' => $data['project_id'], 'remark' => $data['remark'], 'create_user' => UID]);
                 
                 $items = json_decode($data['items'], true);
                 InboundItemModel::addItems($inboundId, $items);
@@ -71,13 +72,20 @@ class Inbound extends Admin
         $material_list = MaterialModel::getList(['status' => 1]);
         $material_options = [];
         foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'] . '(' . $item['code'] . ')';
+            $material_options[$item['id']] = $item['name'];
+        }
+
+        $project_list = ProjectModel::getList(['status' => 1]);
+        $project_options = ['' => '请选择项目'];
+        foreach ($project_list as $item) {
+            $project_options[$item['id']] = $item['name'];
         }
 
         return ZBuilder::make('form')
             ->setPageTitle('新增入库')
             ->addFormItems([
                 ['text', 'supplier', '供应商'],
+                ['select', 'project_id', '所属项目', '', $project_options],
                 ['textarea', 'remark', '备注'],
                 ['hidden', 'items', '']
             ])

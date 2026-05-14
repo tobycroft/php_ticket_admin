@@ -5,8 +5,10 @@ namespace app\stor\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\stor\model\MaterialModel;
+use app\stor\model\MaterialSnModel;
 use app\stor\model\OutboundModel;
 use app\stor\model\OutboundItemModel;
+use app\stor\model\ProjectModel;
 use app\stor\model\StockModel;
 use app\stor\model\StockSnModel;
 
@@ -46,9 +48,24 @@ class Outbound extends Admin
             $data = $this->request->post();
 
             try {
-                $outboundId = OutboundModel::add(['type' => $data['type'], 'remark' => $data['remark'], 'create_user' => UID]);
-                
                 $items = json_decode($data['items'], true);
+                
+                foreach ($items as $item) {
+                    $stock = StockModel::getStock($item['material_id']);
+                    $availableQty = $stock['quantity'] ?? 0;
+                    
+                    $material = MaterialModel::getInfo($item['material_id']);
+                    if ($material['need_sn'] == 1) {
+                        $availableQty = MaterialSnModel::getAvailableCount($item['material_id']);
+                    }
+                    
+                    if ($item['quantity'] > $availableQty) {
+                        throw new \Exception('物料可用数量不足');
+                    }
+                }
+                
+                $outboundId = OutboundModel::add(['type' => $data['type'], 'project_id' => $data['project_id'], 'remark' => $data['remark'], 'create_user' => UID]);
+                
                 OutboundItemModel::addItems($outboundId, $items);
                 
                 foreach ($items as $item) {
@@ -77,13 +94,20 @@ class Outbound extends Admin
         $material_list = MaterialModel::getList(['status' => 1]);
         $material_options = [];
         foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'] . '(' . $item['code'] . ')';
+            $material_options[$item['id']] = $item['name'];
+        }
+
+        $project_list = ProjectModel::getList(['status' => 1]);
+        $project_options = ['' => '请选择项目'];
+        foreach ($project_list as $item) {
+            $project_options[$item['id']] = $item['name'];
         }
 
         return ZBuilder::make('form')
             ->setPageTitle('新增出库')
             ->addFormItems([
                 ['radio', 'type', '出库类型', '', ['领用', '维修', '报废'], 1],
+                ['select', 'project_id', '所属项目', '', $project_options],
                 ['textarea', 'remark', '备注'],
                 ['hidden', 'items', '']
             ])
