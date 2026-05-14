@@ -12,7 +12,7 @@ class OutboundModel extends Model
 
     public static function getList($map = [])
     {
-        return self::where($map)->order('id DESC')->select();
+        return self::where($map)->where('status', 1)->order('id DESC')->select();
     }
 
     public static function getInfo($id)
