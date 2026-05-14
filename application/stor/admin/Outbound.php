@@ -213,10 +213,12 @@ class Outbound extends Admin
         foreach ($items as $item) {
             $sns = [];
             if (!empty($item['sns'])) {
-                $sns = json_decode($item['sns'], true);
-                if (!is_array($sns)) {
-                    $sns = json_decode(trim($item['sns'], '"'), true);
+                $sns_str = trim($item['sns']);
+                if (strpos($sns_str, '"') === 0 && substr($sns_str, -1) === '"') {
+                    $sns_str = substr($sns_str, 1, -1);
                 }
+                $sns_str = stripslashes($sns_str);
+                $sns = json_decode($sns_str, true);
                 if (!is_array($sns)) {
                     $sns = [];
                 }
