@@ -22,14 +22,11 @@ class CategoryModel extends Model
 
     public static function add($data)
     {
-        $data['create_time'] = time();
-        $data['update_time'] = time();
         return self::insert($data);
     }
 
     public static function edit($data)
     {
-        $data['update_time'] = time();
         return self::where('id', $data['id'])->update($data);
     }
 

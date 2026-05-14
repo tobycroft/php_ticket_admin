@@ -30,16 +30,13 @@ class InventoryModel extends Model
     public static function add($data)
     {
         $data['code'] = self::generateCode();
-        $data['create_time'] = time();
-        $data['update_time'] = time();
         return self::insertGetId($data);
     }
 
     public static function complete($id)
     {
         return self::where('id', $id)->update([
-            'status' => 2,
-            'update_time' => time()
+            'status' => 2
         ]);
     }
 }

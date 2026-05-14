@@ -30,14 +30,11 @@ class InboundModel extends Model
     public static function add($data)
     {
         $data['code'] = self::generateCode();
-        $data['create_time'] = time();
-        $data['update_time'] = time();
         return self::insertGetId($data);
     }
 
     public static function edit($data)
     {
-        $data['update_time'] = time();
         return self::where('id', $data['id'])->update($data);
     }
 

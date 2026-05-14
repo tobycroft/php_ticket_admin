@@ -17,8 +17,6 @@ class StockModel extends Model
 
     public static function add($data)
     {
-        $data['create_time'] = time();
-        $data['update_time'] = time();
         return self::insert($data);
     }
 

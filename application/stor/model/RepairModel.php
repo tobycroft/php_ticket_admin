@@ -30,14 +30,11 @@ class RepairModel extends Model
     public static function add($data)
     {
         $data['code'] = self::generateCode();
-        $data['create_time'] = time();
-        $data['update_time'] = time();
         return self::insertGetId($data);
     }
 
     public static function edit($data)
     {
-        $data['update_time'] = time();
         return self::where('id', $data['id'])->update($data);
     }
 
@@ -45,8 +42,7 @@ class RepairModel extends Model
     {
         return self::where('id', $id)->update([
             'status' => 2,
-            'repair_result' => $result,
-            'update_time' => time()
+            'repair_result' => $result
         ]);
     }
 
@@ -54,8 +50,7 @@ class RepairModel extends Model
     {
         return self::where('id', $id)->update([
             'status' => 3,
-            'repair_result' => $result,
-            'update_time' => time()
+            'repair_result' => $result
         ]);
     }
 }

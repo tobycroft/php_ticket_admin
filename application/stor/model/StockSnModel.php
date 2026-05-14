@@ -17,9 +17,7 @@ class StockSnModel extends Model
             $data[] = [
                 'material_id' => $materialId,
                 'sn' => $sn,
-                'status' => 1,
-                'create_time' => time(),
-                'update_time' => time()
+                'status' => 1
             ];
         }
         return self::insertAll($data);

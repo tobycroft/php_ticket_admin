@@ -22,8 +22,6 @@ class MaterialModel extends Model
 
     public static function add($data)
     {
-        $data['create_time'] = time();
-        $data['update_time'] = time();
         $id = self::insertGetId($data);
         StockModel::add(['material_id' => $id]);
         return $id;
@@ -31,7 +29,6 @@ class MaterialModel extends Model
 
     public static function edit($data)
     {
-        $data['update_time'] = time();
         return self::where('id', $data['id'])->update($data);
     }
 
