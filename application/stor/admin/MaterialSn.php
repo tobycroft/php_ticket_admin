@@ -25,7 +25,7 @@ class MaterialSn extends Admin
         }
 
         $project_list = ProjectModel::getList(['status' => 1]);
-        $project_map = ['' => '未分配'];
+        $project_map = ['' => '未分配', '0' => '未分配'];
         foreach ($project_list as $item) {
             $project_map[$item['id']] = $item['name'];
         }
@@ -41,7 +41,7 @@ class MaterialSn extends Admin
                 ['project_id', '所属项目', $project_map],
                 ['status', '状态', ['已使用', '可用']],
                 ['remark', '备注'],
-                ['create_time', '创建时间', 'datetime'],
+                ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,delete')
