@@ -86,7 +86,6 @@ class InboundBatch extends Admin
                 ['id', 'ID'],
                 ['material_name', '导入物料'],
                 ['sn_count', '导入数量'],
-                ['sn_list', '导入SN码'],
                 ['remark', '备注'],
                 ['create_time', '导入时间'],
                 ['right_button', '操作', 'btn']
