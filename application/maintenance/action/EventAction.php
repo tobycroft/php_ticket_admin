@@ -309,6 +309,16 @@ class EventAction
         ];
     }
 
+    public static function getUnclosedEventCount()
+    {
+        $map = [
+            ['is_closed', '=', 0],
+            ['is_canceled', '=', 0],
+        ];
+        
+        return EventModel::where($map)->count();
+    }
+
     public static function getReceiveTypeList()
     {
         return EventModel::getReceiveTypeList();

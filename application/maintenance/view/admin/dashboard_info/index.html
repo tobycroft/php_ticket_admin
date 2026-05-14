@@ -102,7 +102,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="block">
                 <div class="block-header bg-gray-lighter">
                     <h3 class="block-title">
@@ -121,6 +121,31 @@
                         <div class="alert alert-success text-center py-10">
                             <i class="fa fa-check-circle fa-3x mr-5"></i>
                             <span class="text-xl">暂无正在处理的工单</span>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-danger">
+                    <h3 class="block-title">
+                        <i class="fa fa-exclamation-circle mr-5"></i>
+                        未结单工单
+                    </h3>
+                </div>
+                <div class="block-content">
+                    {if condition="$all_unclosed_count > 0"}
+                        <div class="alert alert-danger">
+                            <i class="fa fa-tasks fa-3x mr-5"></i>
+                            <span class="text-xl">系统共有 <strong>{$all_unclosed_count}</strong> 个未结单工单</span>
+                            <a href="{:url('EventUnfinished/index')}" class="btn btn-danger pull-right">查看详情</a>
+                        </div>
+                    {else}
+                        <div class="alert alert-success text-center py-10">
+                            <i class="fa fa-check-circle fa-3x mr-5"></i>
+                            <span class="text-xl">暂无未结单工单</span>
                         </div>
                     {/if}
                 </div>
