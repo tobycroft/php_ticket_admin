@@ -24,9 +24,10 @@ class Event extends Admin
         $priority_list = EventAction::getPriorityList();
 
         foreach ($data_list as &$item) {
-            $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
-            if ($item['is_closed'] == 0) {
-                $item['is_closed_text'] = '<span style="color:red; font-weight:bold;">未结单</span>';
+            if ($item['is_closed'] == 1) {
+                $item['is_closed_text'] = '<span style="color:green; font-weight:bold;"><i class="fa fa-check-circle"></i> 已结单</span>';
+            } else {
+                $item['is_closed_text'] = '<span style="color:red; font-weight:bold;"><i class="fa fa-exclamation-circle"></i> 未结单</span>';
             }
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
