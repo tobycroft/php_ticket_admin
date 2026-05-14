@@ -26,7 +26,7 @@
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th style="width:150px;">班次</th>
+                                            <th style="width:120px;">班次</th>
                                             <th class="text-center">星期一</th>
                                             <th class="text-center">星期二</th>
                                             <th class="text-center">星期三</th>
@@ -40,36 +40,35 @@
                                         {volist name="calendar_weeks" id="week" key="week_index"}
                                             {volist name="shift_list" id="shift" key="shift_key"}
                                                 <tr>
-                                                    <td style="vertical-align:middle; background-color:{$shift.color}; opacity:0.9;">
+                                                    <td style="vertical-align:middle; background-color:{$shift.color}; opacity:0.9; padding:4px;">
                                                         {eq name="shift_key" value="1"}
-                                                            <div style="color:#ffffff; font-weight:bold; padding:2px;">第{$week_index}周</div>
+                                                            <div style="color:#ffffff; font-weight:bold; font-size:12px;">第{$week_index}周</div>
                                                         {/eq}
-                                                        <div style="color:#ffffff; font-weight:bold; padding:2px;">{$shift.name}</div>
-                                                        <div style="color:rgba(255,255,255,0.8); font-size:11px; padding:0 2px;">{$shift.start_time} - {$shift.end_time}</div>
+                                                        <div style="color:#ffffff; font-weight:bold; font-size:13px;">{$shift.name}</div>
+                                                        <div style="color:rgba(255,255,255,0.8); font-size:10px;">{$shift.start_time}-{$shift.end_time}</div>
                                                     </td>
                                                     {volist name="week" id="day"}
                                                         {eq name="day.day" value="0"}
                                                             <td class="empty-cell"></td>
                                                         {else}
                                                             <td class="schedule-cell" data-date="{$day.date}">
-                                                                <div class="day-header">{$day.day}</div>
-                                                                <div class="shift-row" style="background-color:{$shift.color}; opacity:0.9; border-radius:3px; padding:4px;">
+                                                                {eq name="shift_key" value="1"}
+                                                                    <div class="day-header">{$day.day}</div>
+                                                                {/eq}
+                                                                <div class="shift-row" style="background-color:{$shift.color}; opacity:0.9; border-radius:2px; padding:3px;">
                                                                     {assign name="has_schedule" value="0"}
                                                                     {volist name="schedule_list" id="schedule"}
                                                                         {eq name="schedule.schedule_date" value="$day.date"}
                                                                             {eq name="schedule.shift_id" value="$shift.id"}
                                                                                 {assign name="has_schedule" value="1"}
-                                                                                <div class="schedule-item" style="background-color:{$schedule.user_color|default='#ffffff'}; padding:4px 6px; border-radius:2px;">
-                                                                                    <div style="font-weight:bold; font-size:13px; color:#ffffff;">{$schedule.user_name}</div>
-                                                                                    <div style="font-size:10px; color:#ffffff;">{$shift.start_time} - {$shift.end_time}</div>
+                                                                                <div class="schedule-item" style="background-color:{$schedule.user_color|default='#ffffff'}; padding:2px 4px; border-radius:2px;">
+                                                                                    <div style="font-weight:bold; font-size:12px; color:#ffffff;">{$schedule.user_name}</div>
                                                                                 </div>
                                                                             {/eq}
                                                                         {/eq}
                                                                     {/volist}
                                                                     {eq name="has_schedule" value="0"}
-                                                                        <div class="empty-schedule" style="color:rgba(255,255,255,0.7); font-size:12px; text-align:center;">
-                                                                            空班
-                                                                        </div>
+                                                                        <div class="empty-schedule" style="color:rgba(255,255,255,0.6); font-size:11px; text-align:center;">空</div>
                                                                     {/eq}
                                                                 </div>
                                                             </td>
@@ -91,21 +90,21 @@
 
 <style>
 .schedule-cell {
-    min-height: 60px;
+    min-height: 40px;
     vertical-align: top;
-    padding: 5px;
+    padding: 3px;
 }
 
 .day-header {
     font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px;
+    font-size: 14px;
     text-align: center;
     color: #333;
+    margin-bottom: 2px;
 }
 
 .schedule-item {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .empty-cell {
@@ -113,7 +112,7 @@
 }
 
 .shift-row {
-    min-height: 30px;
+    min-height: 24px;
 }
 
 .empty-schedule {
