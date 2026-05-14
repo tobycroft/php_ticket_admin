@@ -25,7 +25,7 @@ class MaterialSn extends Admin
         }
 
         $project_list = ProjectModel::getList(['status' => 1]);
-        $project_map = ['' => '未分配', '0' => '未分配'];
+        $project_map = ['' => '未分配', '0' => '未分配', '-1' => '维修中'];
         foreach ($project_list as $item) {
             $project_map[$item['id']] = $item['name'];
         }
@@ -39,7 +39,7 @@ class MaterialSn extends Admin
                 ['material_id', '所属物料', $material_map],
                 ['sn', 'SN码'],
                 ['project_id', '所属项目', $project_map],
-                ['status', '状态', ['已使用', '可用']],
+                ['status', '状态', ['已使用', '可用', '维修中', '已报废']],
                 ['remark', '备注'],
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
