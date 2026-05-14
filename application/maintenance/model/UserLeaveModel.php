@@ -19,10 +19,7 @@ class UserLeaveModel extends Model
 
     public static function getTypeList()
     {
-        return [
-            1 => '请假',
-            2 => '调休',
-        ];
+        return LeaveTypeModel::getTypeList();
     }
 
     public static function getStatusList()

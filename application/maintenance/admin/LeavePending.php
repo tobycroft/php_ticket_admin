@@ -36,6 +36,7 @@ class LeavePending extends Admin
                 ['start_date', '开始日期'],
                 ['end_date', '结束日期'],
                 ['reason', '理由'],
+                ['approver_name', '审核人'],
                 ['status_text', '状态'],
                 ['right_button', '操作', 'btn']
             ])
