@@ -36,7 +36,7 @@ class MaterialScrap extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('')
-            ->addRightButtons(['restore' => ['title' => '恢复', 'icon' => 'fa fa-recycle', 'class' => 'btn btn-xs btn-success', 'href' => url('restore', ['id' => '__id__'])], 'delete' => ['title' => '彻底删除', 'icon' => 'fa fa-remove', 'class' => 'btn btn-xs btn-danger', 'href' => url('delete', ['id' => '__id__'])]])))
+            ->addRightButtons(['restore' => ['title' => '恢复', 'icon' => 'fa fa-recycle', 'class' => 'btn btn-xs btn-success', 'href' => url('restore', ['id' => '__id__'])], 'delete' => ['title' => '彻底删除', 'icon' => 'fa fa-remove', 'class' => 'btn btn-xs btn-danger', 'href' => url('delete', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
