@@ -51,7 +51,6 @@ class Repair extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            try {
                 $sn = $data['sn'];
                 if (is_array($sn)) {
                     $sn = $sn[0];
@@ -70,12 +69,6 @@ class Repair extends Admin
                 ]);
 
                 StockSnModel::useSn($snInfo['material_id'], $sn);
-            } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
-                $this->error($e->getMessage());
-            }
 
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '维修申请已提交', 'url' => url('index')]);
