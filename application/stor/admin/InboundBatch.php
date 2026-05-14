@@ -5,6 +5,7 @@ namespace app\stor\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\stor\model\CategoryModel;
+use app\stor\model\InboundBatchRecordModel;
 use app\stor\model\MaterialModel;
 use app\stor\model\MaterialSnModel;
 
@@ -22,6 +23,16 @@ class InboundBatch extends Admin
                     $sns = array_unique($sns);
                     $remark = isset($data['remark']) ? $data['remark'] : '';
                     MaterialSnModel::addBatch($data['material_id'], $sns, $remark);
+
+                    $material = MaterialModel::getInfo($data['material_id']);
+                    InboundBatchRecordModel::add([
+                        'material_id' => $data['material_id'],
+                        'material_name' => $material['name'],
+                        'sn_count' => count($sns),
+                        'sn_list' => implode(',', $sns),
+                        'remark' => $remark,
+                        'create_user' => UID
+                    ]);
                 } else {
                     throw new \Exception('请输入SN码');
                 }
@@ -58,6 +69,57 @@ class InboundBatch extends Admin
                 ['textarea', 'sns', 'SN码', '每行一个SN码'],
                 ['textarea', 'remark', '备注']
             ])
+            ->fetch();
+    }
+
+    public function record()
+    {
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        $data_list = InboundBatchRecordModel::getList();
+
+        return ZBuilder::make('table')
+            ->setPageTitle('批量入库记录')
+            ->setTableName('stor_inbound_batch_record')
+            ->setSearch(['material_name' => '物料名称'])
+            ->addColumns([
+                ['id', 'ID'],
+                ['material_name', '导入物料'],
+                ['sn_count', '导入数量'],
+                ['sn_list', '导入SN码'],
+                ['remark', '备注'],
+                ['create_time', '导入时间'],
+                ['right_button', '操作', 'btn']
+            ])
+            ->addTopButtons('')
+            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('recordDetail', ['id' => '__id__'])]])
+            ->setRowList($data_list)
+            ->fetch();
+    }
+
+    public function recordDetail($id = null)
+    {
+        if ($id === null) {
+            $this->error('缺少参数');
+        }
+
+        $info = InboundBatchRecordModel::getInfo($id);
+        if (!$info) {
+            $this->error('记录不存在');
+        }
+
+        $info['sn_list'] = str_replace(',', '<br>', $info['sn_list']);
+
+        return ZBuilder::make('form')
+            ->setPageTitle('批量入库记录详情')
+            ->addFormItems([
+                ['static', 'material_name', '导入物料'],
+                ['static', 'sn_count', '导入数量'],
+                ['static', 'sn_list', '导入SN码'],
+                ['static', 'remark', '备注'],
+                ['static', 'create_time', '导入时间']
+            ])
+            ->setFormData($info)
             ->fetch();
     }
 }
