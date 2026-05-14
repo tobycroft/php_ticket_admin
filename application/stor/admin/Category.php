@@ -17,11 +17,11 @@ class Category extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('物料分类')
             ->setTableName('stor_category')
-            ->setSearch(['name' => '分类名称', 'code' => '分类编码'])
+            ->setSearch(['name' => '分类名称'])
             ->addColumns([
                 ['id', 'ID'],
                 ['name', '分类名称'],
-                ['code', '分类编码'],
+                ['remark', '备注'],
                 ['sort', '排序'],
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
@@ -36,13 +36,6 @@ class Category extends Admin
     {
         if ($this->request->isPost()) {
             $data = $this->request->post();
-
-            if (CategoryModel::checkCodeExists($data['code'])) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => '分类编码已存在']);
-                }
-                $this->error('分类编码已存在');
-            }
 
             try {
                 CategoryModel::add($data);
@@ -63,7 +56,7 @@ class Category extends Admin
             ->setPageTitle('新增分类')
             ->addFormItems([
                 ['text', 'name', '分类名称', '必填'],
-                ['text', 'code', '分类编码', '必填，唯一'],
+                ['textarea', 'remark', '备注'],
                 ['text', 'sort', '排序', '', 0],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
@@ -81,13 +74,6 @@ class Category extends Admin
 
         if ($this->request->isPost()) {
             $data = $this->request->post();
-
-            if (CategoryModel::checkCodeExists($data['code'], $data['id'])) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => '分类编码已存在']);
-                }
-                $this->error('分类编码已存在');
-            }
 
             try {
                 CategoryModel::edit($data);
@@ -111,7 +97,7 @@ class Category extends Admin
             ->addFormItems([
                 ['hidden', 'id'],
                 ['text', 'name', '分类名称', '必填'],
-                ['text', 'code', '分类编码', '必填，唯一'],
+                ['textarea', 'remark', '备注'],
                 ['text', 'sort', '排序'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
             ])
