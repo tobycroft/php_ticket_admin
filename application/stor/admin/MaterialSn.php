@@ -44,7 +44,7 @@ class MaterialSn extends Admin
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add,delete')
+            ->addTopButtons('')
             ->addRightButtons(['edit', 'delete', 'scrap' => ['title' => '报废', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['ids' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
