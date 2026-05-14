@@ -64,8 +64,6 @@ class Outbound extends Admin
                 
                 OutboundItemModel::addItems($outboundId, [['material_id' => $materialId, 'quantity' => count($sns), 'sns' => json_encode($sns)]]);
                 
-                StockModel::reduceStock($materialId, count($sns));
-                
                 if ($data['type'] == 3) {
                     StockSnModel::deleteSn($materialId, $sns);
                     MaterialSnModel::where('material_id', $materialId)->where('sn', 'in', $sns)->update(['status' => 3, 'project_id' => null]);
