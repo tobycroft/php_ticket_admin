@@ -8,7 +8,7 @@ use app\stor\model\CategoryModel;
 use app\stor\model\MaterialModel;
 use app\stor\model\MaterialSnModel;
 
-class BatchInbound extends Admin
+class InboundBatch extends Admin
 {
     public function add()
     {
