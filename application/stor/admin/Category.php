@@ -26,8 +26,8 @@ class Category extends Admin
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons(['add', 'enable', 'disable', 'scrap' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-danger', 'href' => url('scrapes')]])
-            ->addRightButtons(['edit', 'scrap' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])]])
+            ->addTopButtons('add,enable,disable,scrap')
+            ->addRightButtons('edit,scrap')
             ->setRowList($data_list)
             ->fetch();
     }
@@ -105,29 +105,11 @@ class Category extends Admin
             ->fetch();
     }
 
-    public function scrap($id = null)
+    public function scrap($ids = [])
     {
-        if ($id === null) {
-            $id = $this->request->param('id');
+        if (empty($ids)) {
+            $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         }
-        
-        try {
-            CategoryModel::scrap($id);
-        } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
-        }
-        if ($this->request->isAjax()) {
-            return json(['code' => 1, 'msg' => '作废成功']);
-        }
-        $this->success('作废成功');
-    }
-
-    public function scrapes()
-    {
-        $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
 
         try {
@@ -141,9 +123,9 @@ class Category extends Admin
             $this->error($e->getMessage());
         }
         if ($this->request->isAjax()) {
-            return json(['code' => 1, 'msg' => '批量作废成功']);
+            return json(['code' => 1, 'msg' => '作废成功']);
         }
-        $this->success('批量作废成功');
+        $this->success('作废成功');
     }
 
     public function enable($ids = [])
