@@ -42,8 +42,8 @@ class Material extends Admin
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add,enable,disable,delete')
-            ->addRightButtons('edit,delete')
+            ->addTopButtons('add,enable,disable')
+            ->addRightButtons(['edit', 'scrap' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -148,23 +148,24 @@ class Material extends Admin
             ->fetch();
     }
 
-    public function delete($ids = [])
+    public function scrap($id = null)
     {
-        $ids = (array)$ids;
-        foreach ($ids as $id) {
-            try {
-                MaterialModel::deleteById($id);
-            } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
-                $this->error($e->getMessage());
+        if ($id === null) {
+            $id = $this->request->param('id');
+        }
+
+        try {
+            MaterialModel::scrap($id);
+        } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
+            $this->error($e->getMessage());
         }
         if ($this->request->isAjax()) {
-            return json(['code' => 1, 'msg' => '删除成功']);
+            return json(['code' => 1, 'msg' => '作废成功']);
         }
-        $this->success('删除成功');
+        $this->success('作废成功');
     }
 
     public function enable($ids = [])

@@ -12,7 +12,7 @@ class MaterialModel extends Model
 
     public static function getList($map = [])
     {
-        return self::where($map)->order('id DESC')->select();
+        return self::where($map)->whereIn('status', [0, 1])->order('id DESC')->select();
     }
 
     public static function getInfo($id)
@@ -55,5 +55,20 @@ class MaterialModel extends Model
             $map['id'] = ['neq', $id];
         }
         return self::where($map)->count() > 0;
+    }
+
+    public static function scrap($id)
+    {
+        return self::where('id', $id)->update(['status' => 2]);
+    }
+
+    public static function getScrapList()
+    {
+        return self::where('status', 2)->order('id DESC')->select();
+    }
+
+    public static function restore($id)
+    {
+        return self::where('id', $id)->update(['status' => 1]);
     }
 }
