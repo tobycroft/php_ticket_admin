@@ -53,34 +53,35 @@ class Outbound extends Admin
             $data = $this->request->post();
 
             try {
-                $items = json_decode($data['items'], true);
+                $sns = $data['sns'] ?? [];
                 
-                foreach ($items as $item) {
-                    $stock = StockModel::getStock($item['material_id']);
-                    $availableQty = $stock['quantity'] ?? 0;
-                    
-                    $material = MaterialModel::getInfo($item['material_id']);
-                    if ($material['need_sn'] == 1) {
-                        $availableQty = MaterialSnModel::getAvailableCount($item['material_id']);
-                    }
-                    
-                    if ($item['quantity'] > $availableQty) {
-                        throw new \Exception('物料可用数量不足');
-                    }
+                if (empty($sns)) {
+                    throw new \Exception('请选择SN码');
+                }
+                
+                $materialId = $data['material_id'];
+                $material = MaterialModel::getInfo($materialId);
+                
+                $availableQty = MaterialSnModel::getAvailableCount($materialId);
+                if (count($sns) > $availableQty) {
+                    throw new \Exception('物料可用数量不足');
                 }
                 
                 $outboundId = OutboundModel::add(['type' => $data['type'], 'project_id' => $data['project_id'], 'remark' => $data['remark'], 'create_user' => UID]);
                 
-                OutboundItemModel::addItems($outboundId, $items);
+                OutboundItemModel::addItems($outboundId, [['material_id' => $materialId, 'quantity' => count($sns), 'sns' => json_encode($sns)]]);
                 
-                foreach ($items as $item) {
-                    StockModel::reduceStock($item['material_id'], $item['quantity']);
-                    if (!empty($item['sns'])) {
-                        if ($data['type'] == 3) {
-                            StockSnModel::deleteSn($item['material_id'], $item['sns']);
-                        } else {
-                            StockSnModel::useSn($item['material_id'], $item['sns']);
-                        }
+                StockModel::reduceStock($materialId, count($sns));
+                
+                if ($data['type'] == 3) {
+                    StockSnModel::deleteSn($materialId, $sns);
+                    MaterialSnModel::where('material_id', $materialId)->where('sn', 'in', $sns)->update(['status' => 3, 'project_id' => null]);
+                } else {
+                    StockSnModel::useSn($materialId, $sns);
+                    if (!empty($data['project_id'])) {
+                        MaterialSnModel::where('material_id', $materialId)->where('sn', 'in', $sns)->update(['project_id' => $data['project_id'], 'status' => 1]);
+                    } else {
+                        MaterialSnModel::where('material_id', $materialId)->where('sn', 'in', $sns)->update(['status' => 1]);
                     }
                 }
             } catch (\Exception $e) {
@@ -97,9 +98,9 @@ class Outbound extends Admin
         }
 
         $material_list = MaterialModel::getList(['status' => 1]);
-        $material_options = [];
+        $material_options = ['' => '请选择物料'];
         foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'];
+            $material_options[$item['id']] = $item['name'] . ' (' . $item['category_id'] . ') - ' . $item['seller'];
         }
 
         $project_list = ProjectModel::getList(['status' => 1]);
@@ -119,11 +120,64 @@ class Outbound extends Admin
             ->addFormItems([
                 ['select', 'type', '出库类型', '', $type_options],
                 ['select', 'project_id', '所属项目', '', $project_options],
+                ['select', 'material_id', '物料列表', '', $material_options],
                 ['textarea', 'remark', '备注'],
-                ['hidden', 'items', '']
+                ['hidden', 'sns', '']
             ])
-            ->setExtraHtml('<div id="outbound-items"></div>')
+            ->setExtraHtml('<div id="sn-list-container" style="display: none;"><div class="form-group"><label class="col-sm-2 control-label">可用SN码</label><div class="col-sm-10"><div class="checkbox-list" id="sn-checkboxes"></div><div class="mt-2"><button type="button" class="btn btn-xs btn-default" id="select-all">全选</button><button type="button" class="btn btn-xs btn-default" id="deselect-all">取消全选</button></div></div></div></div>')
+            ->setExtraJs("
+                $('#material_id').change(function() {
+                    var materialId = $(this).val();
+                    if (materialId) {
+                        $.get('" . url('getAvailableSns') . "', {material_id: materialId}, function(data) {
+                            if (data.code == 1) {
+                                var html = '';
+                                if (data.data.length > 0) {
+                                    $.each(data.data, function(index, item) {
+                                        html += '<label class=\"checkbox-inline\"><input type=\"checkbox\" name=\"sns[]\" value=\"' + item.sn + '\"> ' + item.sn + '</label>';
+                                    });
+                                    $('#sn-checkboxes').html(html);
+                                    $('#sn-list-container').show();
+                                } else {
+                                    $('#sn-checkboxes').html('<div class=\"alert alert-info\">该物料暂无可用SN码</div>');
+                                    $('#sn-list-container').show();
+                                }
+                            } else {
+                                $('#sn-checkboxes').html('<div class=\"alert alert-danger\">' + data.msg + '</div>');
+                                $('#sn-list-container').show();
+                            }
+                        }, 'json');
+                    } else {
+                        $('#sn-list-container').hide();
+                    }
+                });
+                
+                $('#select-all').click(function() {
+                    $('input[name=\"sns[]\"]').prop('checked', true);
+                });
+                
+                $('#deselect-all').click(function() {
+                    $('input[name=\"sns[]\"]').prop('checked', false);
+                });
+            ")
             ->fetch();
+    }
+
+    public function getAvailableSns()
+    {
+        $materialId = $this->request->get('material_id');
+        
+        if (!$materialId) {
+            return json(['code' => 0, 'msg' => '缺少参数']);
+        }
+        
+        $sns = MaterialSnModel::where('material_id', $materialId)
+            ->where('status', 0)
+            ->where('project_id', 0)
+            ->field('sn')
+            ->select();
+        
+        return json(['code' => 1, 'data' => $sns]);
     }
 
     public function edit($id = null)
