@@ -23,11 +23,7 @@ class MaterialModel extends Model
 
     public static function getCurrentStock($materialId)
     {
-        $stock = StockModel::getInfo($materialId);
-        if ($stock) {
-            return $stock['quantity'];
-        }
-        return 0;
+        return MaterialSnModel::getAvailableCount($materialId);
     }
 
     public static function getInfo($id)
