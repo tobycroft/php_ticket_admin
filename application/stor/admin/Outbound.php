@@ -104,7 +104,7 @@ class Outbound extends Admin
         return $this->fetch('outbound_add');
     }
 
-    public function getAvailableSns()
+    public function avails()
     {
         $materialId = $this->request->get('material_id');
         

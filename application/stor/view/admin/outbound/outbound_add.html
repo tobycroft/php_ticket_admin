@@ -131,7 +131,7 @@
                 snSelectArea.innerHTML = '<div class="alert alert-info">加载中...</div>';
                 
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', '{:url("getAvailableSns")}' + '?material_id=' + materialId, true);
+                xhr.open('GET', '{:url("avails")}' + '?material_id=' + materialId, true);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         try {
