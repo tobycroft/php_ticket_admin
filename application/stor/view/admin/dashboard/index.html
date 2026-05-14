@@ -1,0 +1,145 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                <i class="fa fa-dashboard mr-5"></i>
+                信息面板
+                <small>Dashboard</small>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-primary">
+                    <h3 class="block-title">
+                        <i class="fa fa-cubes mr-5"></i>
+                        物料数量
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-primary">
+                        <i class="fa fa-box fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$material_count}</div>
+                        <p class="text-lg mt-5">当前物料总数</p>
+                    </div>
+                    <a href="{:url('Material/index')}" class="btn btn-primary mt-10">查看详情</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-danger">
+                    <h3 class="block-title">
+                        <i class="fa fa-trash mr-5"></i>
+                        作废物料
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-danger">
+                        <i class="fa fa-trash-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$scrap_material_count}</div>
+                        <p class="text-lg mt-5">已作废物料数量</p>
+                    </div>
+                    <a href="{:url('MaterialScrap/index')}" class="btn btn-danger mt-10">查看详情</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-success">
+                    <h3 class="block-title">
+                        <i class="fa fa-folder mr-5"></i>
+                        物料分类
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-success">
+                        <i class="fa fa-folder-open fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$category_count}</div>
+                        <p class="text-lg mt-5">物料分类数量</p>
+                    </div>
+                    <a href="{:url('Category/index')}" class="btn btn-success mt-10">查看详情</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-info">
+                    <h3 class="block-title">
+                        <i class="fa fa-folder-open mr-5"></i>
+                        项目数量
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-info">
+                        <i class="fa fa-building fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$project_count}</div>
+                        <p class="text-lg mt-5">项目总数</p>
+                    </div>
+                    <a href="{:url('Project/index')}" class="btn btn-info mt-10">查看详情</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-warning">
+                    <h3 class="block-title">
+                        <i class="fa fa-database mr-5"></i>
+                        库存总量
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-warning">
+                        <i class="fa fa-warehouse fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$stock_total}</div>
+                        <p class="text-lg mt-5">当前库存总量</p>
+                    </div>
+                    <a href="{:url('Stock/index')}" class="btn btn-warning mt-10">查看库存</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">
+                        <i class="fa fa-exchange mr-5"></i>
+                        今日出入库
+                    </h3>
+                </div>
+                <div class="block-content">
+                    <div class="row">
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-success">
+                                <i class="fa fa-arrow-down fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$today_inbound_count}</div>
+                                <p>今日入库</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-danger">
+                                <i class="fa fa-arrow-up fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$today_outbound_count}</div>
+                                <p>今日出库</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <a href="{:url('Inbound/index')}" class="btn btn-success mr-5">入库管理</a>
+                        <a href="{:url('Outbound/index')}" class="btn btn-danger">出库管理</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
