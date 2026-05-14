@@ -33,16 +33,22 @@ class StockSnModel extends Model
         if (!is_array($sns)) {
             $sns = [$sns];
         }
-        return self::where(['material_id' => $materialId, 'sn' => ['in', $sns]])->update(['status' => 0]);
+        return self::where('material_id', $materialId)->whereIn('sn', $sns)->update(['status' => 0]);
     }
 
     public static function returnSn($materialId, $sns)
     {
-        return self::where(['material_id' => $materialId, 'sn' => ['in', $sns]])->update(['status' => 1]);
+        if (!is_array($sns)) {
+            $sns = [$sns];
+        }
+        return self::where('material_id', $materialId)->whereIn('sn', $sns)->update(['status' => 1]);
     }
 
     public static function deleteSn($materialId, $sns)
     {
-        return self::where(['material_id' => $materialId, 'sn' => ['in', $sns]])->delete();
+        if (!is_array($sns)) {
+            $sns = [$sns];
+        }
+        return self::where('material_id', $materialId)->whereIn('sn', $sns)->delete();
     }
 }
