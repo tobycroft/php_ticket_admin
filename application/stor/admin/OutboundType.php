@@ -134,7 +134,7 @@ class OutboundType extends Admin
         return $this->setStatus('disable');
     }
 
-    public function setStatus($type = '')
+    public function setStatus($type = '', $record = [])
     {
         $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
