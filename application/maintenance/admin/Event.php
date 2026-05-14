@@ -25,6 +25,9 @@ class Event extends Admin
 
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            if ($item['is_closed'] == 0) {
+                $item['is_closed_text'] = '<span style="color:red; font-weight:bold;">未结单</span>';
+            }
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
             $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
@@ -42,14 +45,14 @@ class Event extends Admin
             ->addTimeFilter('start_time', '开始时间')
             ->addColumns([
                 ['id', 'ID'],
-                ['title', '事件标题'],
-                ['creator_name', '发单人'],
-                ['receiver_name', '接单人'],
-                ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],
+                ['receiver_name', '接单人'],
+                ['creator_name', '发单人'],
+                ['customer_name', '对接客户'],
+                ['title', '事件标题'],
                 ['priority_text', '优先级'],
                 ['is_canceled_text', '状态'],
-                ['is_closed_text', '结单状态'],
+                ['is_closed_text', '结单状态', 'raw'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
