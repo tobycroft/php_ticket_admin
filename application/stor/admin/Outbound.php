@@ -125,41 +125,41 @@ class Outbound extends Admin
                 ['hidden', 'sns', '']
             ])
             ->setExtraHtml('<div id="sn-list-container" style="display: none;"><div class="form-group"><label class="col-sm-2 control-label">可用SN码</label><div class="col-sm-10"><div class="checkbox-list" id="sn-checkboxes"></div><div class="mt-2"><button type="button" class="btn btn-xs btn-default" id="select-all">全选</button><button type="button" class="btn btn-xs btn-default" id="deselect-all">取消全选</button></div></div></div></div>')
-            ->setExtraJs("
-                $('#material_id').change(function() {
+            ->setExtraJs('
+                $(document).on("change", "#material_id", function() {
                     var materialId = $(this).val();
                     if (materialId) {
-                        $.get('" . url('getAvailableSns') . "', {material_id: materialId}, function(data) {
+                        $.get("' . url('getAvailableSns') . '", {material_id: materialId}, function(data) {
                             if (data.code == 1) {
-                                var html = '';
+                                var html = "";
                                 if (data.data.length > 0) {
                                     $.each(data.data, function(index, item) {
-                                        html += '<label class=\"checkbox-inline\"><input type=\"checkbox\" name=\"sns[]\" value=\"' + item.sn + '\"> ' + item.sn + '</label>';
+                                        html += "<label class=\"checkbox-inline\"><input type=\"checkbox\" name=\"sns[]\" value=\"" + item.sn + "\"> " + item.sn + "</label>";
                                     });
-                                    $('#sn-checkboxes').html(html);
-                                    $('#sn-list-container').show();
+                                    $("#sn-checkboxes").html(html);
+                                    $("#sn-list-container").show();
                                 } else {
-                                    $('#sn-checkboxes').html('<div class=\"alert alert-info\">该物料暂无可用SN码</div>');
-                                    $('#sn-list-container').show();
+                                    $("#sn-checkboxes").html("<div class=\"alert alert-info\">该物料暂无可用SN码</div>");
+                                    $("#sn-list-container").show();
                                 }
                             } else {
-                                $('#sn-checkboxes').html('<div class=\"alert alert-danger\">' + data.msg + '</div>');
-                                $('#sn-list-container').show();
+                                $("#sn-checkboxes").html("<div class=\"alert alert-danger\">" + data.msg + "</div>");
+                                $("#sn-list-container").show();
                             }
-                        }, 'json');
+                        }, "json");
                     } else {
-                        $('#sn-list-container').hide();
+                        $("#sn-list-container").hide();
                     }
                 });
                 
-                $('#select-all').click(function() {
-                    $('input[name=\"sns[]\"]').prop('checked', true);
+                $(document).on("click", "#select-all", function() {
+                    $("input[name=\"sns[]\"]").prop("checked", true);
                 });
                 
-                $('#deselect-all').click(function() {
-                    $('input[name=\"sns[]\"]').prop('checked', false);
+                $(document).on("click", "#deselect-all", function() {
+                    $("input[name=\"sns[]\"]").prop("checked", false);
                 });
-            ")
+            ')
             ->fetch();
     }
 
