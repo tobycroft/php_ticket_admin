@@ -45,7 +45,7 @@ class Category extends Admin
                 }
                 $this->error($e->getMessage());
             }
-            
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '新增成功', 'url' => url('index')]);
             }
@@ -83,7 +83,7 @@ class Category extends Admin
                 }
                 $this->error($e->getMessage());
             }
-            
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '编辑成功', 'url' => cookie('__forward__')]);
             }
@@ -105,18 +105,15 @@ class Category extends Admin
             ->fetch();
     }
 
-    public function scrap($ids = [])
+    public function scrap($id)
     {
-        $ids = (array)$ids;
-        foreach ($ids as $id) {
-            try {
-                CategoryModel::scrap($id);
-            } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
-                $this->error($e->getMessage());
+        try {
+            CategoryModel::scrap($id);
+        } catch (\Exception $e) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
+            $this->error($e->getMessage());
         }
         if ($this->request->isAjax()) {
             return json(['code' => 1, 'msg' => '作废成功']);
