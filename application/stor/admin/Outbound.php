@@ -211,9 +211,15 @@ class Outbound extends Admin
     {
         $html = '<table class="table table-bordered"><thead><tr><th>物料</th><th>数量</th><th>SN码</th><th>备注</th></tr></thead><tbody>';
         foreach ($items as $item) {
-            $sns = !empty($item['sns']) ? json_decode($item['sns'], true) : [];
-            if (!is_array($sns)) {
-                $sns = [];
+            $sns = [];
+            if (!empty($item['sns'])) {
+                $sns = json_decode($item['sns'], true);
+                if (!is_array($sns)) {
+                    $sns = json_decode(trim($item['sns'], '"'), true);
+                }
+                if (!is_array($sns)) {
+                    $sns = [];
+                }
             }
             $html .= '<tr><td>' . $item['material_name'] . '</td><td>' . $item['quantity'] . '</td><td>' . implode(',', $sns) . '</td><td>' . ($item['remark'] ?? '') . '</td></tr>';
         }
