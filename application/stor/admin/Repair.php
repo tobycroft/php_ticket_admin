@@ -51,29 +51,20 @@ class Repair extends Admin
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
-            try {
-                $sn = is_array($data['sn']) ? $data['sn'][0] : $data['sn'];
-                
-                $snInfo = MaterialSnModel::where('sn', $sn)->where('status', 1)->find();
+                $snInfo = MaterialSnModel::where('sn', $data['sn'])->where('status', 1)->find();
                 if (!$snInfo) {
                     throw new \Exception('SN码不存在或已被使用');
                 }
-                
+
                 RepairModel::add([
                     'material_id' => $snInfo['material_id'],
-                    'sn' => $sn,
+                    'sn' => $data['sn'],
                     'problem' => $data['problem'],
                     'create_user' => UID
                 ]);
-                
-                StockSnModel::useSn($snInfo['material_id'], [$sn]);
-            } catch (\Exception $e) {
-                if ($this->request->isAjax()) {
-                    return json(['code' => 0, 'msg' => $e->getMessage()]);
-                }
-                $this->error($e->getMessage());
-            }
-            
+
+                StockSnModel::useSn($snInfo['material_id'], [$data['sn']]);
+
             if ($this->request->isAjax()) {
                 return json(['code' => 1, 'msg' => '维修申请已提交', 'url' => url('index')]);
             }
