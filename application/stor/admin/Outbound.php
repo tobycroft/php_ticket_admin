@@ -97,79 +97,11 @@ class Outbound extends Admin
             $this->success('出库成功', url('index'));
         }
 
-        $material_list = MaterialModel::getList(['status' => 1]);
-        $material_options = ['' => '请选择物料'];
-        $material_ids = [];
-        foreach ($material_list as $item) {
-            $material_options[$item['id']] = $item['name'] . ' (' . $item['category_id'] . ') - ' . $item['seller'];
-            $material_ids[] = $item['id'];
-        }
-
-        $project_list = ProjectModel::getList(['status' => 1]);
-        $project_options = ['' => '请选择项目'];
-        foreach ($project_list as $item) {
-            $project_options[$item['id']] = $item['name'];
-        }
-
-        $type_list = OutboundTypeModel::getList(['status' => 1]);
-        $type_options = [];
-        foreach ($type_list as $item) {
-            $type_options[$item['id']] = $item['name'];
-        }
-
-        $builder = ZBuilder::make('form')
-            ->setPageTitle('新增出库')
-            ->addFormItems([
-                ['select', 'type', '出库类型', '', $type_options],
-                ['select', 'project_id', '所属项目', '', $project_options],
-                ['select', 'material_id', '物料列表', '', $material_options],
-                ['textarea', 'remark', '备注']
-            ])
-            ->setExtraHtml('<div id=\"sn-container\" style=\"display: none;\"><div class=\"form-group\"><label class=\"col-sm-2 control-label\">可用SN码</label><div class=\"col-sm-10\"><div id=\"sn-select-area\"><div class=\"alert alert-info\">请先选择物料</div></div></div></div></div>');
-
-        foreach ($material_ids as $mid) {
-            $builder->setTrigger('material_id', $mid, 'sn-container');
-        }
-
-        return $builder->setExtraJs("
-            $('#material_id').on('change', function() {
-                var materialId = $(this).val();
-                if (materialId) {
-                    $.ajax({
-                        url: '" . url('getAvailableSns') . "',
-                        type: 'GET',
-                        data: {material_id: materialId},
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.code == 1) {
-                                var html = '';
-                                if (data.data.length > 0) {
-                                    html = '<table class=\"table table-striped table-bordered table-sm\"><thead><tr><th width=\"30\"><input type=\"checkbox\" id=\"check-all-sn\"></th><th>SN码</th></tr></thead><tbody>';
-                                    $.each(data.data, function(index, item) {
-                                        html += '<tr><td><input type=\"checkbox\" name=\"sns[]\" value=\"' + item.sn + '\"></td><td>' + item.sn + '</td></tr>';
-                                    });
-                                    html += '</tbody></table>';
-                                } else {
-                                    html = '<div class=\"alert alert-warning\">该物料暂无可用SN码</div>';
-                                }
-                                $('#sn-select-area').html(html);
-                                
-                                $('#check-all-sn').on('click', function() {
-                                    $('input[name=\"sns[]\"]').prop('checked', this.checked);
-                                });
-                            } else {
-                                $('#sn-select-area').html('<div class=\"alert alert-danger\">' + data.msg + '</div>');
-                            }
-                        },
-                        error: function() {
-                            $('#sn-select-area').html('<div class=\"alert alert-danger\">加载SN码失败</div>');
-                        }
-                    });
-                } else {
-                    $('#sn-select-area').html('<div class=\"alert alert-info\">请先选择物料</div>');
-                }
-            });
-        ")->fetch();
+        $this->assign('material_list', MaterialModel::getList(['status' => 1]));
+        $this->assign('project_list', ProjectModel::getList(['status' => 1]));
+        $this->assign('type_list', OutboundTypeModel::getList(['status' => 1]));
+        
+        return $this->fetch('outbound_add');
     }
 
     public function getAvailableSns()
