@@ -59,9 +59,10 @@ class MaterialSn extends Admin
                 if (!empty($data['sns'])) {
                     $sns = explode("\n", $data['sns']);
                     $sns = array_filter(array_map('trim', $sns));
+                    $sns = array_unique($sns);
                     MaterialSnModel::addBatch($data['material_id'], $sns);
                 } else {
-                    MaterialSnModel::add($data);
+                    throw new \Exception('请输入SN码');
                 }
             } catch (\Exception $e) {
                 if ($this->request->isAjax()) {
@@ -86,8 +87,7 @@ class MaterialSn extends Admin
             ->setPageTitle('新增SN码')
             ->addFormItems([
                 ['select', 'material_id', '所属物料', '必填', $material_options],
-                ['text', 'sn', 'SN码', '单个SN码'],
-                ['textarea', 'sns', '批量SN码', '每行一个SN码，批量添加时此项生效'],
+                ['textarea', 'sns', 'SN码', '每行一个SN码'],
                 ['textarea', 'remark', '备注']
             ])
             ->fetch();

@@ -29,17 +29,41 @@ class MaterialSnModel extends Model
 
     public static function addBatch($materialId, $sns)
     {
+        if (empty($sns)) {
+            return 0;
+        }
+        
+        $existingSns = self::where('material_id', $materialId)
+            ->where('sn', 'in', $sns)
+            ->column('sn');
+        
+        $existingSns = array_flip($existingSns);
+        
         $data = [];
         foreach ($sns as $sn) {
-            $data[] = [
-                'material_id' => $materialId,
-                'sn' => $sn,
-                'status' => 1,
-                'create_time' => date('Y-m-d H:i:s'),
-                'update_time' => date('Y-m-d H:i:s')
-            ];
+            if (!isset($existingSns[$sn])) {
+                $data[] = [
+                    'material_id' => $materialId,
+                    'sn' => $sn,
+                    'status' => 1
+                ];
+            }
         }
-        return self::insertAll($data);
+        
+        if (empty($data)) {
+            return 0;
+        }
+        
+        $model = new self();
+        $model->startTrans();
+        try {
+            $result = $model->insertAll($data);
+            $model->commit();
+            return $result;
+        } catch (\Exception $e) {
+            $model->rollback();
+            throw $e;
+        }
     }
 
     public static function edit($data)
