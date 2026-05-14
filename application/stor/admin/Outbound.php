@@ -123,12 +123,12 @@ class Outbound extends Admin
                 ['select', 'type', '出库类型', '', $type_options],
                 ['select', 'project_id', '所属项目', '', $project_options],
                 ['select', 'material_id', '物料列表', '', $material_options],
-                ['textarea', 'remark', '备注'],
-                ['html', 'sn_container', '', '<div id="sn-select-area"><div class="alert alert-info">请先选择物料</div></div>']
-            ]);
+                ['textarea', 'remark', '备注']
+            ])
+            ->setExtraHtml('<div id=\"sn-container\" style=\"display: none;\"><div class=\"form-group\"><label class=\"col-sm-2 control-label\">可用SN码</label><div class=\"col-sm-10\"><div id=\"sn-select-area\"><div class=\"alert alert-info\">请先选择物料</div></div></div></div></div>');
 
         foreach ($material_ids as $mid) {
-            $builder->setTrigger('material_id', $mid, 'sn_container');
+            $builder->setTrigger('material_id', $mid, 'sn-container');
         }
 
         return $builder->setExtraJs("
