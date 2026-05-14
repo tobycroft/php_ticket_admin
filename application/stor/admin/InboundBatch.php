@@ -91,12 +91,12 @@ class InboundBatch extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('')
-            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('recordDetail', ['id' => '__id__'])]])
+            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
 
-    public function recordDetail($id = null)
+    public function detail($id = null)
     {
         if ($id === null) {
             $this->error('缺少参数');
