@@ -60,12 +60,6 @@ class Outbound extends Admin
                 }
                 
                 $materialId = $data['material_id'];
-                $material = MaterialModel::getInfo($materialId);
-                
-                $availableQty = MaterialSnModel::getAvailableCount($materialId);
-                if (count($sns) > $availableQty) {
-                    throw new \Exception('物料可用数量不足');
-                }
                 
                 $outboundId = OutboundModel::add(['type' => $data['type'], 'project_id' => $data['project_id'], 'remark' => $data['remark'], 'create_user' => UID]);
                 
@@ -112,11 +106,18 @@ class Outbound extends Admin
             return json(['code' => 0, 'msg' => '缺少参数']);
         }
         
+        $material = MaterialModel::getInfo($materialId);
+        $materialName = $material ? $material['name'] : '未知物料';
+        
         $sns = MaterialSnModel::where('material_id', $materialId)
             ->where('status', 1)
             ->whereNull('project_id')
             ->field('sn')
             ->select();
+        
+        foreach ($sns as &$item) {
+            $item['material_name'] = $materialName;
+        }
         
         return json(['code' => 1, 'data' => $sns]);
     }

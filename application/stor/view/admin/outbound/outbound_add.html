@@ -139,9 +139,9 @@
                             if (data.code == 1) {
                                 var html = '';
                                 if (data.data.length > 0) {
-                                    html = '<table class="table table-striped table-sm"><thead><tr><th width="30"><input type="checkbox" id="check-all-sn"></th><th>SN码</th></tr></thead><tbody>';
+                                    html = '<table class="table table-striped table-sm"><thead><tr><th width="30"><input type="checkbox" id="check-all-sn"></th><th>SN码</th><th>所属物料</th></tr></thead><tbody>';
                                     data.data.forEach(function(item) {
-                                        html += '<tr><td><input type="checkbox" name="sns[]" value="' + item.sn + '"></td><td>' + item.sn + '</td></tr>';
+                                        html += '<tr><td><input type="checkbox" name="sns[]" value="' + item.sn + '"></td><td>' + item.sn + '</td><td>' + (item.material_name || '') + '</td></tr>';
                                     });
                                     html += '</tbody></table>';
                                 } else {
