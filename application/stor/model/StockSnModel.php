@@ -30,6 +30,9 @@ class StockSnModel extends Model
 
     public static function useSn($materialId, $sns)
     {
+        if (!is_array($sns)) {
+            $sns = [$sns];
+        }
         return self::where(['material_id' => $materialId, 'sn' => ['in', $sns]])->update(['status' => 0]);
     }
 
