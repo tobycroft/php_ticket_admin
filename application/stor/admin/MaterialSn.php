@@ -60,7 +60,8 @@ class MaterialSn extends Admin
                     $sns = explode("\n", $data['sns']);
                     $sns = array_filter(array_map('trim', $sns));
                     $sns = array_unique($sns);
-                    MaterialSnModel::addBatch($data['material_id'], $sns);
+                    $remark = isset($data['remark']) ? $data['remark'] : '';
+                    MaterialSnModel::addBatch($data['material_id'], $sns, $remark);
                 } else {
                     throw new \Exception('请输入SN码');
                 }

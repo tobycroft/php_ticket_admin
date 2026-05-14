@@ -27,7 +27,7 @@ class MaterialSnModel extends Model
         return self::insertGetId($data);
     }
 
-    public static function addBatch($materialId, $sns)
+    public static function addBatch($materialId, $sns, $remark = '')
     {
         if (empty($sns)) {
             return 0;
@@ -42,11 +42,15 @@ class MaterialSnModel extends Model
         $data = [];
         foreach ($sns as $sn) {
             if (!isset($existingSns[$sn])) {
-                $data[] = [
+                $item = [
                     'material_id' => $materialId,
                     'sn' => $sn,
                     'status' => 1
                 ];
+                if (!empty($remark)) {
+                    $item['remark'] = $remark;
+                }
+                $data[] = $item;
             }
         }
         
