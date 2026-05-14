@@ -26,7 +26,7 @@ class Category extends Admin
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add,enable,disable,scrap')
+            ->addTopButtons('add,enable,disable')
             ->addRightButtons('edit,scrap')
             ->setRowList($data_list)
             ->fetch();
