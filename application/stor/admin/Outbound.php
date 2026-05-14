@@ -41,7 +41,9 @@ class Outbound extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,delete')
-            ->addRightButtons('edit,delete,detail')
+            ->addRightButton('edit', ['title' => '编辑', 'icon' => 'fa fa-edit'])
+            ->addRightButton('detail', ['title' => '详情', 'icon' => 'fa fa-eye'])
+            ->addRightButton('delete', ['title' => '删除', 'icon' => 'fa fa-trash'])
             ->setRowList($data_list)
             ->fetch();
     }
