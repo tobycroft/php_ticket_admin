@@ -202,7 +202,7 @@ class Outbound extends Admin
                 ['static', 'remark', '备注'],
                 ['static', 'create_time', '创建时间', 'datetime']
             ])
-            ->setExtraHtml($this->renderItems($items))
+            ->setExtraHtml($this->renderItems($items), 'form_top')
             ->setFormData($info)
             ->fetch();
     }
