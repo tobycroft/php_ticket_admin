@@ -29,9 +29,15 @@ class RepairModel extends Model
 
     public static function add($data)
     {
-        $data['code'] = self::generateCode();
-        $data['status'] = 2;
-        return self::insertGetId($data);
+        $insertData = [
+            'material_id' => $data['material_id'],
+            'sn' => $data['sn'],
+            'problem' => $data['problem'],
+            'code' => self::generateCode(),
+            'status' => 2,
+            'create_user' => $data['create_user'] ?? 0
+        ];
+        return self::insertGetId($insertData);
     }
 
     public static function edit($data)
