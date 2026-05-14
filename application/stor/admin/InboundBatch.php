@@ -114,60 +114,18 @@ class InboundBatch extends Admin
         }
         $snTableHtml .= '</tbody></table>';
 
-        $html = '<!DOCTYPE html>
-<html>
-<head>
-    <title>批量入库记录详情</title>
-    <link rel="stylesheet" href="/static/admin/css/style.css">
-    <link rel="stylesheet" href="/static/admin/plugins/bootstrap/css/bootstrap.min.css">
-</head>
-<body>
-<div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>批量入库记录详情</h5>
-                </div>
-                <div class="ibox-content">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">导入物料</label>
-                            <div class="col-sm-10">
-                                <p class="form-control-static">' . htmlspecialchars($info['material_name']) . '</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">导入数量</label>
-                            <div class="col-sm-10">
-                                <p class="form-control-static">' . htmlspecialchars($info['sn_count']) . '</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">导入SN码</label>
-                            <div class="col-sm-10">' . $snTableHtml . '</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">备注</label>
-                            <div class="col-sm-10">
-                                <p class="form-control-static">' . htmlspecialchars($info['remark'] ?? '') . '</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">导入时间</label>
-                            <div class="col-sm-10">
-                                <p class="form-control-static">' . htmlspecialchars($info['create_time']) . '</p>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
-</html>';
-
-        return $html;
+        return ZBuilder::make('form')
+            ->setPageTitle('批量入库记录详情')
+            ->addFormItems([
+                ['static', 'material_name', '导入物料'],
+                ['static', 'sn_count', '导入数量']
+            ])
+            ->setExtraHtml('<div class="form-group"><label class="col-sm-2 control-label">导入SN码</label><div class="col-sm-10">' . $snTableHtml . '</div></div>')
+            ->addFormItems([
+                ['static', 'remark', '备注'],
+                ['static', 'create_time', '导入时间']
+            ])
+            ->setFormData($info)
+            ->fetch();
     }
 }
