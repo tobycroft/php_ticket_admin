@@ -5,6 +5,7 @@ namespace app\stor\admin;
 use app\admin\controller\Admin;
 use app\common\builder\ZBuilder;
 use app\stor\model\MaterialModel;
+use app\stor\model\MaterialSnModel;
 use app\stor\model\RepairModel;
 use app\stor\model\StockSnModel;
 
@@ -77,10 +78,17 @@ class Repair extends Admin
             $this->success('维修申请已提交', url('index'));
         }
 
+        $sn_list = MaterialSnModel::where('status', 1)->whereNull('project_id')->select();
+        $sn_options = ['' => '请选择SN码'];
+        foreach ($sn_list as $item) {
+            $material = MaterialModel::getInfo($item['material_id']);
+            $sn_options[$item['sn']] = $item['sn'] . ' (' . ($material['name'] ?? '未知物料') . ')';
+        }
+
         return ZBuilder::make('form')
             ->setPageTitle('新增维修申请')
             ->addFormItems([
-                ['text', 'sn', 'SN码', '必填，输入SN码搜索'],
+                ['select', 'sn', 'SN码', '必填，请选择SN码', $sn_options],
                 ['textarea', 'problem', '故障描述', '必填']
             ])
             ->fetch();
