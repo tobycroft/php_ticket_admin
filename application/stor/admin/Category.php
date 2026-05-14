@@ -27,7 +27,7 @@ class Category extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,enable,disable')
-            ->addRightButtons('edit,scrap')
+            ->addRightButtons(['edit', 'scrap' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])]]))
             ->setRowList($data_list)
             ->fetch();
     }
@@ -105,17 +105,14 @@ class Category extends Admin
             ->fetch();
     }
 
-    public function scrap($ids = [])
+    public function scrap($id = null)
     {
-        if (empty($ids)) {
-            $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
+        if ($id === null) {
+            $id = $this->request->param('id');
         }
-        $ids = (array)$ids;
 
         try {
-            foreach ($ids as $id) {
-                CategoryModel::scrap($id);
-            }
+            CategoryModel::scrap($id);
         } catch (\Exception $e) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
