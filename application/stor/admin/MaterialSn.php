@@ -45,7 +45,7 @@ class MaterialSn extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,delete')
-            ->addRightButtons(['edit', 'delete', 'scrap' => ['title' => '报废', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['ids' => '__id__'])]]))
+            ->addRightButtons(['edit', 'delete', 'scrap' => ['title' => '报废', 'icon' => 'fa fa-ban', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['ids' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
     }
