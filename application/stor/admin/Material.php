@@ -89,7 +89,7 @@ class Material extends Admin
                 ['text', 'max_stock', '最大库存', '', 0],
                 ['text', 'location', '存放位置'],
                 ['textarea', 'remark', '备注'],
-                ['picture', 'image', '物料图片'],
+                ['image', 'image', '物料图片'],
                 ['radio', 'status', '状态', '', ['禁用', '启用'], 1]
             ])
             ->fetch();
@@ -144,7 +144,7 @@ class Material extends Admin
                 ['text', 'max_stock', '最大库存'],
                 ['text', 'location', '存放位置'],
                 ['textarea', 'remark', '备注'],
-                ['picture', 'image', '物料图片'],
+                ['image', 'image', '物料图片'],
                 ['radio', 'status', '状态', '', ['禁用', '启用']]
             ])
             ->setFormData($info)
