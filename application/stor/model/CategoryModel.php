@@ -12,7 +12,7 @@ class CategoryModel extends Model
 
     public static function getList($map = [])
     {
-        return self::where($map)->order('sort ASC, id ASC')->select();
+        return self::where($map)->where('status', 1)->order('sort ASC, id ASC')->select();
     }
 
     public static function getInfo($id)
