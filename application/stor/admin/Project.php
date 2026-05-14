@@ -30,7 +30,7 @@ class Project extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add,enable,disable,delete')
-            ->addRightButtons(['edit', 'delete', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]]
+            ->addRightButtons(['edit', 'delete', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]]))
             ->setRowList($data_list)
             ->fetch();
     }
