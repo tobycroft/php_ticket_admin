@@ -136,6 +136,33 @@ class MaterialSnModel extends Model
         ]);
     }
 
+    public static function repairSn($materialId, $sn)
+    {
+        return self::where('material_id', $materialId)->where('sn', $sn)->update([
+            'status' => 2,
+            'project_id' => -1,
+            'update_time' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    public static function returnFromRepair($materialId, $sn)
+    {
+        return self::where('material_id', $materialId)->where('sn', $sn)->update([
+            'status' => 1,
+            'project_id' => null,
+            'update_time' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    public static function scrapSn($materialId, $sn)
+    {
+        return self::where('material_id', $materialId)->where('sn', $sn)->update([
+            'status' => 3,
+            'project_id' => null,
+            'update_time' => date('Y-m-d H:i:s')
+        ]);
+    }
+
     public static function releaseFromProject($snIds)
     {
         return self::where('id', 'in', $snIds)->update([
