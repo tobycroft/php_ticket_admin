@@ -53,7 +53,7 @@ class Event extends Admin
                 ['title', '事件标题'],
                 ['priority_text', '优先级'],
                 ['is_canceled_text', '状态'],
-                ['is_closed_text', '结单状态', 'raw'],
+                ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
