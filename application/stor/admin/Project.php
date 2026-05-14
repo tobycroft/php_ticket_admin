@@ -144,7 +144,7 @@ class Project extends Admin
                 ['static', 'remark', '项目备注'],
                 ['static', 'create_time', '创建时间']
             ])
-            ->setExtraHtml($this->renderProjectMaterials($materials))
+            ->setExtraHtml($this->renderProjectMaterials($materials),'form_top')
             ->setFormData($info)
             ->fetch();
     }
