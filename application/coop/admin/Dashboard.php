@@ -27,7 +27,7 @@ class Dashboard extends Admin
 
     public function statistics()
     {
-        if (!is_admin()) {
+        if (session('user_auth.role') != 1) {
             $this->error('无权限访问');
         }
 
