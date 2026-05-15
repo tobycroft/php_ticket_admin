@@ -1,0 +1,130 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">协办单详情</h3>
+                </div>
+                <div class="block-content">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">标题</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$info.title}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-10">
+                                <div class="form-control-static">{$info.content|raw}</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">创建人</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$info.creator_name}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">接收人</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$info.receiver_name|default='-'}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">优先级</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$info.priority}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">状态</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{if condition="$info.is_canceled == 1"}<span class="label label-danger">已作废</span>{else}<span class="label label-success">正常</span>{/if}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">创建时间</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{$info.create_time}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                {if condition="$info.is_canceled == 0"}
+                                <a href="{:url('push', ['id' => $info.id])}" class="btn btn-warning">甩单</a>
+                                {/if}
+                                {if condition="$can_cancel"}
+                                <a href="{:url('cancel', ['id' => $info.id])}" class="btn btn-danger">作废</a>
+                                {/if}
+                                <a href="javascript:history.back(-1);" class="btn btn-default">返回</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">处理进度</h3>
+                </div>
+                <div class="block-content">
+                    {if condition="!empty($notes)"}
+                    <div class="timeline">
+                        {volist name="notes" id="note"}
+                        <div class="timeline-item">
+                            <div class="timeline-item-time">{$note.create_time_text}</div>
+                            <div class="timeline-item-content">
+                                <div class="font-w600 text-primary">{$note.user_name}</div>
+                                <div class="mt-1">{$note.content|raw}</div>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                    {else}
+                    <div class="text-center text-muted py-10">暂无处理进度</div>
+                    {/if}
+                </div>
+            </div>
+
+            {if condition="$info.is_canceled == 0"}
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">添加处理进度</h3>
+                </div>
+                <div class="block-content">
+                    <form class="form-note" action="{:url('note', ['id' => $info.id])}" method="post">
+                        {:token()}
+                        <script id="note_content" name="content" type="text/plain" style="width:100%;height:200px;"></script>
+                        <div class="mt-3 text-right">
+                            <button type="submit" class="btn btn-primary ajax-post" target-form="form-note">提交进度</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {/if}
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+    <script src="__LIBS__/ueditor/ueditor.config.js"></script>
+    <script src="__LIBS__/ueditor/ueditor.all.min.js"></script>
+    <script>
+        $(function() {
+            var ue = UE.getEditor('note_content', {
+                toolbars: [
+                    ['bold', 'italic', 'underline', 'strikethrough', '|', 'forecolor', 'backcolor', '|', 
+                     'link', 'unlink', '|', 'alignleft', 'aligncenter', 'alignright', 'justify', '|',
+                     'insertorderedlist', 'insertunorderedlist', '|', 'undo', 'redo', 'fullscreen', '|',
+                     'simpleupload', 'insertimage']
+                ],
+                autoHeightEnabled: true,
+                autoFloatEnabled: true,
+                initialFrameHeight: 200
+            });
+        });
+    </script>
+{/block}
