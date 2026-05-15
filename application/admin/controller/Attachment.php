@@ -181,30 +181,33 @@ class Attachment extends Admin
             // 图片高度
             $img_height = '';
             if ($dir == 'images') {
-                $img = Image::open($info);
-                $img_width = $img->width();
-                $img_height = $img->height();
-                // 水印功能
-                if ($watermark == '') {
-                    if (config('upload_thumb_water') == 1 && config('upload_thumb_water_pic') > 0) {
-                        $this->create_water($info->getRealPath(), config('upload_thumb_water_pic'));
+                $file_ext = strtolower($info->getExtension());
+                if ($file_ext != 'svg') {
+                    $img = Image::open($info);
+                    $img_width = $img->width();
+                    $img_height = $img->height();
+                    // 水印功能
+                    if ($watermark == '') {
+                        if (config('upload_thumb_water') == 1 && config('upload_thumb_water_pic') > 0) {
+                            $this->create_water($info->getRealPath(), config('upload_thumb_water_pic'));
+                        }
+                    } else {
+                        if (strtolower($watermark) != 'close') {
+                            list($watermark_img, $watermark_pos, $watermark_alpha) = explode('|', $watermark);
+                            $this->create_water($info->getRealPath(), $watermark_img, $watermark_pos, $watermark_alpha);
+                        }
                     }
-                } else {
-                    if (strtolower($watermark) != 'close') {
-                        list($watermark_img, $watermark_pos, $watermark_alpha) = explode('|', $watermark);
-                        $this->create_water($info->getRealPath(), $watermark_img, $watermark_pos, $watermark_alpha);
-                    }
-                }
 
-                // 生成缩略图
-                if ($thumb == '') {
-                    if (config('upload_image_thumb') != '') {
-                        $thumb_path_name = $this->create_thumb($info, $info->getPathInfo()->getfileName(), $info->getFilename());
-                    }
-                } else {
-                    if (strtolower($thumb) != 'close') {
-                        list($thumb_size, $thumb_type) = explode('|', $thumb);
-                        $thumb_path_name = $this->create_thumb($info, $info->getPathInfo()->getfileName(), $info->getFilename(), $thumb_size, $thumb_type);
+                    // 生成缩略图
+                    if ($thumb == '') {
+                        if (config('upload_image_thumb') != '') {
+                            $thumb_path_name = $this->create_thumb($info, $info->getPathInfo()->getfileName(), $info->getFilename());
+                        }
+                    } else {
+                        if (strtolower($thumb) != 'close') {
+                            list($thumb_size, $thumb_type) = explode('|', $thumb);
+                            $thumb_path_name = $this->create_thumb($info, $info->getPathInfo()->getfileName(), $info->getFilename(), $thumb_size, $thumb_type);
+                        }
                     }
                 }
             }
