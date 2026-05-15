@@ -1,0 +1,201 @@
+{extend name="$_admin_base_layout" /}
+
+{block name="content"}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                <i class="fa fa-bar-chart mr-5"></i>
+                仓管统计
+                <small>Statistics</small>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-primary">
+                    <h3 class="block-title">
+                        <i class="fa fa-cubes mr-5"></i>
+                        物料种类
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-primary">
+                        <i class="fa fa-box fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$material_total}</div>
+                        <p class="text-lg mt-5">物料种类总数</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-info">
+                    <h3 class="block-title">
+                        <i class="fa fa-database mr-5"></i>
+                        SN码总数
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-info">
+                        <i class="fa fa-key fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$sn_total}</div>
+                        <p class="text-lg mt-5">SN码总数量</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-success">
+                    <h3 class="block-title">
+                        <i class="fa fa-warehouse mr-5"></i>
+                        库存总量
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-success">
+                        <i class="fa fa-inbox fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$stock_total}</div>
+                        <p class="text-lg mt-5">当前库存总量</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-purple">
+                    <h3 class="block-title">
+                        <i class="fa fa-building mr-5"></i>
+                        项目数量
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="text-purple">
+                        <i class="fa fa-folder-open fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$project_total}</div>
+                        <p class="text-lg mt-5">项目总数</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">
+                        <i class="fa fa-key mr-5"></i>
+                        SN码状态分布
+                    </h3>
+                </div>
+                <div class="block-content">
+                    <div class="row">
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-success">
+                                <i class="fa fa-check-circle fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$sn_available}</div>
+                                <p>可用</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-primary">
+                                <i class="fa fa-user-circle fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$sn_used}</div>
+                                <p>已使用</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-warning">
+                                <i class="fa fa-wrench fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$sn_repair}</div>
+                                <p>维修中</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-danger">
+                                <i class="fa fa-trash fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$sn_scrap}</div>
+                                <p>已报废</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">
+                        <i class="fa fa-exchange mr-5"></i>
+                        出入库统计
+                    </h3>
+                </div>
+                <div class="block-content">
+                    <div class="row">
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-success">
+                                <i class="fa fa-arrow-down fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$inbound_total}</div>
+                                <p>累计入库</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-center py-10">
+                            <div class="alert alert-danger">
+                                <i class="fa fa-arrow-up fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$outbound_total}</div>
+                                <p>累计出库</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title">
+                        <i class="fa fa-wrench mr-5"></i>
+                        维修统计
+                    </h3>
+                </div>
+                <div class="block-content">
+                    <div class="row">
+                        <div class="col-md-4 text-center py-10">
+                            <div class="alert alert-info">
+                                <i class="fa fa-clock-o fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$repair_pending}</div>
+                                <p>待维修</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center py-10">
+                            <div class="alert alert-warning">
+                                <i class="fa fa-cog fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$repair_processing}</div>
+                                <p>维修中</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center py-10">
+                            <div class="alert alert-success">
+                                <i class="fa fa-check-circle-o fa-3x mb-5"></i>
+                                <div class="text-3xl font-bold">{$repair_completed}</div>
+                                <p>已完成</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
