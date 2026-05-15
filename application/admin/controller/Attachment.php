@@ -137,15 +137,15 @@ class Attachment extends Admin
         }
         $file = $this->request->file($file_input_name);
         $file_name = $file->getInfo('name');
+        $Aoss = new Aoss(config('upload_prefix'), 'complete');
+        $md5_data = $Aoss->md5($file->hash('md5'));
         if (config('upload_driver') != 'local') {
-            $Aoss = new Aoss(config('upload_prefix'), 'complete');
-            $md5_data = $Aoss->md5($file->hash('md5'));
             if ($md5_data->isSuccess()) {
                 if ($file_exists = AttachmentModel::get(['md5' => $file->hash('md5')])) {
                     return $this->uploadSuccess($from, $md5_data->url, $md5_data->name, $file_exists['id'], $callback, $md5_data->data);
                 }
             }
-        }else{
+        } else {
             $md5_data = $file->md5($file->hash('md5'));
 
         }
