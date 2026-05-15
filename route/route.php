@@ -18,3 +18,6 @@ Route::get('hello/:name', 'index/hello');
 return [
 
 ];
+
+Route::domain('admin.fcloud.cn', 'admin');
+Route::domain('order.fcloud.cn', 'admin');
