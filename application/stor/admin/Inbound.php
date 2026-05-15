@@ -96,7 +96,7 @@ class Inbound extends Admin
         }
         
         $sns = MaterialSnModel::where('project_id', $projectId)
-            ->where('status', 0)
+            ->where('status', 1)
             ->field('material_id, sn')
             ->select();
         
@@ -129,7 +129,7 @@ class Inbound extends Admin
         
         $sns = MaterialSnModel::where('project_id', $projectId)
             ->where('material_id', $materialId)
-            ->where('status', 0)
+            ->where('status', 1)
             ->field('sn')
             ->select();
         
