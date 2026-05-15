@@ -87,7 +87,7 @@ class Inbound extends Admin
         return $this->fetch('inbound_add');
     }
 
-    public function getProjectMaterials()
+    public function materials()
     {
         $projectId = $this->request->get('project_id');
         
@@ -115,7 +115,7 @@ class Inbound extends Admin
         return json(['code' => 1, 'data' => $materials]);
     }
 
-    public function getProjectSns()
+    public function sns()
     {
         $projectId = $this->request->get('project_id');
         $materialId = $this->request->get('material_id');

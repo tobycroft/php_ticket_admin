@@ -128,7 +128,7 @@
             
             if (projectId) {
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', '{:url("getProjectMaterials")}' + '?project_id=' + projectId, true);
+                xhr.open('GET', '{:url("materials")}' + '?project_id=' + projectId, true);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         try {
@@ -170,7 +170,7 @@
                 snSelectArea.innerHTML = '<div class="alert alert-info">加载中...</div>';
                 
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', '{:url("getProjectSns")}' + '?project_id=' + projectId + '&material_id=' + materialId, true);
+                xhr.open('GET', '{:url("sns")}' + '?project_id=' + projectId + '&material_id=' + materialId, true);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         try {
