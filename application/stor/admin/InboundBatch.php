@@ -22,14 +22,21 @@ class InboundBatch extends Admin
                     $sns = array_filter(array_map('trim', $sns));
                     $sns = array_unique($sns);
                     $remark = isset($data['remark']) ? $data['remark'] : '';
-                    MaterialSnModel::addBatch($data['material_id'], $sns, $remark);
+                    $result = MaterialSnModel::addBatch($data['material_id'], $sns, $remark);
 
                     $material = MaterialModel::getInfo($data['material_id']);
+                    
+                    $snStatus = [];
+                    foreach ($sns as $sn) {
+                        $snStatus[$sn] = in_array($sn, $result['duplicate']) ? 'duplicate' : 'success';
+                    }
+                    
                     InboundBatchRecordModel::add([
                         'material_id' => $data['material_id'],
                         'material_name' => $material['name'],
                         'sn_count' => count($sns),
                         'sn_list' => implode(',', $sns),
+                        'sn_status' => json_encode($snStatus),
                         'remark' => $remark,
                         'create_user' => UID
                     ]);
@@ -108,9 +115,13 @@ class InboundBatch extends Admin
         }
 
         $snArray = explode(',', $info['sn_list']);
-        $snTableHtml = '<table class="table table-striped table-bordered table-hover"><thead><tr><th>SN码</th></tr></thead><tbody>';
+        $snStatus = !empty($info['sn_status']) ? json_decode($info['sn_status'], true) : [];
+        
+        $snTableHtml = '<table class="table table-striped table-bordered table-hover"><thead><tr><th>SN码</th><th>导入状态</th></tr></thead><tbody>';
         foreach ($snArray as $sn) {
-            $snTableHtml .= '<tr><td>' . htmlspecialchars($sn) . '</td></tr>';
+            $status = isset($snStatus[$sn]) ? $snStatus[$sn] : 'success';
+            $statusText = $status == 'duplicate' ? '<span style="color:red;font-weight:bold;">重复导入</span>' : '<span style="color:green;font-weight:bold;">正常导入</span>';
+            $snTableHtml .= '<tr><td>' . htmlspecialchars($sn) . '</td><td>' . $statusText . '</td></tr>';
         }
         $snTableHtml .= '</tbody></table>';
 

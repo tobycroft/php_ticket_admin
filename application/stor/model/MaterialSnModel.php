@@ -55,7 +55,7 @@ class MaterialSnModel extends Model
         }
         
         if (empty($sns)) {
-            return 0;
+            return ['success' => [], 'duplicate' => []];
         }
         
         $existingSns = self::where('material_id', $materialId)
@@ -65,8 +65,13 @@ class MaterialSnModel extends Model
         $existingSns = array_flip($existingSns);
         
         $data = [];
+        $successSns = [];
+        $duplicateSns = [];
+        
         foreach ($sns as $sn) {
-            if (!isset($existingSns[$sn])) {
+            if (isset($existingSns[$sn])) {
+                $duplicateSns[] = $sn;
+            } else {
                 $item = [
                     'material_id' => $materialId,
                     'sn' => $sn,
@@ -76,23 +81,23 @@ class MaterialSnModel extends Model
                     $item['remark'] = $remark;
                 }
                 $data[] = $item;
+                $successSns[] = $sn;
             }
         }
         
-        if (empty($data)) {
-            return 0;
+        if (!empty($data)) {
+            $model = new self();
+            $model->startTrans();
+            try {
+                $model->insertAll($data);
+                $model->commit();
+            } catch (\Exception $e) {
+                $model->rollback();
+                throw $e;
+            }
         }
         
-        $model = new self();
-        $model->startTrans();
-        try {
-            $result = $model->insertAll($data);
-            $model->commit();
-            return $result;
-        } catch (\Exception $e) {
-            $model->rollback();
-            throw $e;
-        }
+        return ['success' => $successSns, 'duplicate' => $duplicateSns];
     }
 
     public static function edit($data)
