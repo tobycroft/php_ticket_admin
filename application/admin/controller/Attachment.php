@@ -10,7 +10,6 @@ use think\facade\Env;
 use think\facade\Hook;
 use think\File;
 use think\Image;
-use Tobycroft\AossSdk\Aoss;
 
 /**
  * 附件控制器
@@ -137,15 +136,6 @@ class Attachment extends Admin
         }
         $file = $this->request->file($file_input_name);
         $file_name = $file->getInfo('name');
-        $Aoss = new Aoss(config('upload_prefix'), 'complete');
-        $md5_data = $Aoss->md5($file->hash('md5'));
-        if (config('upload_driver') != 'local') {
-            if ($md5_data->isSuccess()) {
-                if ($file_exists = AttachmentModel::get(['md5' => $file->hash('md5')])) {
-                    return $this->uploadSuccess($from, $md5_data->url, $md5_data->name, $file_exists['id'], $callback, $md5_data->data);
-                }
-            }
-        }
 
         // 判断附件大小是否超过限制
         if ($size_limit > 0 && ($file->getInfo('size') > $size_limit)) {
@@ -210,56 +200,38 @@ class Attachment extends Admin
                 if ($thumb == '') {
                     if (config('upload_image_thumb') != '') {
                         $thumb_path_name = $this->create_thumb($info, $info->getPathInfo()->getfileName(), $info->getFilename());
-                        $thumb_ret = $Aoss->send($thumb_path_name, $file->getMime(), $info->getFilename());
-                        if ($thumb_ret->isSuccess()) {
-                            return $this->uploadError($from, $thumb_ret->getError(), $callback);
-                        } else {
-                            $thumb_path_name = $thumb_ret->url;
-                        }
                     }
                 } else {
                     if (strtolower($thumb) != 'close') {
                         list($thumb_size, $thumb_type) = explode('|', $thumb);
                         $thumb_path_name = $this->create_thumb($info, $info->getPathInfo()->getfileName(), $info->getFilename(), $thumb_size, $thumb_type);
-                        $thumb_ret = $Aoss->send($thumb_path_name, $file->getMime(), $info->getFilename());
-                        if ($thumb_ret->isSuccess()) {
-                            return $this->uploadError($from, $thumb_ret->getError(), $callback);
-                        } else {
-                            $thumb_path_name = $thumb_ret->url;
-                        }
-
                     }
                 }
             }
-            if (!$md5_data->isSuccess()) {
-                $send_ret = $Aoss->send($info->getPathname(), $info->getMime(), $file_name);
-                if ($send_ret->isSuccess()) {
-                    return $this->uploadError($from, $send_ret->getError(), $callback);
-                }
-            } else {
-                $send_ret = $md5_data;
-            }
 
             // 获取附件信息
+            $save_path = 'uploads/' . $dir . '/' . $info->getSaveName();
+            $save_path = str_replace('\\', '/', $save_path);
+            
             $file_info = [
                 'uid' => session('user_auth.uid'),
-                'name' => $send_ret->name,
-                'mime' => $send_ret->mime,
-                'path' => $send_ret->url,
-                'ext' => $send_ret->ext,
-                'size' => $send_ret->size,
-                'md5' => $send_ret->md5,
+                'name' => $file_name,
+                'mime' => $info->getMime(),
+                'path' => $save_path,
+                'ext' => $info->getExtension(),
+                'size' => $info->getSize(),
+                'md5' => $info->hash('md5'),
                 'sha1' => $info->hash('sha1'),
                 'thumb' => $thumb_path_name,
                 'module' => $module,
                 'width' => $img_width,
                 'height' => $img_height,
-                'driver' => config('upload_driver'),
+                'driver' => 'local',
             ];
 
             // 写入数据库
             if ($file_add = AttachmentModel::create($file_info)) {
-                return $this->uploadSuccess($from, $send_ret->url, $file_info['name'], $send_ret->url, $callback, $send_ret->data);
+                return $this->uploadSuccess($from, PUBLIC_PATH . $file_info['path'], $file_info['name'], $file_add['id'], $callback, []);
             } else {
                 return $this->uploadError($from, '上传失败', $callback);
             }
@@ -669,7 +641,7 @@ class Attachment extends Admin
                     'code' => 1,
                     'info' => '上传成功',
                     'class' => 'success',
-                    'id' => $file_path,
+                    'id' => $file_id,
                     'path' => $file_path,
                     'data' => $data,
                 ]);
