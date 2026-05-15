@@ -110,6 +110,14 @@ class CooperateAction
             throw new \Exception('已作废的协办单无法推送');
         }
 
+        if ($cooperate['is_closed'] == 1) {
+            throw new \Exception('已关闭的协办单无法推送');
+        }
+
+        if ($cooperate['creator_id'] != UID && $cooperate['receiver_id'] != UID) {
+            throw new \Exception('只有创建人或接收人才能甩单');
+        }
+
         $to_user = UserModel::where('id', $to_user_id)->find();
         if (!$to_user) {
             throw new \Exception('接收人不存在');
@@ -127,6 +135,72 @@ class CooperateAction
         }
         
         throw new \Exception('推送失败');
+    }
+
+    public static function close($id)
+    {
+        $cooperate = CooperateModel::where('id', $id)->find();
+        if (!$cooperate) {
+            throw new \Exception('协办单不存在');
+        }
+
+        if ($cooperate['is_canceled'] == 1) {
+            throw new \Exception('已作废的协办单不能关闭');
+        }
+
+        if ($cooperate['is_closed'] == 1) {
+            throw new \Exception('协办单已关闭');
+        }
+
+        if ($cooperate['creator_id'] != UID && $cooperate['receiver_id'] != UID) {
+            throw new \Exception('只有创建人或接收人才能关闭协办单');
+        }
+
+        $data = [
+            'id' => $id,
+            'is_closed' => 1,
+            'closer_id' => UID,
+            'closer_name' => get_nickname(UID),
+            'close_time' => date('Y-m-d H:i:s'),
+        ];
+        
+        if (CooperateModel::update($data)) {
+            action_log('cooperate_close', 'mt_cooperate', $id, UID);
+            return true;
+        }
+        
+        throw new \Exception('关闭失败');
+    }
+
+    public static function reopen($id)
+    {
+        $cooperate = CooperateModel::where('id', $id)->find();
+        if (!$cooperate) {
+            throw new \Exception('协办单不存在');
+        }
+
+        if ($cooperate['is_canceled'] == 1) {
+            throw new \Exception('已作废的协办单不能重新打开');
+        }
+
+        if ($cooperate['creator_id'] != UID) {
+            throw new \Exception('只有创建人才能重新打开协办单');
+        }
+
+        $data = [
+            'id' => $id,
+            'is_closed' => 0,
+            'closer_id' => 0,
+            'closer_name' => '',
+            'close_time' => null,
+        ];
+        
+        if (CooperateModel::update($data)) {
+            action_log('cooperate_reopen', 'mt_cooperate', $id, UID);
+            return true;
+        }
+        
+        throw new \Exception('重新打开失败');
     }
 
     public static function addNote($cooperate_id, $content)

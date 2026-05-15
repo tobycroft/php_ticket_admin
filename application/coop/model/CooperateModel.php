@@ -14,6 +14,8 @@ class CooperateModel extends Model
         'creator_id' => 'integer',
         'receiver_id' => 'integer',
         'is_canceled' => 'integer',
+        'is_closed' => 'integer',
+        'closer_id' => 'integer',
         'priority' => 'integer',
         'status' => 'integer',
     ];
