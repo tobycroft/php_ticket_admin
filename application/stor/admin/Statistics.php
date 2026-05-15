@@ -26,7 +26,7 @@ class Statistics extends Admin
         
         $stock_total = StockModel::sum('quantity') ?: 0;
         
-        $inbound_total = InboundModel::where(['status' => 1])->count();
+        $inbound_total = InboundModel::count();
         $outbound_total = OutboundModel::where(['status' => 1])->count();
         
         $repair_pending = RepairModel::where('status', 1)->count();
