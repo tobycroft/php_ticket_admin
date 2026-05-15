@@ -3,6 +3,7 @@
 
 namespace app\user\admin;
 
+use app\admin\model\Config as ConfigModel;
 use app\admin\model\Menu as MenuModel;
 use app\common\controller\Common;
 use app\user\model\Role as RoleModel;
@@ -74,6 +75,13 @@ class Publics extends Common
             if (is_signin()) {
                 $this->jumpUrl();
             } else {
+                $system_config = cache('system_config');
+                if (!$system_config) {
+                    $ConfigModel = new ConfigModel();
+                    $system_config = $ConfigModel->getConfig();
+                }
+                $this->assign('web_site_logo', isset($system_config['web_site_logo']) ? $system_config['web_site_logo'] : '');
+                $this->assign('web_site_title', isset($system_config['web_site_title']) ? $system_config['web_site_title'] : '系统登录');
                 return $this->fetch();
             }
         }
