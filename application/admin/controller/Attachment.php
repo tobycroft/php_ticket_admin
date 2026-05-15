@@ -145,6 +145,9 @@ class Attachment extends Admin
                     return $this->uploadSuccess($from, $md5_data->url, $md5_data->name, $file_exists['id'], $callback, $md5_data->data);
                 }
             }
+        }else{
+            $md5_data = $file->md5($file->hash('md5'));
+
         }
 
         // 判断附件大小是否超过限制
