@@ -30,8 +30,8 @@ class Index extends Admin
             $this->assign('default_pass', 1);
         }
         
-        $site_name = config('site.name') ?: 'ThinkPHP';
-        $this->assign('site_name', $site_name);
+        $web_site_title = config('site.name') ?: 'ThinkPHP';
+        $this->assign('web_site_title', $web_site_title);
         
 //        $this->redirect("/admin/index/profile");
         return $this->fetch();
