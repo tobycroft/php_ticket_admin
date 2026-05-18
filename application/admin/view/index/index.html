@@ -145,84 +145,90 @@
 {/block}
 
 {block name="script"}
-<script src="/static/libs/chartjs/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <script>
     $(document).ready(function () {
-        // 运维工单柱状图
-        var eventLabels = [];
-        var eventCounts = [];
-        {volist name="event_stats" id="stat"}
-        eventLabels.push('{$stat.day}日');
-        eventCounts.push({$stat.count});
-        {/volist}
-        
-        var eventData = {
-            labels: eventLabels,
-            datasets: [{
-                label: '工单数量',
-                backgroundColor: 'rgba(52, 152, 219, 0.8)',
-                borderColor: 'rgba(52, 152, 219, 1)',
-                borderWidth: 1,
-                data: eventCounts
-            }]
-        };
-        
-        var eventCtx = document.getElementById('eventChart').getContext('2d');
-        new Chart(eventCtx, {
-            type: 'bar',
-            data: eventData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            stepSize: 1
+        try {
+            // 运维工单柱状图
+            var eventLabels = [];
+            var eventCounts = [];
+            {volist name="event_stats" id="stat"}
+            eventLabels.push('{$stat.day}日');
+            eventCounts.push({$stat.count});
+            {/volist}
+            
+            if (typeof Chart !== 'undefined') {
+                var eventCtx = document.getElementById('eventChart').getContext('2d');
+                new Chart(eventCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: eventLabels,
+                        datasets: [{
+                            label: '工单数量',
+                            backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1,
+                            data: eventCounts
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    stepSize: 1
+                                }
+                            }]
                         }
-                    }]
-                }
+                    }
+                });
             }
-        });
-        
-        // 仓管物料饼状图
-        var materialData = {
-            labels: ['未分配配件', '已分配', '维修中', '已作废'],
-            datasets: [{
-                data: [
-                    {$material_stats.stats.unallocated},
-                    {$material_stats.stats.allocated},
-                    {$material_stats.stats.repairing},
-                    {$material_stats.stats.scrapped}
-                ],
-                backgroundColor: [
-                    'rgba(52, 152, 219, 0.8)',
-                    'rgba(46, 204, 113, 0.8)',
-                    'rgba(241, 196, 15, 0.8)',
-                    'rgba(231, 76, 60, 0.8)'
-                ],
-                borderColor: [
-                    'rgba(52, 152, 219, 1)',
-                    'rgba(46, 204, 113, 1)',
-                    'rgba(241, 196, 15, 1)',
-                    'rgba(231, 76, 60, 1)'
-                ],
-                borderWidth: 2
-            }]
-        };
-        
-        var materialCtx = document.getElementById('materialChart').getContext('2d');
-        new Chart(materialCtx, {
-            type: 'pie',
-            data: materialData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                    position: 'bottom'
-                }
+            
+            // 仓管物料饼状图
+            var materialData = {
+                labels: ['未分配配件', '已分配', '维修中', '已作废'],
+                datasets: [{
+                    data: [
+                        {$material_stats.stats.unallocated},
+                        {$material_stats.stats.allocated},
+                        {$material_stats.stats.repairing},
+                        {$material_stats.stats.scrapped}
+                    ],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(46, 204, 113, 0.8)',
+                        'rgba(241, 196, 15, 0.8)',
+                        'rgba(231, 76, 60, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(46, 204, 113, 1)',
+                        'rgba(241, 196, 15, 1)',
+                        'rgba(231, 76, 60, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            };
+            
+            if (typeof Chart !== 'undefined') {
+                var materialCtx = document.getElementById('materialChart').getContext('2d');
+                new Chart(materialCtx, {
+                    type: 'pie',
+                    data: materialData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                });
             }
-        });
+        } catch (e) {
+            console.error('Chart error:', e);
+        }
         
         $.ajax({
             url: '{:url("checkUpdate")}',
