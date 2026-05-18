@@ -10,6 +10,10 @@
     <p>超级管理员默认密码未修改，建议马上 <a class="alert-link link-effect" href="{:url('user/index/edit', ['id' => 1])}">修改</a>。</p>
 </div>
 {/notempty}
+<div class="alert alert-info alert-dismissable">
+    <button aria-hidden="true" class="close" data-dismiss="alert" type="button">×</button>
+    <h3 class="font-w300 push-15">欢迎使用{$site_name}系统</h3>
+</div>
 {// 后台首页钩子}
 <div class="row">
     {:hook('admin_index')}

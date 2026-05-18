@@ -29,6 +29,10 @@ class Index extends Admin
         if (UID == 1 && $admin_pass && Hash::check('admin', $admin_pass)) {
             $this->assign('default_pass', 1);
         }
+        
+        $site_name = config('site.name') ?: 'ThinkPHP';
+        $this->assign('site_name', $site_name);
+        
 //        $this->redirect("/admin/index/profile");
         return $this->fetch();
     }
