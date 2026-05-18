@@ -19,6 +19,49 @@
     <h3 class="font-w300 push-15"><i class="fa fa-check-circle"></i> 系统运行正常</h3>
     <p>暂无紧急通知，系统运行状态良好。</p>
 </div>
+
+{notempty name="modules"}
+<div class="row">
+    <div class="block">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title"><i class="fa fa-th-large"></i> 系统模块入口</h3>
+        </div>
+        <div class="block-content">
+            <div class="row items-push">
+                {volist name="modules" id="module"}
+                <div class="col-sm-6 col-lg-4">
+                    <a href="{:url($module['url_value'])}" class="block block-link-hover3 text-center">
+                        <div class="block-content block-content-full">
+                            <div class="item item-circle bg-primary-lighter text-primary push-10">
+                                <i class="{$module['icon']} text-xl"></i>
+                            </div>
+                            <div class="h4 font-w600">{$module['title']}</div>
+                            {if condition="$module['stats']['total'] > 0"}
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="text-muted">总数</div>
+                                    <div class="font-w600">{$module['stats']['total']}</div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="text-muted">待处理</div>
+                                    <div class="font-w600 text-warning">{$module['stats']['pending']}</div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="text-muted">已完成</div>
+                                    <div class="font-w600 text-success">{$module['stats']['completed']}</div>
+                                </div>
+                            </div>
+                            {/if}
+                        </div>
+                    </a>
+                </div>
+                {/volist}
+            </div>
+        </div>
+    </div>
+</div>
+{/notempty}
+
 {// 后台首页钩子}
 <div class="row">
     {:hook('admin_index')}

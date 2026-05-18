@@ -33,8 +33,74 @@ class Index extends Admin
         $web_site_title = config('web_site_title') ?: 'ThinkPHP';
         $this->assign('web_site_title', $web_site_title);
         
+        $modules = $this->getAccessibleModules();
+        $this->assign('modules', $modules);
+        
 //        $this->redirect("/admin/index/profile");
         return $this->fetch();
+    }
+    
+    private function getAccessibleModules()
+    {
+        $modules = Db::name('admin_menu')
+            ->where('pid', 0)
+            ->where('status', 1)
+            ->order('sort', 'asc')
+            ->field('id, title, icon, url_value')
+            ->select();
+        
+        $accessible = [];
+        foreach ($modules as $module) {
+            if ($this->checkModuleAccess($module['id'])) {
+                $module['stats'] = $this->getModuleStats($module['url_value']);
+                $accessible[] = $module;
+            }
+        }
+        return $accessible;
+    }
+    
+    private function checkModuleAccess($menuId)
+    {
+        if (UID == 1) {
+            return true;
+        }
+        return check_auth_node(UID, 'admin', $menuId);
+    }
+    
+    private function getModuleStats($urlValue)
+    {
+        $stats = [
+            'total' => 0,
+            'pending' => 0,
+            'completed' => 0
+        ];
+        
+        $module = explode('/', $urlValue)[0];
+        
+        switch ($module) {
+            case 'maintenance':
+                $stats['total'] = Db::name('maintenance_order')->count();
+                $stats['pending'] = Db::name('maintenance_order')->where('status', 0)->count();
+                $stats['completed'] = Db::name('maintenance_order')->where('status', 1)->count();
+                break;
+            case 'stor':
+                $stats['total'] = Db::name('stor_goods')->count();
+                $stats['pending'] = Db::name('stor_inventory')->where('stock', '<', 10)->count();
+                $stats['completed'] = Db::name('stor_record')->count();
+                break;
+            case 'coop':
+                $stats['total'] = Db::name('coop_order')->count();
+                $stats['pending'] = Db::name('coop_order')->where('status', 0)->count();
+                $stats['completed'] = Db::name('coop_order')->where('status', 1)->count();
+                break;
+            case 'user':
+                $stats['total'] = Db::name('user_user')->count();
+                $stats['pending'] = Db::name('user_user')->where('status', 0)->count();
+                $stats['completed'] = Db::name('user_user')->where('status', 1)->count();
+                break;
+        }
+        
+        return $stats;
     }
 
     /**
