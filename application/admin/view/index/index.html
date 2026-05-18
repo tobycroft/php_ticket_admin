@@ -145,7 +145,7 @@
 {/block}
 
 {block name="script"}
-<script src="{:asset('static/libs/chartjs/Chart.min.js')}"></script>
+<script src="__LIBS__/chartjs/Chart.min.js?v={:config('asset_version')}"></script>
 <script>
     $(document).ready(function () {
         // 运维工单柱状图
