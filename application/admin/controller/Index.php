@@ -79,19 +79,19 @@ class Index extends Admin
         
         switch ($module) {
             case 'maintenance':
-                $stats['total'] = Db::name('maintenance_order')->count();
-                $stats['pending'] = Db::name('maintenance_order')->where('status', 0)->count();
-                $stats['completed'] = Db::name('maintenance_order')->where('status', 1)->count();
+                $stats['total'] = Db::name('mt_event')->count();
+                $stats['pending'] = Db::name('mt_event')->where('is_closed', 0)->count();
+                $stats['completed'] = Db::name('mt_event')->where('is_closed', 1)->count();
                 break;
             case 'stor':
-                $stats['total'] = Db::name('stor_goods')->count();
-                $stats['pending'] = Db::name('stor_inventory')->where('stock', '<', 10)->count();
-                $stats['completed'] = Db::name('stor_record')->count();
+                $stats['total'] = Db::name('stor_material')->count();
+                $stats['pending'] = Db::name('stor_stock')->where('quantity', '<', 10)->count();
+                $stats['completed'] = Db::name('stor_inbound')->count();
                 break;
             case 'coop':
-                $stats['total'] = Db::name('coop_order')->count();
-                $stats['pending'] = Db::name('coop_order')->where('status', 0)->count();
-                $stats['completed'] = Db::name('coop_order')->where('status', 1)->count();
+                $stats['total'] = Db::name('mt_cooperate')->count();
+                $stats['pending'] = Db::name('mt_cooperate')->where('is_closed', 0)->count();
+                $stats['completed'] = Db::name('mt_cooperate')->where('is_closed', 1)->count();
                 break;
             case 'user':
                 $stats['total'] = Db::name('admin_user')->count();
