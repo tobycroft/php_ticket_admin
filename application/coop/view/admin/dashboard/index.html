@@ -26,7 +26,7 @@
                         <div class="text-5xl font-bold mt-5">{$cooperate_count}</div>
                         <p class="text-lg mt-5">当前协办单总数</p>
                     </div>
-                    <a href="{:url('Cooperate/index')}" class="btn btn-primary mt-10">查看详情</a>
+                    <a href="{:url('dashboard/statistics')}" class="btn btn-primary mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                         <div class="text-5xl font-bold mt-5">{$pending_count}</div>
                         <p class="text-lg mt-5">进行中的协办单</p>
                     </div>
-                    <a href="{:url('Cooperate/index')}" class="btn btn-warning mt-10">查看详情</a>
+                    <a href="{:url('CooperateCreated/index')}" class="btn btn-warning mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                         <div class="text-5xl font-bold mt-5">{$canceled_count}</div>
                         <p class="text-lg mt-5">已作废的协办单</p>
                     </div>
-                    <a href="{:url('Cooperate/index')}" class="btn btn-danger mt-10">查看详情</a>
+                    <a href="{:url('CooperateCanceled/index')}" class="btn btn-danger mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                 <div class="block-header bg-success">
                     <h3 class="block-title text-white">
                         <i class="fa fa-user mr-5 text-white"></i>
-                        我的协办单
+                        我收到的
                     </h3>
                 </div>
                 <div class="block-content text-center py-20" style="padding-bottom: 40px;">
