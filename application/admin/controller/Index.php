@@ -94,9 +94,9 @@ class Index extends Admin
                 $stats['completed'] = Db::name('coop_order')->where('status', 1)->count();
                 break;
             case 'user':
-                $stats['total'] = Db::name('user_user')->count();
-                $stats['pending'] = Db::name('user_user')->where('status', 0)->count();
-                $stats['completed'] = Db::name('user_user')->where('status', 1)->count();
+                $stats['total'] = Db::name('admin_user')->count();
+                $stats['pending'] = Db::name('admin_user')->where('status', 0)->count();
+                $stats['completed'] = Db::name('admin_user')->where('status', 1)->count();
                 break;
         }
         
