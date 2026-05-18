@@ -12,7 +12,7 @@ class Dashboard extends Admin
     {
         $cooperate_count = CooperateModel::where('status', 1)->count();
         $pending_count = CooperateModel::where('status', 1)->where('is_canceled', 0)->count();
-        $canceled_count = CooperateModel::where('status', 1)->where('is_canceled', 1)->count();
+        $canceled_count = CooperateModel::where('status', 1)->where('is_canceled', 1)->where('creator_id', UID)->count();
         $my_cooperate_count = CooperateModel::where('status', 1)->where('receiver_id', UID)->count();
 
         $this->assign('cooperate_count', $cooperate_count);
