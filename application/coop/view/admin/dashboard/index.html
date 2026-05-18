@@ -1,91 +1,89 @@
 {extend name="$_admin_base_layout" /}
 
 {block name="content"}
-    <div class="pb-30">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">
-                    <i class="fa fa-dashboard mr-5"></i>
-                    协办单仪表盘
-                    <small>Dashboard</small>
-                </h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                <i class="fa fa-dashboard mr-5"></i>
+                协办单仪表盘
+                <small>Dashboard</small>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-primary">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-handshake-o mr-5 text-white"></i>
+                        协办单总数
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-primary">
+                        <i class="fa fa-file-text-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$cooperate_count}</div>
+                        <p class="text-lg mt-5">当前协办单总数</p>
+                    </div>
+                    <a href="{:url('Cooperate/index')}" class="btn btn-primary mt-10">查看详情</a>
+                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-3">
-                <div class="block">
-                    <div class="block-header bg-primary">
-                        <h3 class="block-title text-white">
-                            <i class="fa fa-handshake-o mr-5 text-white"></i>
-                            协办单总数
-                        </h3>
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-warning">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-clock-o mr-5 text-white"></i>
+                        进行中
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-warning">
+                        <i class="fa fa-spinner fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$pending_count}</div>
+                        <p class="text-lg mt-5">进行中的协办单</p>
                     </div>
-                    <div class="block-content text-center py-20">
-                        <div class="text-primary">
-                            <i class="fa fa-file-text-o fa-5x mb-10"></i>
-                            <div class="text-5xl font-bold mt-5">{$cooperate_count}</div>
-                            <p class="text-lg mt-5">当前协办单总数</p>
-                        </div>
-                        <a href="{:url('Cooperate/index')}" class="btn btn-primary mt-10">查看详情</a>
-                    </div>
+                    <a href="{:url('Cooperate/index')}" class="btn btn-warning mt-10">查看详情</a>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-3">
-                <div class="block">
-                    <div class="block-header bg-warning">
-                        <h3 class="block-title text-white">
-                            <i class="fa fa-clock-o mr-5 text-white"></i>
-                            进行中
-                        </h3>
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-danger">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-ban mr-5 text-white"></i>
+                        已作废
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-danger">
+                        <i class="fa fa-trash-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$canceled_count}</div>
+                        <p class="text-lg mt-5">已作废的协办单</p>
                     </div>
-                    <div class="block-content text-center py-20">
-                        <div class="text-warning">
-                            <i class="fa fa-spinner fa-5x mb-10"></i>
-                            <div class="text-5xl font-bold mt-5">{$pending_count}</div>
-                            <p class="text-lg mt-5">进行中的协办单</p>
-                        </div>
-                        <a href="{:url('Cooperate/index')}" class="btn btn-warning mt-10">查看详情</a>
-                    </div>
+                    <a href="{:url('Cooperate/index')}" class="btn btn-danger mt-10">查看详情</a>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-3">
-                <div class="block">
-                    <div class="block-header bg-danger">
-                        <h3 class="block-title text-white">
-                            <i class="fa fa-ban mr-5 text-white"></i>
-                            已作废
-                        </h3>
-                    </div>
-                    <div class="block-content text-center py-20">
-                        <div class="text-danger">
-                            <i class="fa fa-trash-o fa-5x mb-10"></i>
-                            <div class="text-5xl font-bold mt-5">{$canceled_count}</div>
-                            <p class="text-lg mt-5">已作废的协办单</p>
-                        </div>
-                        <a href="{:url('Cooperate/index')}" class="btn btn-danger mt-10">查看详情</a>
-                    </div>
+        <div class="col-md-3">
+            <div class="block">
+                <div class="block-header bg-success">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-user mr-5 text-white"></i>
+                        我的协办单
+                    </h3>
                 </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="block">
-                    <div class="block-header bg-success">
-                        <h3 class="block-title text-white">
-                            <i class="fa fa-user mr-5 text-white"></i>
-                            我的协办单
-                        </h3>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-success">
+                        <i class="fa fa-user-circle-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$my_cooperate_count}</div>
+                        <p class="text-lg mt-5">我收到的协办单</p>
                     </div>
-                    <div class="block-content text-center py-20">
-                        <div class="text-success">
-                            <i class="fa fa-user-circle-o fa-5x mb-10"></i>
-                            <div class="text-5xl font-bold mt-5">{$my_cooperate_count}</div>
-                            <p class="text-lg mt-5">我收到的协办单</p>
-                        </div>
-                        <a href="{:url('Cooperate/index')}" class="btn btn-success mt-10">查看详情</a>
-                    </div>
+                    <a href="{:url('Cooperate/index')}" class="btn btn-success mt-10">查看详情</a>
                 </div>
             </div>
         </div>
