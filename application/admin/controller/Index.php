@@ -36,8 +36,115 @@ class Index extends Admin
         $modules = $this->getAccessibleModules();
         $this->assign('modules', $modules);
         
+        // 获取当前值班人员
+        $currentDutyUsers = $this->getCurrentDutyUsers();
+        $this->assign('current_duty_users', $currentDutyUsers);
+        
+        // 获取运维工单统计（本月每天的工单数量）
+        $eventStats = $this->getEventStats();
+        $this->assign('event_stats', $eventStats);
+        
+        // 获取仓管物料统计
+        $materialStats = $this->getMaterialStats();
+        $this->assign('material_stats', $materialStats);
+        
 //        $this->redirect("/admin/index/profile");
         return $this->fetch();
+    }
+    
+    /**
+     * 获取当前值班人员
+     */
+    private function getCurrentDutyUsers()
+    {
+        $today = date('Y-m-d');
+        return Db::table('mt_daily_schedule')
+            ->alias('ds')
+            ->join('dp_admin_user u', 'u.id = ds.user_id', 'LEFT')
+            ->where('ds.schedule_date', $today)
+            ->where('ds.status', 1)
+            ->field('ds.user_name, ds.shift_name, u.mobile')
+            ->select();
+    }
+    
+    /**
+     * 获取运维工单统计（本月每天的工单数量）
+     */
+    private function getEventStats()
+    {
+        $today = date('Y-m-d');
+        $firstDay = date('Y-m-01');
+        
+        $data = Db::table('mt_event')
+            ->where('start_time', '>=', $firstDay . ' 00:00:00')
+            ->where('start_time', '<=', $today . ' 23:59:59')
+            ->field("DATE_FORMAT(start_time, '%d') as day, COUNT(*) as count")
+            ->group('day')
+            ->order('day')
+            ->select();
+        
+        $result = [];
+        for ($i = 1; $i <= date('d'); $i++) {
+            $count = 0;
+            foreach ($data as $item) {
+                if ((int)$item['day'] == $i) {
+                    $count = (int)$item['count'];
+                    break;
+                }
+            }
+            $result[] = ['day' => $i, 'count' => $count];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * 获取仓管物料统计
+     */
+    private function getMaterialStats()
+    {
+        // 物料状态：1-正常(未分配), 2-已分配, 3-维修中, 4-作废
+        $statusStats = Db::table('stor_material_sn')
+            ->field('status, COUNT(*) as count')
+            ->group('status')
+            ->select();
+        
+        $stats = [
+            'repairing' => 0,      // 在维修
+            'allocated' => 0,      // 已分配
+            'unallocated' => 0,    // 未分配
+            'scrapped' => 0,       // 已作废
+            'total' => 0           // 总量
+        ];
+        
+        foreach ($statusStats as $item) {
+            $status = (int)$item['status'];
+            $count = (int)$item['count'];
+            $stats['total'] += $count;
+            
+            switch ($status) {
+                case 1:
+                    $stats['unallocated'] = $count;
+                    break;
+                case 2:
+                    $stats['allocated'] = $count;
+                    break;
+                case 3:
+                    $stats['repairing'] = $count;
+                    break;
+                case 4:
+                    $stats['scrapped'] = $count;
+                    break;
+            }
+        }
+        
+        // 获取物料类型数量
+        $categoryCount = Db::table('stor_category')->where('status', 1)->count();
+        
+        return [
+            'stats' => $stats,
+            'category_count' => $categoryCount
+        ];
     }
     
     private function getAccessibleModules()

@@ -10,14 +10,90 @@
     <p>超级管理员默认密码未修改，建议马上 <a class="alert-link link-effect" href="{:url('user/index/edit', ['id' => 1])}">修改</a>。</p>
 </div>
 {/notempty}
-<div class="alert alert-info alert-dismissable">
-    <button aria-hidden="true" class="close" data-dismiss="alert" type="button">×</button>
-    <h3 class="font-w300 push-15">欢迎使用{$web_site_title}系统</h3>
+
+<!-- 当前值班人员 -->
+<div class="block">
+    <div class="block-header bg-primary">
+        <h3 class="block-title"><i class="fa fa-clock-o"></i> 当前值班人员</h3>
+    </div>
+    <div class="block-content">
+        {if condition="!empty($current_duty_users)"}
+        <div class="row">
+            {volist name="current_duty_users" id="user"}
+            <div class="col-md-4">
+                <div class="block block-rounded bg-gray-lighter border border-gray-light">
+                    <div class="block-content p-10">
+                        <div class="h4 font-w600 text-primary">{$user.user_name}</div>
+                        <div class="text-muted text-sm">班次：{$user.shift_name}</div>
+                        <div class="text-muted text-sm">联系方式：{$user.mobile}</div>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+        {else}
+        <div class="text-center text-muted py-10">暂无值班人员信息</div>
+        {/if}
+    </div>
 </div>
-<div class="alert alert-success alert-dismissable">
-    <button aria-hidden="true" class="close" data-dismiss="alert" type="button">×</button>
-    <h3 class="font-w300 push-15"><i class="fa fa-check-circle"></i> 系统运行正常</h3>
-    <p>暂无紧急通知，系统运行状态良好。</p>
+
+<!-- 运维统计和仓管统计 -->
+<div class="row">
+    <!-- 运维统计 - 柱状图 -->
+    <div class="col-md-6">
+        <div class="block">
+            <div class="block-header bg-info">
+                <h3 class="block-title"><i class="fa fa-bar-chart"></i> 运维统计</h3>
+            </div>
+            <div class="block-content">
+                <canvas id="eventChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 仓管统计 - 饼状图 -->
+    <div class="col-md-6">
+        <div class="block">
+            <div class="block-header bg-warning">
+                <h3 class="block-title"><i class="fa fa-pie-chart"></i> 仓管统计</h3>
+            </div>
+            <div class="block-content">
+                <div class="row">
+                    <div class="col-md-7">
+                        <canvas id="materialChart" height="220"></canvas>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="text-center mb-5">
+                            <div class="h2 font-w600 text-warning">{$material_stats.stats.total}</div>
+                            <div class="text-muted text-sm">物料总量</div>
+                        </div>
+                        <div class="text-center mb-5">
+                            <div class="h3 font-w600 text-info">{$material_stats.category_count}</div>
+                            <div class="text-muted text-sm">物料类型</div>
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <span class="badge badge-primary pull-right">{$material_stats.stats.unallocated}</span>
+                                <span>未分配配件</span>
+                            </div>
+                            <div class="list-group-item">
+                                <span class="badge badge-success pull-right">{$material_stats.stats.allocated}</span>
+                                <span>已分配</span>
+                            </div>
+                            <div class="list-group-item">
+                                <span class="badge badge-warning pull-right">{$material_stats.stats.repairing}</span>
+                                <span>维修中</span>
+                            </div>
+                            <div class="list-group-item">
+                                <span class="badge badge-danger pull-right">{$material_stats.stats.scrapped}</span>
+                                <span>已作废</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {notempty name="modules"}
@@ -69,8 +145,85 @@
 {/block}
 
 {block name="script"}
+<script src="{:asset('static/libs/chartjs/Chart.min.js')}"></script>
 <script>
     $(document).ready(function () {
+        // 运维工单柱状图
+        var eventLabels = [];
+        var eventCounts = [];
+        {volist name="event_stats" id="stat"}
+        eventLabels.push('{$stat.day}日');
+        eventCounts.push({$stat.count});
+        {/volist}
+        
+        var eventData = {
+            labels: eventLabels,
+            datasets: [{
+                label: '工单数量',
+                backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                borderColor: 'rgba(52, 152, 219, 1)',
+                borderWidth: 1,
+                data: eventCounts
+            }]
+        };
+        
+        var eventCtx = document.getElementById('eventChart').getContext('2d');
+        new Chart(eventCtx, {
+            type: 'bar',
+            data: eventData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    }]
+                }
+            }
+        });
+        
+        // 仓管物料饼状图
+        var materialData = {
+            labels: ['未分配配件', '已分配', '维修中', '已作废'],
+            datasets: [{
+                data: [
+                    {$material_stats.stats.unallocated},
+                    {$material_stats.stats.allocated},
+                    {$material_stats.stats.repairing},
+                    {$material_stats.stats.scrapped}
+                ],
+                backgroundColor: [
+                    'rgba(52, 152, 219, 0.8)',
+                    'rgba(46, 204, 113, 0.8)',
+                    'rgba(241, 196, 15, 0.8)',
+                    'rgba(231, 76, 60, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(46, 204, 113, 1)',
+                    'rgba(241, 196, 15, 1)',
+                    'rgba(231, 76, 60, 1)'
+                ],
+                borderWidth: 2
+            }]
+        };
+        
+        var materialCtx = document.getElementById('materialChart').getContext('2d');
+        new Chart(materialCtx, {
+            type: 'pie',
+            data: materialData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        });
+        
         $.ajax({
             url: '{:url("checkUpdate")}',
             type: 'GET'
