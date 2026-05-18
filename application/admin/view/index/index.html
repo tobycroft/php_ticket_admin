@@ -22,10 +22,10 @@
             <div class="col-md-12">
                 <div class="row" style="display: flex; flex-wrap: wrap; gap: 10px;">
                     {volist name="current_duty_users" id="user"}
-                    <div class="text-center" style="padding: 15px; border-radius: 5px; background-color: {$user.color ?: '#337ab7'}; color: white; min-width: 180px;">
-                        <div class="h4 font-w600" style="margin-bottom: 5px;">{$user.user_name}</div>
-                        <div style="font-size: 14px; margin-bottom: 3px;">班次：{$user.shift_name}</div>
-                        <div style="font-size: 14px;">联系方式：{$user.mobile}</div>
+                    <div class="text-center" style="padding: 15px 20px; border-radius: 5px; background-color: {$user.color ?: '#337ab7'}; color: white; min-width: 300px; min-height: 60px; display: flex; align-items: center; justify-content: center; gap: 20px;">
+                        <span class="h4 font-w600">{$user.user_name}</span>
+                        <span style="font-size: 14px;">班次：{$user.shift_name}</span>
+                        <span style="font-size: 14px;">联系方式：{$user.mobile}</span>
                     </div>
                     {/volist}
                 </div>
