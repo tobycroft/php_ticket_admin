@@ -60,22 +60,28 @@ class Index extends Admin
         $today = date('Y-m-d');
         $currentTime = date('H:i:s');
         
-        // 获取今天所有值班人员及班次信息
-        $prefix = config('database.prefix');
-        $schedules = Db::table('mt_daily_schedule')
-            ->alias('ds')
-            ->join($prefix . 'admin_user u', 'u.id = ds.user_id', 'LEFT')
-            ->join(\think\Db::raw('mt_shift_pattern sp'), 'sp.id = ds.shift_id', 'LEFT')
-            ->where('ds.schedule_date', $today)
-            ->where('ds.status', 1)
-            ->field('ds.user_name, ds.shift_name, u.mobile, sp.start_time, sp.end_time')
-            ->select();
+        // 获取班次时间配置
+        $shiftPatterns = Db::query("SELECT id, start_time, end_time FROM mt_shift_pattern WHERE status = 1");
+        $shiftMap = [];
+        foreach ($shiftPatterns as $pattern) {
+            $shiftMap[$pattern['id']] = [
+                'start_time' => $pattern['start_time'],
+                'end_time' => $pattern['end_time']
+            ];
+        }
+        
+        // 获取今天所有值班人员
+        $schedules = Db::query("SELECT ds.user_name, ds.shift_name, ds.shift_id, u.mobile FROM mt_daily_schedule ds LEFT JOIN dp_admin_user u ON u.id = ds.user_id WHERE ds.schedule_date = ? AND ds.status = 1", [$today]);
         
         // 根据当前时间筛选正在值班的人员
         $currentDutyUsers = [];
         foreach ($schedules as $schedule) {
-            $startTime = $schedule['start_time'];
-            $endTime = $schedule['end_time'];
+            $shiftId = $schedule['shift_id'];
+            if (!isset($shiftMap[$shiftId])) {
+                continue;
+            }
+            $startTime = $shiftMap[$shiftId]['start_time'];
+            $endTime = $shiftMap[$shiftId]['end_time'];
             
             // 判断当前时间是否在班次时间范围内
             // 特殊处理夜班（结束时间早于开始时间的情况，如21:00-09:00）
