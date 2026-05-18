@@ -2,6 +2,7 @@
 
 namespace app\stor\model;
 
+use app\admin\model\ActionLog;
 use think\Model;
 
 class MaterialModel extends Model
@@ -35,12 +36,23 @@ class MaterialModel extends Model
     {
         $id = self::insertGetId($data);
         StockModel::add(['material_id' => $id]);
+        
+        $newData = self::where('id', $id)->find();
+        ActionLog::addRecord('stor', 'stor_material', 'add', $id, $data['name'] ?? '新物料', $newData->toArray(), '新增物料');
+        
         return $id;
     }
 
     public static function edit($data)
     {
-        return self::where('id', $data['id'])->update($data);
+        $oldData = self::where('id', $data['id'])->find();
+        $result = self::where('id', $data['id'])->update($data);
+        
+        if ($result) {
+            ActionLog::editRecord('stor', 'stor_material', $data['id'], $oldData['name'] ?? '物料', $oldData->toArray(), $data, '编辑物料');
+        }
+        
+        return $result;
     }
 
     public static function deleteById($id)
@@ -53,7 +65,16 @@ class MaterialModel extends Model
     public static function setStatus($type, $ids)
     {
         $status = $type == 'enable' ? 1 : 0;
-        return self::where('id', 'in', $ids)->update(['status' => $status]);
+        $actionType = $type == 'enable' ? 'enable' : 'disable';
+        $remark = $type == 'enable' ? '启用物料' : '禁用物料';
+        
+        foreach ($ids as $id) {
+            $oldData = self::where('id', $id)->find();
+            self::where('id', $id)->update(['status' => $status]);
+            ActionLog::editRecord('stor', 'stor_material', $id, $oldData['name'] ?? '物料', $oldData->toArray(), ['status' => $status], $remark);
+        }
+        
+        return true;
     }
 
     public static function checkCodeExists($code, $id = 0)
@@ -67,7 +88,14 @@ class MaterialModel extends Model
 
     public static function scrap($id)
     {
-        return self::where('id', $id)->update(['status' => 2]);
+        $oldData = self::where('id', $id)->find();
+        $result = self::where('id', $id)->update(['status' => 2]);
+        
+        if ($result) {
+            ActionLog::editRecord('stor', 'stor_material', $id, $oldData['name'] ?? '物料', $oldData->toArray(), ['status' => 2], '作物料');
+        }
+        
+        return $result;
     }
 
     public static function getScrapList()
