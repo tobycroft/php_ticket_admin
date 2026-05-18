@@ -26,6 +26,7 @@
                         <div class="text-5xl font-bold mt-5">{$total}</div>
                         <p class="text-lg mt-5">协办单总数</p>
                     </div>
+                    <a href="{:url('Cooperate/index')}" class="btn btn-primary mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -44,6 +45,7 @@
                         <div class="text-5xl font-bold mt-5">{$pending}</div>
                         <p class="text-lg mt-5">进行中的协办单</p>
                     </div>
+                    <a href="{:url('Cooperate/index')}" class="btn btn-warning mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -62,6 +64,7 @@
                         <div class="text-5xl font-bold mt-5">{$closed}</div>
                         <p class="text-lg mt-5">已完成的协办单</p>
                     </div>
+                    <a href="{:url('CooperateFinished/index')}" class="btn btn-success mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -80,6 +83,7 @@
                         <div class="text-5xl font-bold mt-5">{$canceled}</div>
                         <p class="text-lg mt-5">已作废的协办单</p>
                     </div>
+                    <a href="{:url('CooperateCanceled/index')}" class="btn btn-danger mt-10">查看详情</a>
                 </div>
             </div>
         </div>
@@ -111,6 +115,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="block-content bg-gray-lighter text-center">
+                    <a href="{:url('CooperateCreated/index')}" class="btn btn-info">查看我创建的协办单</a>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
@@ -137,6 +144,9 @@
                             {/volist}
                         </tbody>
                     </table>
+                </div>
+                <div class="block-content bg-gray-lighter text-center">
+                    <a href="{:url('CooperateMy/index')}" class="btn btn-info">查看指派给我的协办单</a>
                 </div>
             </div>
         </div>
@@ -165,6 +175,40 @@
                             {/volist}
                         </tbody>
                     </table>
+                </div>
+                <div class="block-content bg-gray-lighter text-center">
+                    <a href="{:url('Cooperate/index')}" class="btn btn-info">查看全部协办单</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title"><i class="fa fa-plus-circle mr-5"></i>快捷操作</h3>
+                </div>
+                <div class="block-content text-center py-20">
+                    <div class="row">
+                        <div class="col-md-6 mb-10">
+                            <a href="{:url('Cooperate/add')}" class="btn btn-primary btn-block">
+                                <i class="fa fa-plus-circle mr-2"></i>新增协办单
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-10">
+                            <a href="{:url('CooperateMy/index')}" class="btn btn-info btn-block">
+                                <i class="fa fa-user-plus mr-2"></i>我的协办单
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-10">
+                            <a href="{:url('CooperateCreated/index')}" class="btn btn-success btn-block">
+                                <i class="fa fa-file-text mr-2"></i>我创建的
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-10">
+                            <a href="{:url('CooperateFinished/index')}" class="btn btn-warning btn-block">
+                                <i class="fa fa-check-circle-o mr-2"></i>已完成
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
