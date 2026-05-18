@@ -22,23 +22,44 @@ class CategoryModel extends Model
 
     public static function add($data)
     {
-        return self::insert($data);
+        $result = self::insert($data);
+        if ($result) {
+            action_log('category_add', 'stor_category', '', UID, $data['name'] ?? '');
+        }
+        return $result;
     }
 
     public static function edit($data)
     {
-        return self::where('id', $data['id'])->update($data);
+        $result = self::where('id', $data['id'])->update($data);
+        if ($result) {
+            $info = self::getInfo($data['id']);
+            action_log('category_edit', 'stor_category', $data['id'], UID, $info['name'] ?? '');
+        }
+        return $result;
     }
 
     public static function scrap($id)
     {
-        return self::where('id', $id)->update(['status' => 2]);
+        $info = self::getInfo($id);
+        $result = self::where('id', $id)->update(['status' => 2]);
+        if ($result) {
+            action_log('category_scrap', 'stor_category', $id, UID, $info['name'] ?? '');
+        }
+        return $result;
     }
 
     public static function setStatus($type, $ids)
     {
         $status = $type == 'enable' ? 1 : 0;
-        return self::where('id', 'in', $ids)->update(['status' => $status]);
+        $result = self::where('id', 'in', $ids)->update(['status' => $status]);
+        if ($result) {
+            foreach ($ids as $id) {
+                $info = self::getInfo($id);
+                action_log('category_' . $type, 'stor_category', $id, UID, $info['name'] ?? '');
+            }
+        }
+        return $result;
     }
 
     public static function getScrapList()

@@ -24,18 +24,30 @@ class ProjectModel extends Model
     {
         $data['create_time'] = date('Y-m-d H:i:s');
         $data['update_time'] = date('Y-m-d H:i:s');
-        return self::insertGetId($data);
+        $id = self::insertGetId($data);
+        action_log('project_add', 'stor_project', $id, UID, $data['name'] ?? '');
+        return $id;
     }
 
     public static function edit($data)
     {
         $data['update_time'] = date('Y-m-d H:i:s');
-        return self::where('id', $data['id'])->update($data);
+        $result = self::where('id', $data['id'])->update($data);
+        if ($result) {
+            $info = self::getInfo($data['id']);
+            action_log('project_edit', 'stor_project', $data['id'], UID, $info['name'] ?? '');
+        }
+        return $result;
     }
 
     public static function deleteById($id)
     {
-        return self::where('id', $id)->delete();
+        $info = self::getInfo($id);
+        $result = self::where('id', $id)->delete();
+        if ($result) {
+            action_log('project_delete', 'stor_project', $id, UID, $info['name'] ?? '');
+        }
+        return $result;
     }
 
     public static function setStatus($type, $ids)

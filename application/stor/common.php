@@ -1,149 +1,66 @@
 <?php
-// +----------------------------------------------------------------------
-// | 海豚PHP框架 [ DThinkPHP ]
-// +----------------------------------------------------------------------
-// | 版权所有 2016~2017 河源市卓锐科技有限公司 [ http://www.thinkphp.cn ]
-// +----------------------------------------------------------------------
-// | 官方网站: http://DThinkPHP.com
-// +----------------------------------------------------------------------
-// | 开源协议 ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
 
-// 门户模块公共函数库
-use think\Db;
+namespace app\stor\common;
 
-if (!function_exists('get_column_name')) {
-    /**
-     * 获取栏目名称
-     * @param int $cid 栏目id
-     * @return string
-     */
-    function get_column_name($cid = 0)
+use app\admin\model\Action;
+
+class StorAction
+{
+    public static function registerActions()
     {
-        $column_list = model('cms/column')->getList();
-        return isset($column_list[$cid]) ? $column_list[$cid]['name'] : '';
-    }
-}
-
-if (!function_exists('get_model_name')) {
-    /**
-     * 获取内容模型名称
-     * @param string $id 内容模型id
-     * @return string
-     */
-    function get_model_name($id = '')
-    {
-        $model_list = model('cms/model')->getList();
-        return isset($model_list[$id]) ? $model_list[$id]['name'] : '';
-    }
-}
-
-if (!function_exists('get_model_title')) {
-    /**
-     * 获取内容模型标题
-     * @param string $id 内容模型标题
-     * @return string
-     */
-    function get_model_title($id = '')
-    {
-        $model_list = model('cms/model')->getList();
-        return isset($model_list[$id]) ? $model_list[$id]['title'] : '';
-    }
-}
-
-if (!function_exists('get_model_type')) {
-    /**
-     * 获取内容模型类别：0-系统，1-普通，2-独立
-     * @param int $id 模型id
-     * @return string
-     */
-    function get_model_type($id = 0)
-    {
-        $model_list = model('cms/model')->getList();
-        return isset($model_list[$id]) ? $model_list[$id]['type'] : '';
-    }
-}
-
-if (!function_exists('get_model_table')) {
-    /**
-     * 获取内容模型附加表名
-     * @param int $id 模型id
-     * @return string
-     */
-    function get_model_table($id = 0)
-    {
-        $model_list = model('cms/model')->getList();
-        return isset($model_list[$id]) ? $model_list[$id]['table'] : '';
-    }
-}
-
-if (!function_exists('is_default_field')) {
-    /**
-     * 检查是否为系统默认字段
-     * @param string $field 字段名称
-     * @return bool
-     */
-    function is_default_field($field = '')
-    {
-        $system_fields = cache('cms_system_fields');
-        if (!$system_fields) {
-            $system_fields = Db::name('cms_field')->where('model', 0)->column('name');
-            cache('cms_system_fields', $system_fields);
-        }
-        return in_array($field, $system_fields, true);
-    }
-}
-
-if (!function_exists('table_exist')) {
-    /**
-     * 检查附加表是否存在
-     * @param string $table_name 附加表名
-     * @return string
-     */
-    function table_exist($table_name = '')
-    {
-        return true == Db::query("SHOW TABLES LIKE '{$table_name}'");
-    }
-}
-
-if (!function_exists('time_tran')) {
-    /**
-     * 转换时间
-     * @param int $timer 时间戳
-     * @return string
-     */
-    function time_tran($timer)
-    {
-        $diff = $_SERVER['REQUEST_TIME'] - $timer;
-        $day = floor($diff / 86400);
-        $free = $diff % 86400;
-        if ($day > 0) {
-            return $day . " 天前";
-        } else {
-            if ($free > 0) {
-                $hour = floor($free / 3600);
-                $free = $free % 3600;
-                if ($hour > 0) {
-                    return $hour . " 小时前";
-                } else {
-                    if ($free > 0) {
-                        $min = floor($free / 60);
-                        $free = $free % 60;
-                        if ($min > 0) {
-                            return $min . " 分钟前";
-                        } else {
-                            if ($free > 0) {
-                                return $free . " 秒前";
-                            } else {
-                                return '刚刚';
-                            }
-                        }
-                    } else {
-                        return '刚刚';
-                    }
-                }
-            } else {
-                return '刚刚';
+        $actions = [
+            // 分类管理
+            ['module' => 'stor', 'name' => 'category_add', 'title' => '添加分类', 'remark' => '添加分类', 'log' => '[user|get_nickname] 添加了分类：[details]'],
+            ['module' => 'stor', 'name' => 'category_edit', 'title' => '编辑分类', 'remark' => '编辑分类', 'log' => '[user|get_nickname] 编辑了分类：[details]'],
+            ['module' => 'stor', 'name' => 'category_scrap', 'title' => '作废分类', 'remark' => '作废分类', 'log' => '[user|get_nickname] 作废了分类：[details]'],
+            ['module' => 'stor', 'name' => 'category_enable', 'title' => '启用分类', 'remark' => '启用分类', 'log' => '[user|get_nickname] 启用了分类：[details]'],
+            ['module' => 'stor', 'name' => 'category_disable', 'title' => '禁用分类', 'remark' => '禁用分类', 'log' => '[user|get_nickname] 禁用了分类：[details]'],
+            
+            // 物料管理
+            ['module' => 'stor', 'name' => 'material_add', 'title' => '添加物料', 'remark' => '添加物料', 'log' => '[user|get_nickname] 添加了物料：[details]'],
+            ['module' => 'stor', 'name' => 'material_edit', 'title' => '编辑物料', 'remark' => '编辑物料', 'log' => '[user|get_nickname] 编辑了物料：[details]'],
+            ['module' => 'stor', 'name' => 'material_scrap', 'title' => '作废物料', 'remark' => '作废物料', 'log' => '[user|get_nickname] 作废了物料：[details]'],
+            ['module' => 'stor', 'name' => 'material_enable', 'title' => '启用物料', 'remark' => '启用物料', 'log' => '[user|get_nickname] 启用了物料：[details]'],
+            ['module' => 'stor', 'name' => 'material_disable', 'title' => '禁用物料', 'remark' => '禁用物料', 'log' => '[user|get_nickname] 禁用了物料：[details]'],
+            
+            // 物料SN管理
+            ['module' => 'stor', 'name' => 'material_sn_add', 'title' => '添加物料SN', 'remark' => '添加物料SN', 'log' => '[user|get_nickname] 添加了物料SN：[details]'],
+            ['module' => 'stor', 'name' => 'material_sn_edit', 'title' => '编辑物料SN', 'remark' => '编辑物料SN', 'log' => '[user|get_nickname] 编辑了物料SN：[details]'],
+            ['module' => 'stor', 'name' => 'material_sn_scrap', 'title' => '作废物料SN', 'remark' => '作废物料SN', 'log' => '[user|get_nickname] 作废了物料SN：[details]'],
+            ['module' => 'stor', 'name' => 'material_sn_allocate', 'title' => '分配物料SN', 'remark' => '分配物料SN', 'log' => '[user|get_nickname] 分配了物料SN：[details]'],
+            
+            // 入库管理
+            ['module' => 'stor', 'name' => 'inbound_add', 'title' => '添加入库单', 'remark' => '添加入库单', 'log' => '[user|get_nickname] 添加了入库单：[details]'],
+            ['module' => 'stor', 'name' => 'inbound_edit', 'title' => '编辑入库单', 'remark' => '编辑入库单', 'log' => '[user|get_nickname] 编辑了入库单：[details]'],
+            
+            // 出库管理
+            ['module' => 'stor', 'name' => 'outbound_add', 'title' => '添加出库单', 'remark' => '添加出库单', 'log' => '[user|get_nickname] 添加了出库单：[details]'],
+            ['module' => 'stor', 'name' => 'outbound_edit', 'title' => '编辑出库单', 'remark' => '编辑出库单', 'log' => '[user|get_nickname] 编辑了出库单：[details]'],
+            
+            // 维修管理
+            ['module' => 'stor', 'name' => 'repair_add', 'title' => '添加维修单', 'remark' => '添加维修单', 'log' => '[user|get_nickname] 添加了维修单：[details]'],
+            ['module' => 'stor', 'name' => 'repair_edit', 'title' => '编辑维修单', 'remark' => '编辑维修单', 'log' => '[user|get_nickname] 编辑了维修单：[details]'],
+            ['module' => 'stor', 'name' => 'repair_complete', 'title' => '维修完成', 'remark' => '维修完成', 'log' => '[user|get_nickname] 完成了维修单：[details]'],
+            ['module' => 'stor', 'name' => 'repair_scrap', 'title' => '维修作废', 'remark' => '维修作废', 'log' => '[user|get_nickname] 作废了维修单：[details]'],
+            
+            // 项目管理
+            ['module' => 'stor', 'name' => 'project_add', 'title' => '添加项目', 'remark' => '添加项目', 'log' => '[user|get_nickname] 添加了项目：[details]'],
+            ['module' => 'stor', 'name' => 'project_edit', 'title' => '编辑项目', 'remark' => '编辑项目', 'log' => '[user|get_nickname] 编辑了项目：[details]'],
+            ['module' => 'stor', 'name' => 'project_delete', 'title' => '删除项目', 'remark' => '删除项目', 'log' => '[user|get_nickname] 删除了项目：[details]'],
+        ];
+        
+        foreach ($actions as $action) {
+            $exist = Action::where('module', $action['module'])->where('name', $action['name'])->find();
+            if (!$exist) {
+                Action::create([
+                    'module' => $action['module'],
+                    'name' => $action['name'],
+                    'title' => $action['title'],
+                    'remark' => $action['remark'],
+                    'type' => '',
+                    'log' => $action['log'],
+                    'status' => 1,
+                ]);
             }
         }
     }

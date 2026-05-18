@@ -37,29 +37,46 @@ class RepairModel extends Model
             'status' => 2,
             'create_user' => $data['create_user'] ?? 0
         ];
-        return self::insertGetId($insertData);
+        $id = self::insertGetId($insertData);
+        action_log('repair_add', 'stor_repair', $id, UID, $insertData['code'] ?? '');
+        return $id;
     }
 
     public static function edit($data)
     {
-        return self::where('id', $data['id'])->update($data);
+        $result = self::where('id', $data['id'])->update($data);
+        if ($result) {
+            $info = self::getInfo($data['id']);
+            action_log('repair_edit', 'stor_repair', $data['id'], UID, $info['code'] ?? '');
+        }
+        return $result;
     }
 
     public static function complete($id, $result)
     {
-        return self::where('id', $id)->update([
+        $info = self::getInfo($id);
+        $result = self::where('id', $id)->update([
             'status' => 1,
             'repair_result' => $result,
             'update_time' => date('Y-m-d H:i:s')
         ]);
+        if ($result) {
+            action_log('repair_complete', 'stor_repair', $id, UID, $info['code'] ?? '');
+        }
+        return $result;
     }
 
     public static function scrap($id, $result)
     {
-        return self::where('id', $id)->update([
+        $info = self::getInfo($id);
+        $result = self::where('id', $id)->update([
             'status' => 3,
             'repair_result' => $result,
             'update_time' => date('Y-m-d H:i:s')
         ]);
+        if ($result) {
+            action_log('repair_scrap', 'stor_repair', $id, UID, $info['code'] ?? '');
+        }
+        return $result;
     }
 }

@@ -30,12 +30,19 @@ class OutboundModel extends Model
     public static function add($data)
     {
         $data['code'] = self::generateCode();
-        return self::insertGetId($data);
+        $id = self::insertGetId($data);
+        action_log('outbound_add', 'stor_outbound', $id, UID, $data['code'] ?? '');
+        return $id;
     }
 
     public static function edit($data)
     {
-        return self::where('id', $data['id'])->update($data);
+        $result = self::where('id', $data['id'])->update($data);
+        if ($result) {
+            $info = self::getInfo($data['id']);
+            action_log('outbound_edit', 'stor_outbound', $data['id'], UID, $info['code'] ?? '');
+        }
+        return $result;
     }
 
     public static function deleteById($id)

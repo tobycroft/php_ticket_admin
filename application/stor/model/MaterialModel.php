@@ -2,7 +2,6 @@
 
 namespace app\stor\model;
 
-use app\admin\model\ActionLog;
 use think\Model;
 
 class MaterialModel extends Model
@@ -36,22 +35,17 @@ class MaterialModel extends Model
     {
         $id = self::insertGetId($data);
         StockModel::add(['material_id' => $id]);
-        
-        $newData = self::where('id', $id)->find();
-        ActionLog::addRecord('stor', 'stor_material', 'add', $id, $data['name'] ?? '新物料', $newData->toArray(), '新增物料');
-        
+        action_log('material_add', 'stor_material', $id, UID, $data['name'] ?? '');
         return $id;
     }
 
     public static function edit($data)
     {
-        $oldData = self::where('id', $data['id'])->find();
         $result = self::where('id', $data['id'])->update($data);
-        
         if ($result) {
-            ActionLog::editRecord('stor', 'stor_material', $data['id'], $oldData['name'] ?? '物料', $oldData->toArray(), $data, '编辑物料');
+            $info = self::getInfo($data['id']);
+            action_log('material_edit', 'stor_material', $data['id'], UID, $info['name'] ?? '');
         }
-        
         return $result;
     }
 
@@ -65,16 +59,14 @@ class MaterialModel extends Model
     public static function setStatus($type, $ids)
     {
         $status = $type == 'enable' ? 1 : 0;
-        $actionType = $type == 'enable' ? 'enable' : 'disable';
-        $remark = $type == 'enable' ? '启用物料' : '禁用物料';
-        
-        foreach ($ids as $id) {
-            $oldData = self::where('id', $id)->find();
-            self::where('id', $id)->update(['status' => $status]);
-            ActionLog::editRecord('stor', 'stor_material', $id, $oldData['name'] ?? '物料', $oldData->toArray(), ['status' => $status], $remark);
+        $result = self::where('id', 'in', $ids)->update(['status' => $status]);
+        if ($result) {
+            foreach ($ids as $id) {
+                $info = self::getInfo($id);
+                action_log('material_' . $type, 'stor_material', $id, UID, $info['name'] ?? '');
+            }
         }
-        
-        return true;
+        return $result;
     }
 
     public static function checkCodeExists($code, $id = 0)
@@ -88,13 +80,11 @@ class MaterialModel extends Model
 
     public static function scrap($id)
     {
-        $oldData = self::where('id', $id)->find();
+        $info = self::getInfo($id);
         $result = self::where('id', $id)->update(['status' => 2]);
-        
         if ($result) {
-            ActionLog::editRecord('stor', 'stor_material', $id, $oldData['name'] ?? '物料', $oldData->toArray(), ['status' => 2], '作物料');
+            action_log('material_scrap', 'stor_material', $id, UID, $info['name'] ?? '');
         }
-        
         return $result;
     }
 
