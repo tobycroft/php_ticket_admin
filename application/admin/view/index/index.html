@@ -14,13 +14,11 @@
     <button aria-hidden="true" class="close" data-dismiss="alert" type="button">×</button>
     <h3 class="font-w300 push-15">欢迎使用{$web_site_title}系统</h3>
 </div>
-{notempty name="emergency_notice"}
-<div class="alert alert-danger alert-dismissable">
+<div class="alert alert-success alert-dismissable">
     <button aria-hidden="true" class="close" data-dismiss="alert" type="button">×</button>
-    <h3 class="font-w300 push-15">紧急提示</h3>
-    <p>{$emergency_notice}</p>
+    <h3 class="font-w300 push-15"><i class="fa fa-check-circle"></i> 系统运行正常</h3>
+    <p>暂无紧急通知，系统运行状态良好。</p>
 </div>
-{/notempty}
 {// 后台首页钩子}
 <div class="row">
     {:hook('admin_index')}

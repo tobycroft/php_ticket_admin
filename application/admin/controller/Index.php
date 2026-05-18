@@ -33,9 +33,6 @@ class Index extends Admin
         $web_site_title = config('web_site_title') ?: 'ThinkPHP';
         $this->assign('web_site_title', $web_site_title);
         
-        $emergency_notice = config('emergency_notice') ?: '';
-        $this->assign('emergency_notice', $emergency_notice);
-        
 //        $this->redirect("/admin/index/profile");
         return $this->fetch();
     }
