@@ -71,7 +71,7 @@ class Index extends Admin
         }
         
         // 获取今天所有值班人员
-        $schedules = Db::query("SELECT ds.user_name, ds.shift_name, ds.shift_id, u.mobile FROM mt_daily_schedule ds LEFT JOIN dp_admin_user u ON u.id = ds.user_id WHERE ds.schedule_date = ? AND ds.status = 1", [$today]);
+        $schedules = Db::query("SELECT ds.user_name, ds.shift_name, ds.shift_id, u.mobile, u.color FROM mt_daily_schedule ds LEFT JOIN dp_admin_user u ON u.id = ds.user_id WHERE ds.schedule_date = ? AND ds.status = 1", [$today]);
         
         // 根据当前时间筛选正在值班的人员
         $currentDutyUsers = [];
