@@ -93,6 +93,69 @@
         <div class="col-md-6">
             <div class="block">
                 <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title"><i class="fa fa-user mr-5"></i>创建人排行（前10）</h3>
+                </div>
+                <div class="block-content">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>排名</th>
+                                <th>创建人</th>
+                                <th>数量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="creator_stats" id="item" key="key"}
+                            <tr>
+                                <td>{$key}</td>
+                                <td>{$item.creator_name}</td>
+                                <td>{$item.count}</td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="block-content bg-gray-lighter text-center">
+                    <a href="{:url('CooperateCreated/index')}" class="btn btn-info">查看我创建的协办单</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title"><i class="fa fa-user-plus mr-5"></i>接收人排行（前10）</h3>
+                </div>
+                <div class="block-content">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>排名</th>
+                                <th>接收人</th>
+                                <th>数量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="receiver_stats" id="item" key="key"}
+                            <tr>
+                                <td>{$key}</td>
+                                <td>{$item.receiver_name}</td>
+                                <td>{$item.count}</td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="block-content bg-gray-lighter text-center">
+                    <a href="{:url('CooperateMy/index')}" class="btn btn-info">查看指派给我的协办单</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="block">
+                <div class="block-header bg-gray-lighter">
                     <h3 class="block-title"><i class="fa fa-flag mr-5"></i>优先级分布</h3>
                 </div>
                 <div class="block-content">
@@ -132,7 +195,7 @@
                         </div>
                         <div class="col-md-6 mb-10">
                             <a href="{:url('CooperateMy/index')}" class="btn btn-info btn-block">
-                                <i class="fa fa-user-plus mr-2"></i>我收到的协办单
+                                <i class="fa fa-user-plus mr-2"></i>我的协办单
                             </a>
                         </div>
                         <div class="col-md-6 mb-10">
