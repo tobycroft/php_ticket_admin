@@ -541,6 +541,7 @@ class Admin extends Common
                         'name' => $action['name'],
                         'title' => $action['title'],
                         'remark' => $action['remark'],
+                        'rule' => '',
                         'type' => '',
                         'log' => $action['log'],
                         'status' => 1,
