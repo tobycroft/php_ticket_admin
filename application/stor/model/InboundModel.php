@@ -30,19 +30,12 @@ class InboundModel extends Model
     public static function add($data)
     {
         $data['code'] = self::generateCode();
-        $id = self::insertGetId($data);
-        action_log('inbound_add', 'stor_inbound', $id, UID, $data['code'] ?? '');
-        return $id;
+        return self::insertGetId($data);
     }
 
     public static function edit($data)
     {
-        $result = self::where('id', $data['id'])->update($data);
-        if ($result) {
-            $info = self::getInfo($data['id']);
-            action_log('inbound_edit', 'stor_inbound', $data['id'], UID, $info['code'] ?? '');
-        }
-        return $result;
+        return self::where('id', $data['id'])->update($data);
     }
 
     public static function deleteById($id)

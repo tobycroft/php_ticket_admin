@@ -405,9 +405,149 @@ class Admin extends Common
         return ZBuilder::make('form')
             ->setPageTitle('模块设置')
             ->addFormItems($config)
-            ->setFormdata($db_config) // 设置表格数据
-            ->setTrigger($trigger) // 设置触发
+            ->setFormdata($db_config)
+            ->setTrigger($trigger)
             ->fetch();
+    }
+
+    /**
+     * 自动注册各模块的action到dp_admin_action表
+     */
+    protected static function registerModuleActions()
+    {
+        $actions = [
+            // 运维模块 actions
+            'maintenance' => [
+                ['name' => 'event_add', 'title' => '添加工单', 'remark' => '添加工单', 'log' => '[user|get_nickname] 添加了工单：[details]'],
+                ['name' => 'event_edit', 'title' => '编辑工单', 'remark' => '编辑工单', 'log' => '[user|get_nickname] 编辑了工单：[details]'],
+                ['name' => 'event_delete', 'title' => '删除工单', 'remark' => '删除工单', 'log' => '[user|get_nickname] 删除了工单：[details]'],
+                ['name' => 'event_receive', 'title' => '接单', 'remark' => '接单', 'log' => '[user|get_nickname] 接单了工单：[details]'],
+                ['name' => 'event_close', 'title' => '关闭工单', 'remark' => '关闭工单', 'log' => '[user|get_nickname] 关闭了工单：[details]'],
+                ['name' => 'event_reopen', 'title' => '重开工单', 'remark' => '重开工单', 'log' => '[user|get_nickname] 重开了工单：[details]'],
+                ['name' => 'event_cancel', 'title' => '作废工单', 'remark' => '作废工单', 'log' => '[user|get_nickname] 作废了工单：[details]'],
+                ['name' => 'event_active', 'title' => '激活工单', 'remark' => '激活工单', 'log' => '[user|get_nickname] 激活了工单：[details]'],
+                ['name' => 'event_push', 'title' => '推送工单', 'remark' => '推送工单', 'log' => '[user|get_nickname] 推送了工单：[details]'],
+                ['name' => 'event_note_add', 'title' => '添加工单备注', 'remark' => '添加工单备注', 'log' => '[user|get_nickname] 添加了工单备注：[details]'],
+                ['name' => 'event_flow_handle', 'title' => '处理工单流程', 'remark' => '处理工单流程', 'log' => '[user|get_nickname] 处理了工单流程：[details]'],
+                ['name' => 'user_add', 'title' => '添加用户', 'remark' => '添加用户', 'log' => '[user|get_nickname] 添加了用户：[details]'],
+                ['name' => 'user_edit', 'title' => '编辑用户', 'remark' => '编辑用户', 'log' => '[user|get_nickname] 编辑了用户：[details]'],
+                ['name' => 'user_delete', 'title' => '删除用户', 'remark' => '删除用户', 'log' => '[user|get_nickname] 删除了用户：[details]'],
+                ['name' => 'user_enable', 'title' => '启用用户', 'remark' => '启用用户', 'log' => '[user|get_nickname] 启用了用户：[details]'],
+                ['name' => 'user_disable', 'title' => '禁用用户', 'remark' => '禁用用户', 'log' => '[user|get_nickname] 禁用了用户：[details]'],
+                ['name' => 'schedule_add', 'title' => '添加排班', 'remark' => '添加排班', 'log' => '[user|get_nickname] 添加了排班：[details]'],
+                ['name' => 'schedule_edit', 'title' => '编辑排班', 'remark' => '编辑排班', 'log' => '[user|get_nickname] 编辑了排班：[details]'],
+                ['name' => 'schedule_delete', 'title' => '删除排班', 'remark' => '删除排班', 'log' => '[user|get_nickname] 删除了排班：[details]'],
+                ['name' => 'schedule_enable', 'title' => '启用排班', 'remark' => '启用排班', 'log' => '[user|get_nickname] 启用了排班：[details]'],
+                ['name' => 'schedule_disable', 'title' => '禁用排班', 'remark' => '禁用排班', 'log' => '[user|get_nickname] 禁用了排班：[details]'],
+                ['name' => 'shift_pattern_add', 'title' => '添加班次', 'remark' => '添加班次', 'log' => '[user|get_nickname] 添加了班次：[details]'],
+                ['name' => 'shift_pattern_edit', 'title' => '编辑班次', 'remark' => '编辑班次', 'log' => '[user|get_nickname] 编辑了班次：[details]'],
+                ['name' => 'shift_pattern_delete', 'title' => '删除班次', 'remark' => '删除班次', 'log' => '[user|get_nickname] 删除了班次：[details]'],
+                ['name' => 'shift_pattern_enable', 'title' => '启用班次', 'remark' => '启用班次', 'log' => '[user|get_nickname] 启用了班次：[details]'],
+                ['name' => 'shift_pattern_disable', 'title' => '禁用班次', 'remark' => '禁用班次', 'log' => '[user|get_nickname] 禁用了班次：[details]'],
+                ['name' => 'leave_add', 'title' => '添加请假', 'remark' => '添加请假', 'log' => '[user|get_nickname] 添加了请假：[details]'],
+                ['name' => 'leave_edit', 'title' => '编辑请假', 'remark' => '编辑请假', 'log' => '[user|get_nickname] 编辑了请假：[details]'],
+                ['name' => 'leave_delete', 'title' => '删除请假', 'remark' => '删除请假', 'log' => '[user|get_nickname] 删除了请假：[details]'],
+                ['name' => 'leave_approve', 'title' => '审批请假', 'remark' => '审批请假', 'log' => '[user|get_nickname] 审批了请假：[details]'],
+                ['name' => 'leave_reject', 'title' => '驳回请假', 'remark' => '驳回请假', 'log' => '[user|get_nickname] 驳回了请假：[details]'],
+                ['name' => 'swap_add', 'title' => '添加换班', 'remark' => '添加换班', 'log' => '[user|get_nickname] 添加了换班：[details]'],
+                ['name' => 'swap_edit', 'title' => '编辑换班', 'remark' => '编辑换班', 'log' => '[user|get_nickname] 编辑了换班：[details]'],
+                ['name' => 'swap_delete', 'title' => '删除换班', 'remark' => '删除换班', 'log' => '[user|get_nickname] 删除了换班：[details]'],
+                ['name' => 'swap_approve', 'title' => '审批换班', 'remark' => '审批换班', 'log' => '[user|get_nickname] 审批了换班：[details]'],
+                ['name' => 'swap_reject', 'title' => '驳回换班', 'remark' => '驳回换班', 'log' => '[user|get_nickname] 驳回了换班：[details]'],
+                ['name' => 'handover_add', 'title' => '添加交接', 'remark' => '添加交接', 'log' => '[user|get_nickname] 添加了交接：[details]'],
+                ['name' => 'handover_edit', 'title' => '编辑交接', 'remark' => '编辑交接', 'log' => '[user|get_nickname] 编辑了交接：[details]'],
+                ['name' => 'handover_delete', 'title' => '删除交接', 'remark' => '删除交接', 'log' => '[user|get_nickname] 删除了交接：[details]'],
+                ['name' => 'handover_receive', 'title' => '接收交接', 'remark' => '接收交接', 'log' => '[user|get_nickname] 接收了交接：[details]'],
+                ['name' => 'handover_cancel', 'title' => '取消交接', 'remark' => '取消交接', 'log' => '[user|get_nickname] 取消了交接：[details]'],
+                ['name' => 'contact_method_add', 'title' => '添加联系方式', 'remark' => '添加联系方式', 'log' => '[user|get_nickname] 添加了联系方式：[details]'],
+                ['name' => 'contact_method_edit', 'title' => '编辑联系方式', 'remark' => '编辑联系方式', 'log' => '[user|get_nickname] 编辑了联系方式：[details]'],
+                ['name' => 'contact_method_delete', 'title' => '删除联系方式', 'remark' => '删除联系方式', 'log' => '[user|get_nickname] 删除了联系方式：[details]'],
+                ['name' => 'leave_type_add', 'title' => '添加请假类型', 'remark' => '添加请假类型', 'log' => '[user|get_nickname] 添加了请假类型：[details]'],
+                ['name' => 'leave_type_edit', 'title' => '编辑请假类型', 'remark' => '编辑请假类型', 'log' => '[user|get_nickname] 编辑了请假类型：[details]'],
+                ['name' => 'leave_type_delete', 'title' => '删除请假类型', 'remark' => '删除请假类型', 'log' => '[user|get_nickname] 删除了请假类型：[details]'],
+            ],
+            // 仓管模块 actions
+            'stor' => [
+                ['name' => 'category_add', 'title' => '添加分类', 'remark' => '添加分类', 'log' => '[user|get_nickname] 添加了分类：[details]'],
+                ['name' => 'category_edit', 'title' => '编辑分类', 'remark' => '编辑分类', 'log' => '[user|get_nickname] 编辑了分类：[details]'],
+                ['name' => 'category_delete', 'title' => '删除分类', 'remark' => '删除分类', 'log' => '[user|get_nickname] 删除了分类：[details]'],
+                ['name' => 'category_scrap', 'title' => '作废分类', 'remark' => '作废分类', 'log' => '[user|get_nickname] 作废了分类：[details]'],
+                ['name' => 'category_restore', 'title' => '恢复分类', 'remark' => '恢复分类', 'log' => '[user|get_nickname] 恢复了分类：[details]'],
+                ['name' => 'category_enable', 'title' => '启用分类', 'remark' => '启用分类', 'log' => '[user|get_nickname] 启用了分类：[details]'],
+                ['name' => 'category_disable', 'title' => '禁用分类', 'remark' => '禁用分类', 'log' => '[user|get_nickname] 禁用了分类：[details]'],
+                ['name' => 'material_add', 'title' => '添加物料', 'remark' => '添加物料', 'log' => '[user|get_nickname] 添加了物料：[details]'],
+                ['name' => 'material_edit', 'title' => '编辑物料', 'remark' => '编辑物料', 'log' => '[user|get_nickname] 编辑了物料：[details]'],
+                ['name' => 'material_delete', 'title' => '删除物料', 'remark' => '删除物料', 'log' => '[user|get_nickname] 删除了物料：[details]'],
+                ['name' => 'material_scrap', 'title' => '作废物料', 'remark' => '作废物料', 'log' => '[user|get_nickname] 作废了物料：[details]'],
+                ['name' => 'material_restore', 'title' => '恢复物料', 'remark' => '恢复物料', 'log' => '[user|get_nickname] 恢复了物料：[details]'],
+                ['name' => 'material_enable', 'title' => '启用物料', 'remark' => '启用物料', 'log' => '[user|get_nickname] 启用了物料：[details]'],
+                ['name' => 'material_disable', 'title' => '禁用物料', 'remark' => '禁用物料', 'log' => '[user|get_nickname] 禁用了物料：[details]'],
+                ['name' => 'material_sn_add', 'title' => '添加物料SN', 'remark' => '添加物料SN', 'log' => '[user|get_nickname] 添加了物料SN：[details]'],
+                ['name' => 'material_sn_edit', 'title' => '编辑物料SN', 'remark' => '编辑物料SN', 'log' => '[user|get_nickname] 编辑了物料SN：[details]'],
+                ['name' => 'material_sn_delete', 'title' => '删除物料SN', 'remark' => '删除物料SN', 'log' => '[user|get_nickname] 删除了物料SN：[details]'],
+                ['name' => 'material_sn_scrap', 'title' => '作废物料SN', 'remark' => '作废物料SN', 'log' => '[user|get_nickname] 作废了物料SN：[details]'],
+                ['name' => 'material_sn_restore', 'title' => '恢复物料SN', 'remark' => '恢复物料SN', 'log' => '[user|get_nickname] 恢复了物料SN：[details]'],
+                ['name' => 'material_sn_allocate', 'title' => '分配物料SN', 'remark' => '分配物料SN', 'log' => '[user|get_nickname] 分配了物料SN：[details]'],
+                ['name' => 'material_sn_unallocate', 'title' => '取消分配物料SN', 'remark' => '取消分配物料SN', 'log' => '[user|get_nickname] 取消了物料SN的分配：[details]'],
+                ['name' => 'inbound_add', 'title' => '添加入库单', 'remark' => '添加入库单', 'log' => '[user|get_nickname] 添加了入库单：[details]'],
+                ['name' => 'inbound_edit', 'title' => '编辑入库单', 'remark' => '编辑入库单', 'log' => '[user|get_nickname] 编辑了入库单：[details]'],
+                ['name' => 'inbound_delete', 'title' => '删除入库单', 'remark' => '删除入库单', 'log' => '[user|get_nickname] 删除了入库单：[details]'],
+                ['name' => 'inbound_cancel', 'title' => '取消入库单', 'remark' => '取消入库单', 'log' => '[user|get_nickname] 取消了入库单：[details]'],
+                ['name' => 'inbound_confirm', 'title' => '确认入库单', 'remark' => '确认入库单', 'log' => '[user|get_nickname] 确认了入库单：[details]'],
+                ['name' => 'outbound_add', 'title' => '添加出库单', 'remark' => '添加出库单', 'log' => '[user|get_nickname] 添加了出库单：[details]'],
+                ['name' => 'outbound_edit', 'title' => '编辑出库单', 'remark' => '编辑出库单', 'log' => '[user|get_nickname] 编辑了出库单：[details]'],
+                ['name' => 'outbound_delete', 'title' => '删除出库单', 'remark' => '删除出库单', 'log' => '[user|get_nickname] 删除了出库单：[details]'],
+                ['name' => 'outbound_cancel', 'title' => '取消出库单', 'remark' => '取消出库单', 'log' => '[user|get_nickname] 取消了出库单：[details]'],
+                ['name' => 'outbound_confirm', 'title' => '确认出库单', 'remark' => '确认出库单', 'log' => '[user|get_nickname] 确认了出库单：[details]'],
+                ['name' => 'repair_add', 'title' => '添加维修单', 'remark' => '添加维修单', 'log' => '[user|get_nickname] 添加了维修单：[details]'],
+                ['name' => 'repair_edit', 'title' => '编辑维修单', 'remark' => '编辑维修单', 'log' => '[user|get_nickname] 编辑了维修单：[details]'],
+                ['name' => 'repair_delete', 'title' => '删除维修单', 'remark' => '删除维修单', 'log' => '[user|get_nickname] 删除了维修单：[details]'],
+                ['name' => 'repair_complete', 'title' => '维修完成', 'remark' => '维修完成', 'log' => '[user|get_nickname] 完成了维修单：[details]'],
+                ['name' => 'repair_scrap', 'title' => '维修作废', 'remark' => '维修作废', 'log' => '[user|get_nickname] 作废了维修单：[details]'],
+                ['name' => 'project_add', 'title' => '添加项目', 'remark' => '添加项目', 'log' => '[user|get_nickname] 添加了项目：[details]'],
+                ['name' => 'project_edit', 'title' => '编辑项目', 'remark' => '编辑项目', 'log' => '[user|get_nickname] 编辑了项目：[details]'],
+                ['name' => 'project_delete', 'title' => '删除项目', 'remark' => '删除项目', 'log' => '[user|get_nickname] 删除了项目：[details]'],
+                ['name' => 'project_enable', 'title' => '启用项目', 'remark' => '启用项目', 'log' => '[user|get_nickname] 启用了项目：[details]'],
+                ['name' => 'project_disable', 'title' => '禁用项目', 'remark' => '禁用项目', 'log' => '[user|get_nickname] 禁用了项目：[details]'],
+                ['name' => 'warehouse_add', 'title' => '添加库房', 'remark' => '添加库房', 'log' => '[user|get_nickname] 添加了库房：[details]'],
+                ['name' => 'warehouse_edit', 'title' => '编辑库房', 'remark' => '编辑库房', 'log' => '[user|get_nickname] 编辑了库房：[details]'],
+                ['name' => 'warehouse_delete', 'title' => '删除库房', 'remark' => '删除库房', 'log' => '[user|get_nickname] 删除了库房：[details]'],
+                ['name' => 'warehouse_enable', 'title' => '启用库房', 'remark' => '启用库房', 'log' => '[user|get_nickname] 启用了库房：[details]'],
+                ['name' => 'warehouse_disable', 'title' => '禁用库房', 'remark' => '禁用库房', 'log' => '[user|get_nickname] 禁用了库房：[details]'],
+                ['name' => 'inbound_type_add', 'title' => '添加入库类型', 'remark' => '添加入库类型', 'log' => '[user|get_nickname] 添加入库类型：[details]'],
+                ['name' => 'inbound_type_edit', 'title' => '编辑入库类型', 'remark' => '编辑入库类型', 'log' => '[user|get_nickname] 编辑了入库类型：[details]'],
+                ['name' => 'inbound_type_delete', 'title' => '删除入库类型', 'remark' => '删除入库类型', 'log' => '[user|get_nickname] 删除了入库类型：[details]'],
+                ['name' => 'inbound_type_enable', 'title' => '启用入库类型', 'remark' => '启用入库类型', 'log' => '[user|get_nickname] 启用了入库类型：[details]'],
+                ['name' => 'inbound_type_disable', 'title' => '禁用入库类型', 'remark' => '禁用入库类型', 'log' => '[user|get_nickname] 禁用了入库类型：[details]'],
+                ['name' => 'outbound_type_add', 'title' => '添加出库类型', 'remark' => '添加出库类型', 'log' => '[user|get_nickname] 添加了出库类型：[details]'],
+                ['name' => 'outbound_type_edit', 'title' => '编辑出库类型', 'remark' => '编辑出库类型', 'log' => '[user|get_nickname] 编辑了出库类型：[details]'],
+                ['name' => 'outbound_type_delete', 'title' => '删除出库类型', 'remark' => '删除出库类型', 'log' => '[user|get_nickname] 删除了出库类型：[details]'],
+                ['name' => 'outbound_type_enable', 'title' => '启用出库类型', 'remark' => '启用出库类型', 'log' => '[user|get_nickname] 启用了出库类型：[details]'],
+                ['name' => 'outbound_type_disable', 'title' => '禁用出库类型', 'remark' => '禁用出库类型', 'log' => '[user|get_nickname] 禁用了出库类型：[details]'],
+                ['name' => 'inventory_add', 'title' => '添加盘点', 'remark' => '添加盘点', 'log' => '[user|get_nickname] 添加了盘点：[details]'],
+                ['name' => 'inventory_edit', 'title' => '编辑盘点', 'remark' => '编辑盘点', 'log' => '[user|get_nickname] 编辑了盘点：[details]'],
+                ['name' => 'inventory_delete', 'title' => '删除盘点', 'remark' => '删除盘点', 'log' => '[user|get_nickname] 删除了盘点：[details]'],
+                ['name' => 'inventory_confirm', 'title' => '确认盘点', 'remark' => '确认盘点', 'log' => '[user|get_nickname] 确认了盘点：[details]'],
+            ],
+        ];
+
+        $ActionModel = model('admin/action');
+        foreach ($actions as $module => $moduleActions) {
+            foreach ($moduleActions as $action) {
+                $exist = $ActionModel->where('module', $module)->where('name', $action['name'])->find();
+                if (!$exist) {
+                    $ActionModel->create([
+                        'module' => $module,
+                        'name' => $action['name'],
+                        'title' => $action['title'],
+                        'remark' => $action['remark'],
+                        'type' => '',
+                        'log' => $action['log'],
+                        'status' => 1,
+                    ]);
+                }
+            }
+        }
     }
 
     /**
@@ -417,6 +557,14 @@ class Admin extends Common
     protected function initialize()
     {
         parent::initialize();
+
+        // 自动注册各模块的action到dp_admin_action表
+        $registerCacheKey = 'registered_module_actions';
+        if (!Cache::get($registerCacheKey)) {
+            self::registerModuleActions();
+            Cache::set($registerCacheKey, 1, 86400);
+        }
+
         // 是否拒绝ie浏览器访问
         if (config('system.deny_ie') && get_browser_type() == 'ie') {
             $this->redirect('admin/ie/index');
@@ -451,7 +599,7 @@ class Admin extends Common
             $this->assign('_icons', IconModel::getUrls());
             // 构建侧栏
             $data = [
-                'table' => 'admin_config', // 表名或模型名
+                'table' => 'admin_config',
                 'prefix' => 1,
                 'module' => 'admin',
                 'controller' => 'system',
