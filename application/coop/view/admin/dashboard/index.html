@@ -1,8 +1,9 @@
 {extend name="$_admin_base_layout" /}
 
 {block name="content"}
-    <div class="row">
-        <div class="col-lg-12">
+    <div class="pb-20">
+        <div class="row">
+            <div class="col-lg-12">
             <h1 class="page-header">
                 <i class="fa fa-dashboard mr-5"></i>
                 协办单仪表盘
@@ -83,7 +84,8 @@
                         <div class="text-5xl font-bold mt-5">{$my_cooperate_count}</div>
                         <p class="text-lg mt-5">我收到的协办单</p>
                     </div>
-                    <a href="{:url('Cooperate/index')}" class="btn btn-success mt-10">查看详情</a>
+                        <a href="{:url('Cooperate/index')}" class="btn btn-success mt-10">查看详情</a>
+                    </div>
                 </div>
             </div>
         </div>
