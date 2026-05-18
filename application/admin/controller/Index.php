@@ -61,10 +61,11 @@ class Index extends Admin
         $currentTime = date('H:i:s');
         
         // 获取今天所有值班人员及班次信息
+        $prefix = config('database.prefix');
         $schedules = Db::table('mt_daily_schedule')
             ->alias('ds')
-            ->join('dp_admin_user u', 'u.id = ds.user_id', 'LEFT')
-            ->join('mt_shift_pattern sp', 'sp.id = ds.shift_id', 'LEFT')
+            ->join($prefix . 'admin_user u', 'u.id = ds.user_id', 'LEFT')
+            ->join(\think\Db::raw('mt_shift_pattern sp'), 'sp.id = ds.shift_id', 'LEFT')
             ->where('ds.schedule_date', $today)
             ->where('ds.status', 1)
             ->field('ds.user_name, ds.shift_name, u.mobile, sp.start_time, sp.end_time')
