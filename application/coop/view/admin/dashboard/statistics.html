@@ -2,42 +2,83 @@
 
 {block name="content"}
     <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                <i class="fa fa-bar-chart mr-5"></i>
+                协办单统计
+                <small>Statistics</small>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-3">
             <div class="block">
-                <div class="block-content block-content-full">
-                    <div class="text-center">
-                        <div class="font-size-40 font-w600 text-primary">{$total}</div>
-                        <div class="font-size-sm text-muted">总协办单</div>
+                <div class="block-header bg-primary">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-handshake-o mr-5 text-white"></i>
+                        总协办单
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-primary">
+                        <i class="fa fa-file-text-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$total}</div>
+                        <p class="text-lg mt-5">协办单总数</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="block">
-                <div class="block-content block-content-full">
-                    <div class="text-center">
-                        <div class="font-size-40 font-w600 text-warning">{$pending}</div>
-                        <div class="font-size-sm text-muted">进行中</div>
+                <div class="block-header bg-warning">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-clock-o mr-5 text-white"></i>
+                        进行中
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-warning">
+                        <i class="fa fa-spinner fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$pending}</div>
+                        <p class="text-lg mt-5">进行中的协办单</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="block">
-                <div class="block-content block-content-full">
-                    <div class="text-center">
-                        <div class="font-size-40 font-w600 text-success">{$closed}</div>
-                        <div class="font-size-sm text-muted">已完成</div>
+                <div class="block-header bg-success">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-check-circle mr-5 text-white"></i>
+                        已完成
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-success">
+                        <i class="fa fa-check-circle-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$closed}</div>
+                        <p class="text-lg mt-5">已完成的协办单</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="block">
-                <div class="block-content block-content-full">
-                    <div class="text-center">
-                        <div class="font-size-40 font-w600 text-danger">{$canceled}</div>
-                        <div class="font-size-sm text-muted">已作废</div>
+                <div class="block-header bg-danger">
+                    <h3 class="block-title text-white">
+                        <i class="fa fa-ban mr-5 text-white"></i>
+                        已作废
+                    </h3>
+                </div>
+                <div class="block-content text-center py-20" style="padding-bottom: 40px;">
+                    <div class="text-danger">
+                        <i class="fa fa-trash-o fa-5x mb-10"></i>
+                        <div class="text-5xl font-bold mt-5">{$canceled}</div>
+                        <p class="text-lg mt-5">已作废的协办单</p>
                     </div>
                 </div>
             </div>
@@ -48,7 +89,7 @@
         <div class="col-md-6">
             <div class="block">
                 <div class="block-header bg-gray-lighter">
-                    <h3 class="block-title">创建人排行（前10）</h3>
+                    <h3 class="block-title"><i class="fa fa-user mr-5"></i>创建人排行（前10）</h3>
                 </div>
                 <div class="block-content">
                     <table class="table table-hover">
@@ -75,7 +116,7 @@
         <div class="col-md-6">
             <div class="block">
                 <div class="block-header bg-gray-lighter">
-                    <h3 class="block-title">接收人排行（前10）</h3>
+                    <h3 class="block-title"><i class="fa fa-user-plus mr-5"></i>接收人排行（前10）</h3>
                 </div>
                 <div class="block-content">
                     <table class="table table-hover">
@@ -105,7 +146,7 @@
         <div class="col-md-6">
             <div class="block">
                 <div class="block-header bg-gray-lighter">
-                    <h3 class="block-title">优先级分布</h3>
+                    <h3 class="block-title"><i class="fa fa-flag mr-5"></i>优先级分布</h3>
                 </div>
                 <div class="block-content">
                     <table class="table table-hover">
