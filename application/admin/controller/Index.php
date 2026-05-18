@@ -53,18 +53,45 @@ class Index extends Admin
     }
     
     /**
-     * 获取当前值班人员
+     * 获取当前值班人员（根据当前时间匹配）
      */
     private function getCurrentDutyUsers()
     {
         $today = date('Y-m-d');
-        return Db::table('mt_daily_schedule')
+        $currentTime = date('H:i:s');
+        
+        // 获取今天所有值班人员及班次信息
+        $schedules = Db::table('mt_daily_schedule')
             ->alias('ds')
             ->join('dp_admin_user u', 'u.id = ds.user_id', 'LEFT')
+            ->join('mt_shift_pattern sp', 'sp.id = ds.shift_id', 'LEFT')
             ->where('ds.schedule_date', $today)
             ->where('ds.status', 1)
-            ->field('ds.user_name, ds.shift_name, u.mobile')
+            ->field('ds.user_name, ds.shift_name, u.mobile, sp.start_time, sp.end_time')
             ->select();
+        
+        // 根据当前时间筛选正在值班的人员
+        $currentDutyUsers = [];
+        foreach ($schedules as $schedule) {
+            $startTime = $schedule['start_time'];
+            $endTime = $schedule['end_time'];
+            
+            // 判断当前时间是否在班次时间范围内
+            // 特殊处理夜班（结束时间早于开始时间的情况，如21:00-09:00）
+            if ($startTime < $endTime) {
+                // 正常班次（如9:00-21:00）
+                if ($currentTime >= $startTime && $currentTime < $endTime) {
+                    $currentDutyUsers[] = $schedule;
+                }
+            } else {
+                // 夜班（如21:00-09:00）
+                if ($currentTime >= $startTime || $currentTime < $endTime) {
+                    $currentDutyUsers[] = $schedule;
+                }
+            }
+        }
+        
+        return $currentDutyUsers;
     }
     
     /**
