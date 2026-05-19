@@ -42,7 +42,13 @@ class HandoverAction
         }
         
         if ($handover = HandoverModel::create($data)) {
-            action_log('handover_add', 'mt_handover', $handover['id'], UID);
+            $details = json_encode([
+                'title' => $data['title'] ?? '',
+                'creator_name' => $data['creator_name'] ?? '',
+                'default_receiver_name' => $data['default_receiver_name'] ?? '',
+                'event_ids' => $data['event_ids'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('handover_add', 'mt_handover', $handover['id'], UID, $details);
             return $handover;
         }
         

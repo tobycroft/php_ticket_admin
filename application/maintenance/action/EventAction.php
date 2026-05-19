@@ -53,7 +53,15 @@ class EventAction
         }
         
         if ($event = EventModel::create($data)) {
-            action_log('event_add', 'mt_event', $event['id'], UID);
+            $details = json_encode([
+                'title' => $data['title'] ?? '',
+                'subtitle' => $data['subtitle'] ?? '',
+                'creator_name' => $data['creator_name'] ?? '',
+                'customer_name' => $data['customer_name'] ?? '',
+                'priority' => $data['priority'] ?? 1,
+                'start_time' => $data['start_time'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_add', 'mt_event', $event['id'], UID, $details);
             return $event;
         }
         
@@ -86,7 +94,28 @@ class EventAction
         }
         
         if (EventModel::update($data)) {
-            action_log('event_edit', 'mt_event', $data['id'], UID);
+            $newEvent = EventModel::where('id', $data['id'])->find();
+            $details = json_encode([
+                'old' => [
+                    'title' => $oldEvent['title'] ?? '',
+                    'subtitle' => $oldEvent['subtitle'] ?? '',
+                    'creator_name' => $oldEvent['creator_name'] ?? '',
+                    'customer_name' => $oldEvent['customer_name'] ?? '',
+                    'priority' => $oldEvent['priority'] ?? 1,
+                    'is_closed' => $oldEvent['is_closed'] ?? 0,
+                    'is_no_feedback' => $oldEvent['is_no_feedback'] ?? 0,
+                ],
+                'new' => [
+                    'title' => $newEvent['title'] ?? '',
+                    'subtitle' => $newEvent['subtitle'] ?? '',
+                    'creator_name' => $newEvent['creator_name'] ?? '',
+                    'customer_name' => $newEvent['customer_name'] ?? '',
+                    'priority' => $newEvent['priority'] ?? 1,
+                    'is_closed' => $newEvent['is_closed'] ?? 0,
+                    'is_no_feedback' => $newEvent['is_no_feedback'] ?? 0,
+                ],
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_edit', 'mt_event', $data['id'], UID, $details);
             return true;
         }
         
@@ -106,7 +135,15 @@ class EventAction
         ];
         
         if (EventModel::update($data)) {
-            action_log('event_close', 'mt_event', $id, UID);
+            $details = json_encode([
+                'title' => $oldEvent['title'] ?? '',
+                'subtitle' => $oldEvent['subtitle'] ?? '',
+                'creator_name' => $oldEvent['creator_name'] ?? '',
+                'customer_name' => $oldEvent['customer_name'] ?? '',
+                'priority' => $oldEvent['priority'] ?? 1,
+                'start_time' => $oldEvent['start_time'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_close', 'mt_event', $id, UID, $details);
             return true;
         }
         
@@ -126,7 +163,15 @@ class EventAction
         ];
         
         if (EventModel::update($data)) {
-            action_log('event_reopen', 'mt_event', $id, UID);
+            $details = json_encode([
+                'title' => $oldEvent['title'] ?? '',
+                'subtitle' => $oldEvent['subtitle'] ?? '',
+                'creator_name' => $oldEvent['creator_name'] ?? '',
+                'customer_name' => $oldEvent['customer_name'] ?? '',
+                'priority' => $oldEvent['priority'] ?? 1,
+                'start_time' => $oldEvent['start_time'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_reopen', 'mt_event', $id, UID, $details);
             return true;
         }
         
@@ -145,7 +190,15 @@ class EventAction
         ];
         
         if (EventModel::update($data)) {
-            action_log('event_receive', 'mt_event', $id, UID);
+            $details = json_encode([
+                'title' => $oldEvent['title'] ?? '',
+                'subtitle' => $oldEvent['subtitle'] ?? '',
+                'creator_name' => $oldEvent['creator_name'] ?? '',
+                'customer_name' => $oldEvent['customer_name'] ?? '',
+                'priority' => $oldEvent['priority'] ?? 1,
+                'start_time' => $oldEvent['start_time'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_receive', 'mt_event', $id, UID, $details);
             return true;
         }
         
@@ -190,7 +243,17 @@ class EventAction
             EventModel::update($event_data);
             Db::commit();
             
-            action_log('event_push', 'mt_event', $event_id, UID);
+            $details = json_encode([
+                'title' => $event['title'] ?? '',
+                'subtitle' => $event['subtitle'] ?? '',
+                'creator_name' => $event['creator_name'] ?? '',
+                'customer_name' => $event['customer_name'] ?? '',
+                'priority' => $event['priority'] ?? 1,
+                'from_user_name' => $flow_data['from_user_name'] ?? '',
+                'to_user_name' => $flow_data['to_user_name'] ?? '',
+                'reason' => $reason ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_push', 'mt_event', $event_id, UID, $details);
             return true;
         } catch (\ErrorException $e) {
             Db::rollback();
@@ -219,8 +282,18 @@ class EventAction
             $update_data['reason'] = $flow['reason'] . "\n退回理由: " . $reason;
         }
 
+        $event = EventModel::where('id', $flow['event_id'])->find();
+        $details = json_encode([
+            'title' => $event['title'] ?? '',
+            'subtitle' => $event['subtitle'] ?? '',
+            'from_user_name' => $flow['from_user_name'] ?? '',
+            'to_user_name' => $flow['to_user_name'] ?? '',
+            'flow_reason' => $flow['reason'] ?? '',
+            'handle_status' => $status,
+            'handle_reason' => $reason ?? '',
+        ], JSON_UNESCAPED_UNICODE);
         EventFlowModel::update($update_data);
-        action_log('event_flow_handle', 'mt_event_flow', $flow_id, UID);
+        action_log('event_flow_handle', 'mt_event_flow', $flow_id, UID, $details);
 
         if ($status == 2) {
             EventModel::update([
@@ -248,7 +321,14 @@ class EventAction
         ];
 
         if ($note = EventNoteModel::create($data)) {
-            action_log('event_note_add', 'mt_event_note', $event_id, UID);
+            $details = json_encode([
+                'title' => $event['title'] ?? '',
+                'subtitle' => $event['subtitle'] ?? '',
+                'creator_name' => $event['creator_name'] ?? '',
+                'customer_name' => $event['customer_name'] ?? '',
+                'note_content' => $content ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_note_add', 'mt_event_note', $event_id, UID, $details);
             return true;
         }
         
@@ -285,7 +365,15 @@ class EventAction
         ];
         
         if (EventModel::update($data)) {
-            action_log('event_cancel', 'mt_event', $id, UID);
+            $details = json_encode([
+                'title' => $oldEvent['title'] ?? '',
+                'subtitle' => $oldEvent['subtitle'] ?? '',
+                'creator_name' => $oldEvent['creator_name'] ?? '',
+                'customer_name' => $oldEvent['customer_name'] ?? '',
+                'priority' => $oldEvent['priority'] ?? 1,
+                'start_time' => $oldEvent['start_time'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_cancel', 'mt_event', $id, UID, $details);
             return true;
         }
         
@@ -310,7 +398,15 @@ class EventAction
         ];
         
         if (EventModel::update($data)) {
-            action_log('event_active', 'mt_event', $id, UID);
+            $details = json_encode([
+                'title' => $oldEvent['title'] ?? '',
+                'subtitle' => $oldEvent['subtitle'] ?? '',
+                'creator_name' => $oldEvent['creator_name'] ?? '',
+                'customer_name' => $oldEvent['customer_name'] ?? '',
+                'priority' => $oldEvent['priority'] ?? 1,
+                'start_time' => $oldEvent['start_time'] ?? '',
+            ], JSON_UNESCAPED_UNICODE);
+            action_log('event_active', 'mt_event', $id, UID, $details);
             return true;
         }
         
