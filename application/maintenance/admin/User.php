@@ -9,8 +9,25 @@ use app\user\model\User as UserModel;
 
 class User extends Admin
 {
+    /**
+     * 检查是否为运维主管或超级管理员
+     */
+    private function checkPermission()
+    {
+        $user = UserModel::get(UID);
+        if ($user['role'] != 1 && $user['role'] != 4) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '权限不足，只有运维主管可以访问']);
+            }
+            $this->error('权限不足，只有运维主管可以访问');
+        }
+        return true;
+    }
+
     public function index()
     {
+        $this->checkPermission();
+        
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
@@ -47,6 +64,8 @@ class User extends Admin
 
     public function add()
     {
+        $this->checkPermission();
+        
         if ($this->request->isPost()) {
             $data = $this->request->post();
 
@@ -94,6 +113,8 @@ class User extends Admin
 
     public function edit($id = null)
     {
+        $this->checkPermission();
+        
         if ($id === null) {
             if ($this->request->isAjax()) {
                 return json(['code' => 0, 'msg' => '缺少参数']);
@@ -158,21 +179,25 @@ class User extends Admin
 
     public function delete($ids = [])
     {
+        $this->checkPermission();
         return $this->setStatus('delete');
     }
 
     public function enable($ids = [])
     {
+        $this->checkPermission();
         return $this->setStatus('enable');
     }
 
     public function disable($ids = [])
     {
+        $this->checkPermission();
         return $this->setStatus('disable');
     }
 
     public function setStatus($type = '', $record = [])
     {
+        $this->checkPermission();
         $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
 
@@ -193,6 +218,8 @@ class User extends Admin
 
     public function quickEdit($record = [])
     {
+        $this->checkPermission();
+        
         $id    = input('post.pk', '');
         $id == UID && $this->error('禁止操作当前账号');
         $field = input('post.name', '');
