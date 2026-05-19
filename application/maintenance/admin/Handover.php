@@ -15,7 +15,7 @@ class Handover extends Admin
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $map = $this->getMap();
-        $map['status'] = ['<>', 2];
+        $map[] = ['status', '<>', 2];
 
         $data_list = HandoverAction::getList($map);
 
