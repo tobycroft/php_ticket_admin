@@ -17,6 +17,13 @@ class Event extends Admin
         $map = $this->getMap();
         $map[] = ['is_canceled', '=', 0];
 
+        // 如果没有设置时间筛选，默认显示昨天和今天的数据
+        if (empty(input('get._filter_time'))) {
+            $yesterday = date('Y-m-d', strtotime('-1 day'));
+            $today = date('Y-m-d');
+            $map[] = ['start_time', 'between time', [$yesterday.' 00:00:00', $today.' 23:59:59']];
+        }
+
         $data_list = EventAction::getList($map);
 
         $is_closed_list = EventAction::getIsClosedList();
@@ -42,11 +49,15 @@ class Event extends Admin
             $item['can_complete'] = !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
         }
 
+        // 设置时间筛选器的默认值
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $today = date('Y-m-d');
+
         return ZBuilder::make('table')
             ->setPageTitle('工单列表')
             ->setTableName('mt_event')
             ->setSearch(['title' => '标题', 'creator_name' => '发单人', 'customer_name' => '客户'])
-            ->addTimeFilter('start_time', '开始时间')
+            ->addTimeFilter('start_time', [$yesterday, $today], '开始时间')
             ->addColumns([
                 ['id', 'ID'],
                 ['start_time_text', '开始时间'],
