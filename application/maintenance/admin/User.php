@@ -56,8 +56,8 @@ class User extends Admin
                 ['status', '状态', 'switch'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addTopButtons('add,enable,disable,delete')
-            ->addRightButtons('edit,delete')
+            ->addTopButtons('add,enable,disable')
+            ->addRightButtons('edit')
             ->setRowList($data_list)
             ->fetch();
     }
@@ -180,7 +180,11 @@ class User extends Admin
     public function delete($ids = [])
     {
         $this->checkPermission();
-        return $this->setStatus('delete');
+        
+        if ($this->request->isAjax()) {
+            return json(['code' => 0, 'msg' => '已禁止删除用户，只能屏蔽']);
+        }
+        $this->error('已禁止删除用户，只能屏蔽');
     }
 
     public function enable($ids = [])
@@ -198,6 +202,14 @@ class User extends Admin
     public function setStatus($type = '', $record = [])
     {
         $this->checkPermission();
+        
+        if ($type === 'delete') {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '已禁止删除用户，只能屏蔽']);
+            }
+            $this->error('已禁止删除用户，只能屏蔽');
+        }
+        
         $ids = $this->request->isPost() ? input('post.ids/a') : input('param.ids');
         $ids = (array)$ids;
 
