@@ -5,11 +5,29 @@ namespace app\maintenance\admin;
 use app\common\builder\ZBuilder;
 use app\maintenance\model\LeaveTypeModel;
 use app\admin\controller\Admin;
+use app\user\model\User as UserModel;
 
 class LeaveType extends Admin
 {
+    /**
+     * 检查是否为运维主管或超级管理员
+     */
+    private function checkPermission()
+    {
+        $user = UserModel::get(UID);
+        if ($user['role'] != 1 && $user['role'] != 4) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => '权限不足，只有运维主管可以访问']);
+            }
+            $this->error('权限不足，只有运维主管可以访问');
+        }
+        return true;
+    }
+
     public function index()
     {
+        $this->checkPermission();
+        
         $data_list = LeaveTypeModel::order('sort', 'asc')->select();
 
         return ZBuilder::make('table')
@@ -29,6 +47,8 @@ class LeaveType extends Admin
 
     public function add()
     {
+        $this->checkPermission();
+        
         if ($this->request->isPost()) {
             $data = $this->request->post();
             if (empty($data['name'])) {
@@ -54,6 +74,8 @@ class LeaveType extends Admin
 
     public function edit($id = null)
     {
+        $this->checkPermission();
+        
         if ($id === null) {
             $this->error('缺少参数');
         }
@@ -90,6 +112,8 @@ class LeaveType extends Admin
 
     public function delete($ids = null)
     {
+        $this->checkPermission();
+        
         if (empty($ids)) {
             $this->error('请选择要删除的记录');
         }
