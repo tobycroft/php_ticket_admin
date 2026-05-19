@@ -17,13 +17,6 @@ class Event extends Admin
         $map = $this->getMap();
         $map[] = ['is_canceled', '=', 0];
 
-        // 如果没有设置时间筛选，默认显示昨天和今天的数据
-        if (empty(input('get._filter_time'))) {
-            $yesterday = date('Y-m-d', strtotime('-1 day'));
-            $today = date('Y-m-d');
-            $map[] = ['start_time', 'between time', [$yesterday.' 00:00:00', $today.' 23:59:59']];
-        }
-
         $data_list = EventAction::getList($map);
 
         $is_closed_list = EventAction::getIsClosedList();
