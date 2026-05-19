@@ -1199,7 +1199,7 @@ class Builder extends ZBuilder
 
             $this->_vars['_search_area_op'] = implode('|', $_op);
             $this->_vars['_search_area'] = $items;
-            $this->_vars['_search_area_url'] = $url == '' ? $this->request->baseUrl(true) : $url;
+            $this->_vars['_search_area_url'] = $url == '' ? $this->request->baseUrl() : $url;
         }
         return $this;
     }
@@ -2511,7 +2511,7 @@ class Builder extends ZBuilder
                 'fields' => $_temp_fields,
                 'field_all' => implode('|', array_keys($_temp_fields)),
                 'placeholder' => $this->_search['placeholder'] != '' ? $this->_search['placeholder'] : '请输入' . implode('/', $_temp_fields),
-                'url' => $this->_search['url'] == '' ? $this->request->baseUrl(true) : $this->_search['url']
+                'url' => $this->_search['url'] == '' ? $this->request->baseUrl() : $this->_search['url']
             ];
         }
 

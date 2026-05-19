@@ -49,7 +49,7 @@ class Event extends Admin
         return ZBuilder::make('table')
             ->setPageTitle('工单列表')
             ->setTableName('mt_event')
-            ->setSearch(['title' => '标题', 'creator_name' => '发单人', 'customer_name' => '客户'])
+            ->setSearch(['title' => '标题', 'subtitle' => '副标题', 'creator_name' => '发单人', 'customer_name' => '客户'])
             ->addTimeFilter('start_time', [$yesterday, $today], '开始时间')
             ->addColumns([
                 ['id', 'ID'],
@@ -58,6 +58,7 @@ class Event extends Admin
                 ['creator_name', '发单人'],
                 ['customer_name', '对接客户'],
                 ['title', '事件标题'],
+                ['subtitle', '副标题'],
                 ['priority_text', '优先级'],
                 ['is_canceled_text', '状态'],
                 ['is_closed_text', '结单状态'],
@@ -109,6 +110,7 @@ class Event extends Admin
             ->setPageTitle('新增工单')
             ->addFormItems([
                 ['text', 'title', '事件标题', '必填'],
+                ['text', 'subtitle', '副标题', '可填可不填'],
                 ['text', 'creator_name', '发单人', '必填'],
                 ['checkbox', 'contact_method', '对接方式', '可多选', $contact_method_list],
                 ['ueditor', 'content', '事件描述'],
@@ -189,6 +191,7 @@ class Event extends Admin
             ->addFormItems([
                 ['hidden', 'id'],
                 ['text', 'title', '事件标题', '必填'],
+                ['text', 'subtitle', '副标题', '可填可不填'],
                 ['text', 'creator_name', '发单人', '必填'],
                 ['checkbox', 'contact_method', '对接方式', '可多选', $contact_method_list],
                 ['ueditor', 'content', '事件描述'],
