@@ -2,7 +2,6 @@
 
 namespace app\maintenance\action;
 
-use app\admin\model\ActionLog;
 use app\maintenance\model\EventFlowModel;
 use app\maintenance\model\EventModel;
 use app\maintenance\model\EventNoteModel;
@@ -55,7 +54,6 @@ class EventAction
         
         if ($event = EventModel::create($data)) {
             action_log('event_add', 'mt_event', $event['id'], UID);
-            ActionLog::addRecord('maintenance', 'mt_event', 'add', $event['id'], $data['title'] ?? '新工单', $event->toArray(), '创建新工单');
             return $event;
         }
         
@@ -72,7 +70,6 @@ class EventAction
         
         if (EventModel::update($data)) {
             action_log('event_edit', 'mt_event', $data['id'], UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $data['id'], $oldEvent['title'] ?? '工单', $oldEvent->toArray(), $data, '编辑工单');
             return true;
         }
         
@@ -93,7 +90,6 @@ class EventAction
         
         if (EventModel::update($data)) {
             action_log('event_close', 'mt_event', $id, UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $id, $oldEvent['title'] ?? '工单', $oldEvent->toArray(), $data, '关闭工单');
             return true;
         }
         
@@ -114,7 +110,6 @@ class EventAction
         
         if (EventModel::update($data)) {
             action_log('event_reopen', 'mt_event', $id, UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $id, $oldEvent['title'] ?? '工单', $oldEvent->toArray(), $data, '重新打开工单');
             return true;
         }
         
@@ -134,7 +129,6 @@ class EventAction
         
         if (EventModel::update($data)) {
             action_log('event_receive', 'mt_event', $id, UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $id, $oldEvent['title'] ?? '工单', $oldEvent->toArray(), $data, '接单');
             return true;
         }
         
@@ -180,7 +174,6 @@ class EventAction
             Db::commit();
             
             action_log('event_push', 'mt_event', $event_id, UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $event_id, $event['title'] ?? '工单', $event->toArray(), $event_data, '推送工单给：' . $to_user['nickname'] . ($reason ? '，理由：' . $reason : ''));
             return true;
         } catch (\ErrorException $e) {
             Db::rollback();
@@ -239,7 +232,6 @@ class EventAction
 
         if ($note = EventNoteModel::create($data)) {
             action_log('event_note_add', 'mt_event_note', $event_id, UID);
-            ActionLog::addRecord('maintenance', 'mt_event_note', 'add', $note['id'], '工单备注', $note->toArray(), '为工单【' . ($event['title'] ?? '工单') . '】添加备注');
             return true;
         }
         
@@ -277,7 +269,6 @@ class EventAction
         
         if (EventModel::update($data)) {
             action_log('event_cancel', 'mt_event', $id, UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $id, $oldEvent['title'] ?? '工单', $oldEvent->toArray(), $data, '作废工单');
             return true;
         }
         
@@ -303,7 +294,6 @@ class EventAction
         
         if (EventModel::update($data)) {
             action_log('event_active', 'mt_event', $id, UID);
-            ActionLog::editRecord('maintenance', 'mt_event', $id, $oldEvent['title'] ?? '工单', $oldEvent->toArray(), $data, '激活工单');
             return true;
         }
         
