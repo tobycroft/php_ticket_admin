@@ -1083,17 +1083,22 @@ if (!function_exists('action_log')) {
                         if (isset($param[1])) {
                             $replace[] = call_user_func($param[1], $log[$param[0]]);
                         } else {
-                            $replace[] = $log[$param[0]];
+                            $replace[] = $log[$param[0]] ?? '';
                         }
                     }
 
-                    $data['remark'] = str_replace($match[0], $replace, $action_info['log']) . $details;
+                    $data['remark'] = str_replace($match[0], $replace, $action_info['log']);
                 } else {
-                    $data['remark'] = $action_info['log'] . $details;
+                    $data['remark'] = $action_info['log'];
                 }
             } else {
                 // 未定义日志规则，记录操作url
-                $data['remark'] = '操作url：' . $_SERVER['REQUEST_URI'] . "\r操作细节:" . $details;
+                $data['remark'] = '操作url：' . $_SERVER['REQUEST_URI'];
+            }
+            
+            // 总是把 details 拼到 remark 后面
+            if (!empty($details)) {
+                $data['remark'] .= "\n" . $details;
             }
 
             // 保存日志
