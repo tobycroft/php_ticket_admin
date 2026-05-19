@@ -40,8 +40,6 @@ class Event extends Admin
             $item['can_cancel'] = $item['creator_id'] == UID && !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
             $item['can_reopen'] = $item['is_closed'] && !$item['is_canceled'];
             $item['can_complete'] = !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
-            $item['can_mark_no_feedback'] = !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
-            $item['can_unmark_no_feedback'] = $item['is_no_feedback'] && !$item['is_canceled'];
         }
 
         return ZBuilder::make('table')
@@ -62,7 +60,7 @@ class Event extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
-            ->addRightButtons(['edit', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])], 'close' => ['title' => '标注已完成', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_complete'], 'reopen' => ['title' => '标注未完成', 'icon' => 'fa fa-undo', 'class' => 'btn btn-xs btn-warning', 'href' => url('reopen', ['id' => '__id__']), 'condition' => 'can_reopen'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel'], 'mark_no_feedback' => ['title' => '标记为客户无反馈', 'icon' => 'fa fa-check-square-o', 'class' => 'btn btn-xs btn-warning', 'href' => url('markNoFeedback', ['id' => '__id__']), 'condition' => 'can_mark_no_feedback'], 'unmark_no_feedback' => ['title' => '取消标记', 'icon' => 'fa fa-undo', 'class' => 'btn btn-xs btn-info', 'href' => url('unmarkNoFeedback', ['id' => '__id__']), 'condition' => 'can_unmark_no_feedback']])
+            ->addRightButtons(['edit', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])], 'close' => ['title' => '标注已完成', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_complete'], 'reopen' => ['title' => '标注未完成', 'icon' => 'fa fa-undo', 'class' => 'btn btn-xs btn-warning', 'href' => url('reopen', ['id' => '__id__']), 'condition' => 'can_reopen'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
             ->setRowList($data_list)
             ->fetch();
     }
@@ -160,6 +158,14 @@ class Event extends Admin
             $this->error('工单不存在');
         }
 
+        // 根据当前状态确定选中的值
+        $status_value = 0;
+        if ($info['is_no_feedback'] == 1) {
+            $status_value = 2;
+        } elseif ($info['is_closed'] == 1) {
+            $status_value = 1;
+        }
+
         $priority_list = [
             1 => '<span class="label label-default">1 - 普通</span>',
             2 => '<span class="label label-info">2 - 低</span>',
@@ -185,7 +191,7 @@ class Event extends Admin
                 ['datetime', 'start_time', '开始时间', '必填'],
                 ['text', 'customer_name', '对接客户'],
                 ['select', 'priority', '优先级', '', $priority_list],
-                ['radio', 'is_closed', '结单状态', '', ['未结单', '已结单'], $info['is_closed']],
+                ['radio', 'status_type', '结单状态', '', ['未结单', '已结单', '已解决，客户无反馈'], $status_value],
                 ['radio', 'is_canceled', '作废状态', '', ['正常', '已作废'], $info['is_canceled']]
             ])
             ->setFormData($info)
@@ -223,8 +229,6 @@ class Event extends Admin
         $is_current_receiver = $info['receiver_id'] == UID;
         $is_sender = $info['creator_id'] == UID;
         $can_close = $is_current_receiver && !$info['is_closed'] && !$info['is_no_feedback'];
-        $can_mark_no_feedback = !$info['is_closed'] && !$info['is_canceled'] && !$info['is_no_feedback'];
-        $can_unmark_no_feedback = $info['is_no_feedback'] && !$info['is_canceled'];
 
         $this->assign('info', $info);
         $this->assign('notes', $notes);
@@ -232,8 +236,6 @@ class Event extends Admin
         $this->assign('can_close', $can_close);
         $this->assign('is_current_receiver', $is_current_receiver);
         $this->assign('is_sender', $is_sender);
-        $this->assign('can_mark_no_feedback', $can_mark_no_feedback);
-        $this->assign('can_unmark_no_feedback', $can_unmark_no_feedback);
 
         $this->assign('page_title', '工单详情');
 
@@ -491,69 +493,4 @@ class Event extends Admin
         return json(['code' => 0, 'msg' => '请求方式错误']);
     }
 
-    public function markNoFeedback($id = null)
-    {
-        if ($id === null) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => '缺少参数']);
-            }
-            $this->error('缺少参数');
-        }
-
-        try {
-            EventAction::markAsNoFeedback($id);
-        } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
-        }
-
-        if ($this->request->isAjax()) {
-            return json(['code' => 1, 'msg' => '标记成功', 'url' => cookie('__forward__')]);
-        }
-        $this->success('标记成功', cookie('__forward__'));
-    }
-
-    public function unmarkNoFeedback($id = null)
-    {
-        if ($id === null) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => '缺少参数']);
-            }
-            $this->error('缺少参数');
-        }
-
-        try {
-            EventAction::unmarkAsNoFeedback($id);
-        } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
-        }
-
-        if ($this->request->isAjax()) {
-            return json(['code' => 1, 'msg' => '取消标记成功', 'url' => cookie('__forward__')]);
-        }
-        $this->success('取消标记成功', cookie('__forward__'));
-    }
-
-    public function autoMarkOldEvents()
-    {
-        $days = $this->request->param('days', 7);
-        
-        try {
-            $count = EventAction::autoMarkOldEventsAsNoFeedback($days);
-            if ($this->request->isAjax()) {
-                return json(['code' => 1, 'msg' => "已成功标记 {$count} 个工单为客户无反馈状态"]);
-            }
-            $this->success("已成功标记 {$count} 个工单为客户无反馈状态");
-        } catch (\Exception $e) {
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $e->getMessage()]);
-            }
-            $this->error($e->getMessage());
-        }
-    }
 }

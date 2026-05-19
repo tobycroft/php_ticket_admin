@@ -64,6 +64,23 @@ class EventAction
     {
         $oldEvent = EventModel::where('id', $data['id'])->find();
         
+        // 处理结单状态
+        if (isset($data['status_type'])) {
+            $data['is_closed'] = 0;
+            $data['is_no_feedback'] = 0;
+            
+            if ($data['status_type'] == 1) {
+                $data['is_closed'] = 1;
+                $data['closer_id'] = UID;
+                $data['closer_name'] = get_nickname(UID);
+                $data['end_time'] = date('Y-m-d H:i:s');
+            } elseif ($data['status_type'] == 2) {
+                $data['is_no_feedback'] = 1;
+            }
+            
+            unset($data['status_type']);
+        }
+        
         if (isset($data['contact_method']) && is_array($data['contact_method'])) {
             $data['contact_method'] = implode(',', $data['contact_method']);
         }
@@ -341,62 +358,7 @@ class EventAction
         return EventFlowModel::getStatusList();
     }
 
-    public static function markAsNoFeedback($id)
-    {
-        $oldEvent = EventModel::where('id', $id)->find();
-        
-        $data = [
-            'id' => $id,
-            'is_no_feedback' => 1,
-        ];
-        
-        if (EventModel::update($data)) {
-            action_log('event_no_feedback', 'mt_event', $id, UID);
-            return true;
-        }
-        
-        throw new \Exception('标记失败');
-    }
 
-    public static function unmarkAsNoFeedback($id)
-    {
-        $oldEvent = EventModel::where('id', $id)->find();
-        
-        $data = [
-            'id' => $id,
-            'is_no_feedback' => 0,
-        ];
-        
-        if (EventModel::update($data)) {
-            action_log('event_unmark_no_feedback', 'mt_event', $id, UID);
-            return true;
-        }
-        
-        throw new \Exception('取消标记失败');
-    }
-
-    public static function autoMarkOldEventsAsNoFeedback($days = 7)
-    {
-        $map = [
-            ['is_closed', '=', 0],
-            ['is_canceled', '=', 0],
-            ['is_no_feedback', '=', 0],
-            ['create_time', '<', date('Y-m-d H:i:s', strtotime("-$days days"))],
-        ];
-        
-        $events = EventModel::where($map)->select();
-        
-        foreach ($events as $event) {
-            $data = [
-                'id' => $event['id'],
-                'is_no_feedback' => 1,
-            ];
-            EventModel::update($data);
-            action_log('event_auto_no_feedback', 'mt_event', $event['id'], 0);
-        }
-        
-        return count($events);
-    }
 
     public static function getIsNoFeedbackList()
     {
