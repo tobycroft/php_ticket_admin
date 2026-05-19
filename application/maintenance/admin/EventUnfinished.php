@@ -20,16 +20,24 @@ class EventUnfinished extends Admin
 
         $is_closed_list = EventAction::getIsClosedList();
         $is_canceled_list = EventAction::getIsCanceledList();
+        $is_no_feedback_list = EventAction::getIsNoFeedbackList();
         $priority_list = EventAction::getPriorityList();
 
         foreach ($data_list as &$item) {
-            $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
+            if ($item['is_no_feedback'] == 1) {
+                $item['is_closed_text'] = '<span style="color:orange; font-weight:bold;"><i class="fa fa-check-square-o"></i> 已解决，客户无反馈</span>';
+            } elseif ($item['is_closed'] == 1) {
+                $item['is_closed_text'] = '<span style="color:green; font-weight:bold;"><i class="fa fa-check-circle"></i> 已结单</span>';
+            } else {
+                $item['is_closed_text'] = '<span style="color:red; font-weight:bold;"><i class="fa fa-exclamation-circle"></i> 未结单</span>';
+            }
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
             $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
             $item['end_time_text'] = $item['end_time'] ? $item['end_time'] : '';
-            $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'];
-            $item['can_cancel'] = $item['creator_id'] == UID && !$item['is_closed'] && !$item['is_canceled'];
+            $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
+            $item['can_cancel'] = $item['creator_id'] == UID && !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
+            $item['can_mark_no_feedback'] = !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
         }
 
         return ZBuilder::make('table')
@@ -47,7 +55,7 @@ class EventUnfinished extends Admin
                 ['is_closed_text', '结单状态'],
                 ['right_button', '操作', 'btn']
             ])
-            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Event/detail', ['id' => '__id__'])], 'close' => ['title' => '结单', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('Event/close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Event/cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
+            ->addRightButtons(['detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('Event/detail', ['id' => '__id__'])], 'close' => ['title' => '结单', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('Event/close', ['id' => '__id__']), 'condition' => 'can_close'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('Event/cancel', ['id' => '__id__']), 'condition' => 'can_cancel'], 'mark_no_feedback' => ['title' => '标记为客户无反馈', 'icon' => 'fa fa-check-square-o', 'class' => 'btn btn-xs btn-warning', 'href' => url('Event/markNoFeedback', ['id' => '__id__']), 'condition' => 'can_mark_no_feedback']])
             ->setRowList($data_list)
             ->fetch();
     }

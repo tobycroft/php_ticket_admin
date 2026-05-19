@@ -340,4 +340,69 @@ class EventAction
     {
         return EventFlowModel::getStatusList();
     }
+
+    public static function markAsNoFeedback($id)
+    {
+        $oldEvent = EventModel::where('id', $id)->find();
+        
+        $data = [
+            'id' => $id,
+            'is_no_feedback' => 1,
+        ];
+        
+        if (EventModel::update($data)) {
+            action_log('event_no_feedback', 'mt_event', $id, UID);
+            return true;
+        }
+        
+        throw new \Exception('标记失败');
+    }
+
+    public static function unmarkAsNoFeedback($id)
+    {
+        $oldEvent = EventModel::where('id', $id)->find();
+        
+        $data = [
+            'id' => $id,
+            'is_no_feedback' => 0,
+        ];
+        
+        if (EventModel::update($data)) {
+            action_log('event_unmark_no_feedback', 'mt_event', $id, UID);
+            return true;
+        }
+        
+        throw new \Exception('取消标记失败');
+    }
+
+    public static function autoMarkOldEventsAsNoFeedback($days = 7)
+    {
+        $map = [
+            ['is_closed', '=', 0],
+            ['is_canceled', '=', 0],
+            ['is_no_feedback', '=', 0],
+            ['create_time', '<', date('Y-m-d H:i:s', strtotime("-$days days"))],
+        ];
+        
+        $events = EventModel::where($map)->select();
+        
+        foreach ($events as $event) {
+            $data = [
+                'id' => $event['id'],
+                'is_no_feedback' => 1,
+            ];
+            EventModel::update($data);
+            action_log('event_auto_no_feedback', 'mt_event', $event['id'], 0);
+        }
+        
+        return count($events);
+    }
+
+    public static function getIsNoFeedbackList()
+    {
+        return [
+            0 => '正常',
+            1 => '已解决，客户无反馈',
+        ];
+    }
 }

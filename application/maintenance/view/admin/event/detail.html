@@ -71,6 +71,12 @@
                                 {if condition="$can_close"}
                                 <a href="{:url('close', ['id' => $info.id])}" class="btn btn-success">结单</a>
                                 {/if}
+                                {if condition="$can_mark_no_feedback"}
+                                <a href="{:url('markNoFeedback', ['id' => $info.id])}" class="btn btn-warning">标记为客户无反馈</a>
+                                {/if}
+                                {if condition="$can_unmark_no_feedback"}
+                                <a href="{:url('unmarkNoFeedback', ['id' => $info.id])}" class="btn btn-info">取消标记</a>
+                                {/if}
                                 {if condition="$info.is_closed == 0"}
                                 <a href="{:url('push', ['id' => $info.id])}" class="btn btn-warning">推送</a>
                                 {/if}
