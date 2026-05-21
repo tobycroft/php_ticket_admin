@@ -42,6 +42,8 @@ class DashboardSchedule extends Admin
         for ($day = 1; $day <= $days_in_month; $day++) {
             $date = date('Y-m-d', strtotime("$year-$month-$day"));
             $weekday = date('w', strtotime($date));
+            // 将0（星期日）转换为7，其他不变
+            $weekday = $weekday == 0 ? 7 : $weekday;
             $calendar_days[] = ['day' => $day, 'date' => $date, 'weekday' => $weekday];
         }
         
@@ -49,7 +51,10 @@ class DashboardSchedule extends Admin
         $current_week = [];
         
         $first_weekday = date('w', $first_day);
-        for ($i = 0; $i < $first_weekday; $i++) {
+        // 将0（星期日）转换为7，其他不变
+        $first_weekday = $first_weekday == 0 ? 7 : $first_weekday;
+        // 填充月初空白（1表示星期一）
+        for ($i = 1; $i < $first_weekday; $i++) {
             $current_week[] = ['day' => 0, 'date' => '', 'weekday' => $i];
         }
         
@@ -62,8 +67,10 @@ class DashboardSchedule extends Admin
         }
         
         if (!empty($current_week)) {
+            $next_weekday = count($current_week) + 1;
             while (count($current_week) < 7) {
-                $current_week[] = ['day' => 0, 'date' => '', 'weekday' => 0];
+                $current_week[] = ['day' => 0, 'date' => '', 'weekday' => $next_weekday];
+                $next_weekday++;
             }
             $calendar_weeks[] = $current_week;
         }
@@ -82,7 +89,7 @@ class DashboardSchedule extends Admin
             $next_year++;
         }
 
-        $weekdays = ['', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+        $weekdays = [1 => '星期一', 2 => '星期二', 3 => '星期三', 4 => '星期四', 5 => '星期五', 6 => '星期六', 7 => '星期日'];
 
         $this->assign('year', $year);
         $this->assign('month', $month);
