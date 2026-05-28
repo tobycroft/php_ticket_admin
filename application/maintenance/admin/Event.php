@@ -54,10 +54,21 @@ $(document).on('click', '.export-excel-btn', function() {
         ids.push($(this).val());
     });
     var url = $(this).attr('href');
+    
+    var form = $('<form>', {
+        'method': 'POST',
+        'action': url
+    });
+    
     if (ids.length > 0) {
-        url += (url.indexOf('?') === -1 ? '?' : '&') + 'ids=' + ids.join(',');
+        form.append($('<input>', {
+            'type': 'hidden',
+            'name': 'ids',
+            'value': ids.join(',')
+        }));
     }
-    window.location.href = url;
+    
+    form.appendTo('body').submit();
     return false;
 });
 JS;
