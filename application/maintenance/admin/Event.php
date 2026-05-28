@@ -153,12 +153,14 @@ JS;
         }
 
         $json_response = json_decode($response, true);
-        if ($json_response && isset($json_response['code']) && $json_response['code'] != '0') {
-            $error_msg = $json_response['echo'] ?? 'Excel生成失败';
-            if ($this->request->isAjax()) {
-                return json(['code' => 0, 'msg' => $error_msg]);
+        if ($json_response !== null) {
+            if (isset($json_response['code']) && ($json_response['code'] !== 0 && $json_response['code'] !== '0')) {
+                $error_msg = $json_response['echo'] ?? $json_response['msg'] ?? 'Excel生成失败';
+                if ($this->request->isAjax()) {
+                    return json(['code' => 0, 'msg' => $error_msg]);
+                }
+                $this->error($error_msg);
             }
-            $this->error($error_msg);
         }
 
         $filename = '工单列表_' . date('YmdHis') . '.xlsx';
