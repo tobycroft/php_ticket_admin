@@ -65,9 +65,80 @@ class Event extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
+            ->addTopButton('custom', ['title' => '导出Excel', 'icon' => 'fa fa-download', 'class' => 'btn btn-success ajax-get', 'href' => url('export'), 'target-form' => 'ids'])
             ->addRightButtons(['edit', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])], 'close' => ['title' => '标注已完成', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_complete'], 'reopen' => ['title' => '标注未完成', 'icon' => 'fa fa-undo', 'class' => 'btn btn-xs btn-warning', 'href' => url('reopen', ['id' => '__id__']), 'condition' => 'can_reopen'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
             ->setRowList($data_list)
             ->fetch();
+    }
+
+    /**
+     * 导出Excel
+     */
+    public function export()
+    {
+        $ids = $this->request->param('ids', '');
+        
+        if ($ids) {
+            $ids = explode(',', $ids);
+            $map[] = ['id', 'in', $ids];
+        } else {
+            $map = $this->getMap();
+        }
+        $map[] = ['is_canceled', '=', 0];
+
+        $data_list = EventAction::getList($map);
+
+        $priority_list = EventAction::getPriorityList();
+
+        foreach ($data_list as &$item) {
+            if ($item['is_no_feedback'] == 1) {
+                $item['is_closed_text'] = '已解决，客户无反馈';
+            } elseif ($item['is_closed'] == 1) {
+                $item['is_closed_text'] = '已结单';
+            } else {
+                $item['is_closed_text'] = '未结单';
+            }
+            $item['priority_text'] = isset($priority_list[$item['priority']]) ? strip_tags($priority_list[$item['priority']]) : '';
+        }
+
+        $header = ['ID', '开始时间', '结束时间', '接单人', '发单人', '对接客户', '事件标题', '副标题', '优先级', '结单状态'];
+        $data = [];
+        foreach ($data_list as $item) {
+            $data[] = [
+                $item['id'],
+                $item['start_time'] ?: '',
+                $item['end_time'] ?: '',
+                $item['receiver_name'] ?: '',
+                $item['creator_name'] ?: '',
+                $item['customer_name'] ?: '',
+                $item['title'],
+                $item['subtitle'] ?: '',
+                $item['priority_text'],
+                $item['is_closed_text']
+            ];
+        }
+
+        $filename = '工单列表_' . date('YmdHis') . '.csv';
+        
+        header('Content-Type: application/vnd.ms-excel;charset=utf-8');
+        header('Content-Disposition: attachment;filename=' . $filename);
+        header('Cache-Control: max-age=0');
+        
+        echo "\xEF\xBB\xBF";
+        
+        echo implode(',', $header) . "\n";
+        
+        foreach ($data as $row) {
+            $processed_row = array_map(function($item) {
+                $item = str_replace('"', '""', $item);
+                if (strpos($item, ',') !== false || strpos($item, '"') !== false || strpos($item, "\n") !== false) {
+                    return '"' . $item . '"';
+                }
+                return $item;
+            }, $row);
+            echo implode(',', $processed_row) . "\n";
+        }
+        exit;
     }
 
     public function add()
