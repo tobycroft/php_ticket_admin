@@ -130,8 +130,7 @@ JS;
             if (!empty($flows)) {
                 $remark_content .= '【流转记录】' . "\n";
                 foreach ($flows as $flow) {
-                    $status_text = ['待处理', '已处理', '已退回'][$flow['status']] ?? '';
-                    $remark_content .= $flow['create_time'] . ' ' . ($flow['operator_name'] ?: '') . ' ' . $status_text . "\n";
+                    $status_text = ['待处理', '已处理', '已退回'][$flow['status']] ?? '';$remark_content .= $flow['create_time'] . ' ' . $status_text . "\n";
                     if (!empty($flow['remark'])) {
                         $remark_content .= '    ' . $flow['remark'] . "\n";
                     }
