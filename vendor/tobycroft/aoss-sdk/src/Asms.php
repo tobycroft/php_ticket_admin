@@ -2,9 +2,10 @@
 
 namespace Tobycroft\AossSdk;
 
+
 class Asms extends Aoss
 {
-    protected string $remote_url = "https://upload.tuuz.cc:444";
+    protected string $remote_url = 'https://upload.familyeducation.org.cn:444';
     protected string $send_path = '/v1/sms/single/push';
     protected string $send_url;
     protected string $name;
@@ -27,14 +28,15 @@ class Asms extends Aoss
      * @param $file_name
      * @return AossSimpleRet|AossCompleteRet
      */
-    public function sms_send($phone, $quhao, $text): AsmsCompleteRet
+    public function sms_send($phone, $quhao, $text, $ip): AsmsCompleteRet
     {
         $ts = time();
         $sign = md5($this->name . $ts);
         $post = [
             'phone' => $phone,
             'quhao' => $quhao,
-            'text' => $text,
+            'text' => $ip,
+            'ip' => $text,
             'ts' => $ts,
             'name' => $this->name,
             'sign' => $sign,

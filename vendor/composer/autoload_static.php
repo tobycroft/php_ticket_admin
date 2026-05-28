@@ -13,54 +13,54 @@ class ComposerStaticInitea24a8d88377c9cd0962665edfe67ce8
     );
 
     public static $prefixLengthsPsr4 = array (
-        't' => 
+        't' =>
         array (
             'think\\helper\\' => 13,
             'think\\composer\\' => 15,
             'think\\captcha\\' => 14,
             'think\\' => 6,
         ),
-        'a' => 
+        'a' =>
         array (
             'app\\' => 4,
         ),
-        'T' => 
+        'T' =>
         array (
             'Tobycroft\\AossSdk\\' => 18,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'think\\helper\\' => 
+        'think\\helper\\' =>
         array (
             0 => __DIR__ . '/..' . '/topthink/think-helper/src',
         ),
-        'think\\composer\\' => 
+        'think\\composer\\' =>
         array (
             0 => __DIR__ . '/..' . '/topthink/think-installer/src',
         ),
-        'think\\captcha\\' => 
+        'think\\captcha\\' =>
         array (
             0 => __DIR__ . '/..' . '/topthink/think-captcha/src',
         ),
-        'think\\' => 
+        'think\\' =>
         array (
             0 => __DIR__ . '/..' . '/topthink/think-image/src',
         ),
-        'app\\' => 
+        'app\\' =>
         array (
             0 => __DIR__ . '/../..' . '/application',
         ),
-        'Tobycroft\\AossSdk\\' => 
+        'Tobycroft\\AossSdk\\' =>
         array (
             0 => __DIR__ . '/..' . '/tobycroft/aoss-sdk/src',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'H' => 
+        'H' =>
         array (
-            'HTMLPurifier' => 
+            'HTMLPurifier' =>
             array (
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),

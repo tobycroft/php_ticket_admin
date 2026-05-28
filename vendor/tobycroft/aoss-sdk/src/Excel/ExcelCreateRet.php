@@ -1,13 +1,12 @@
 <?php
 
-namespace Tobycroft\AossSdk;
+namespace Tobycroft\AossSdk\Excel;
 
-class ExcelCompleteRet
+class ExcelCreateRet
 {
     public string $response;
     protected mixed $error = null;
-    protected mixed $data = [];
-    protected mixed $column = [];
+    protected mixed $data = "";
 
     public function __construct($response)
     {
@@ -18,11 +17,6 @@ class ExcelCompleteRet
         } else {
             if ($json["code"] == "0") {
                 $this->data = $json["data"];
-                if (count($this->data) > 0) {
-                }
-                foreach ($this->data[0] as $key => $value) {
-                    $this->column[] = $key;
-                }
             } else {
                 $this->error = $json["echo"];
             }
@@ -42,13 +36,8 @@ class ExcelCompleteRet
         return empty($this->error);
     }
 
-    public function getExcelJson(): array
+    public function file_url(): string
     {
         return $this->data;
-    }
-
-    public function getExcelColumn(): array
-    {
-        return $this->column;
     }
 }

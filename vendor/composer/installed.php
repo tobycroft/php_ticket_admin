@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'topthink/think',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '4e77684708f84e7bd98b18e9177d04b6adc8669a',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'c87d74d4cd357a07a9ca59b9f2fd79dff6c6ed22',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'tobycroft/aoss-sdk' => array(
-            'pretty_version' => 'v1.11.5',
-            'version' => '1.11.5.0',
-            'reference' => 'b6bd54bda758816e8b522b10e1126e764fa4247b',
+            'pretty_version' => 'v1.13.4',
+            'version' => '1.13.4.0',
+            'reference' => '8cb98c50b897252d019752c5373ba21bf95b9b8f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../tobycroft/aoss-sdk',
             'aliases' => array(),
@@ -38,9 +38,9 @@
             'dev_requirement' => false,
         ),
         'topthink/think' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '4e77684708f84e7bd98b18e9177d04b6adc8669a',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'c87d74d4cd357a07a9ca59b9f2fd79dff6c6ed22',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

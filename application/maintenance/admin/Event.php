@@ -88,7 +88,6 @@ class Event extends Admin
         }
         $map[] = ['is_canceled', '=', 0];
 
-        new Excel\Excel(Excel\)
 
         $data_list = EventAction::getList($map);
 
