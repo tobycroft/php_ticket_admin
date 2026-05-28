@@ -121,10 +121,36 @@ JS;
                 $item['is_closed_text'] = '未结单';
             }
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? strip_tags($priority_list[$item['priority']]) : '';
+            
+            $notes = EventAction::getNotes($item['id']);
+            $flows = EventAction::getFlows($item['id']);
+            
+            $remark_content = '';
+            
+            if (!empty($flows)) {
+                $remark_content .= '【流转记录】' . "\n";
+                foreach ($flows as $flow) {
+                    $status_text = ['待处理', '已处理', '已退回'][$flow['status']] ?? '';
+                    $remark_content .= $flow['create_time'] . ' ' . ($flow['operator_name'] ?: '') . ' ' . $status_text . "\n";
+                    if (!empty($flow['remark'])) {
+                        $remark_content .= '    ' . $flow['remark'] . "\n";
+                    }
+                }
+            }
+            
+            if (!empty($notes)) {
+                $remark_content .= '【备注】' . "\n";
+                foreach ($notes as $note) {
+                    $remark_content .= $note['create_time'] . ' ' . ($note['creator_name'] ?: '') . "\n";
+                    $remark_content .= '    ' . ($note['content'] ?: '') . "\n";
+                }
+            }
+            
+            $item['remark'] = trim($remark_content);
         }
 
         $excel_data = [];
-        $excel_data[] = ['ID', '开始时间', '结束时间', '接单人', '发单人', '对接客户', '事件标题', '副标题', '优先级', '结单状态'];
+        $excel_data[] = ['ID', '开始时间', '结束时间', '接单人', '发单人', '对接客户', '事件标题', '副标题', '优先级', '结单状态', '备注'];
         foreach ($data_list as $item) {
             $excel_data[] = [
                 $item['id'],
@@ -136,7 +162,8 @@ JS;
                 $item['title'],
                 $item['subtitle'] ?: '',
                 $item['priority_text'],
-                $item['is_closed_text']
+                $item['is_closed_text'],
+                $item['remark']
             ];
         }
 
