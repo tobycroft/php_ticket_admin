@@ -35,9 +35,66 @@ class RepairProcessing extends Admin
                 ['create_time', '创建时间'],
                 ['right_button', '操作', 'btn']
             ])
+            ->addTopButton('custom', ['title' => '导出Excel', 'icon' => 'fa fa-download', 'class' => 'btn btn-success', 'href' => url('export')])
             ->addRightButtons(['complete' => ['title' => '维修完毕', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('complete', ['id' => '__id__'])], 'scrap' => ['title' => '报废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('scrap', ['id' => '__id__'])], 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'class' => 'btn btn-xs btn-info', 'href' => url('detail', ['id' => '__id__'])]])
             ->setRowList($data_list)
             ->fetch();
+    }
+
+    /**
+     * 导出Excel
+     */
+    public function export()
+    {
+        $data_list = RepairModel::where('status', 2)->order('id DESC')->select();
+
+        $material_list = MaterialModel::getList(['status' => 1]);
+        $material_map = [];
+        foreach ($material_list as $item) {
+            $material_map[$item['id']] = $item['name'];
+        }
+
+        // 准备Excel数据
+        $header = ['ID', '维修单号', '物料', 'SN码', '故障描述', '创建时间'];
+        $data = [];
+        foreach ($data_list as $item) {
+            $data[] = [
+                $item['id'],
+                $item['code'],
+                $material_map[$item['material_id']] ?? '未知',
+                $item['sn'],
+                $item['problem'],
+                $item['create_time']
+            ];
+        }
+
+        // 生成Excel文件
+        $filename = '维修工单_' . date('YmdHis') . '.csv';
+        
+        // 设置响应头
+        header('Content-Type: application/vnd.ms-excel;charset=utf-8');
+        header('Content-Disposition: attachment;filename=' . $filename);
+        header('Cache-Control: max-age=0');
+        
+        // 输出BOM头，解决中文乱码
+        echo "\xEF\xBB\xBF";
+        
+        // 输出表头
+        echo implode(',', $header) . "\n";
+        
+        // 输出数据
+        foreach ($data as $row) {
+            // 处理包含逗号、引号、换行符的字段
+            $processed_row = array_map(function($item) {
+                $item = str_replace('"', '""', $item);
+                if (strpos($item, ',') !== false || strpos($item, '"') !== false || strpos($item, "\n") !== false) {
+                    return '"' . $item . '"';
+                }
+                return $item;
+            }, $row);
+            echo implode(',', $processed_row) . "\n";
+        }
+        exit;
     }
 
     public function complete($id = null)
