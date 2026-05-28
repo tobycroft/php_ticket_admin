@@ -7,8 +7,7 @@ use app\common\builder\ZBuilder;
 use app\maintenance\action\EventAction;
 use app\maintenance\model\ContactMethodModel;
 use app\user\model\User as UserModel;
-use Tobycroft\AossSdk\Aoss;
-use Tobycroft\AossSdk\Excel;
+use Tobycroft\AossSdk\Excel\Excel;
 
 class Event extends Admin
 {
@@ -88,7 +87,6 @@ class Event extends Admin
         }
         $map[] = ['is_canceled', '=', 0];
 
-
         $data_list = EventAction::getList($map);
 
         $priority_list = EventAction::getPriorityList();
@@ -104,10 +102,10 @@ class Event extends Admin
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? strip_tags($priority_list[$item['priority']]) : '';
         }
 
-        $header = ['ID', '开始时间', '结束时间', '接单人', '发单人', '对接客户', '事件标题', '副标题', '优先级', '结单状态'];
-        $data = [];
+        $excel_data = [];
+        $excel_data[] = ['ID', '开始时间', '结束时间', '接单人', '发单人', '对接客户', '事件标题', '副标题', '优先级', '结单状态'];
         foreach ($data_list as $item) {
-            $data[] = [
+            $excel_data[] = [
                 $item['id'],
                 $item['start_time'] ?: '',
                 $item['end_time'] ?: '',
@@ -121,26 +119,17 @@ class Event extends Admin
             ];
         }
 
-        $filename = '工单列表_' . date('YmdHis') . '.csv';
+        $token = str_replace('upfull?token=', '', config('upload_prefix'));
+        $Excel = new Excel($token);
+        $response = $Excel->create_excel_download_directly($excel_data);
         
-        header('Content-Type: application/vnd.ms-excel;charset=utf-8');
+        $filename = '工单列表_' . date('YmdHis') . '.xlsx';
+        
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename);
         header('Cache-Control: max-age=0');
         
-        echo "\xEF\xBB\xBF";
-        
-        echo implode(',', $header) . "\n";
-        
-        foreach ($data as $row) {
-            $processed_row = array_map(function($item) {
-                $item = str_replace('"', '""', $item);
-                if (strpos($item, ',') !== false || strpos($item, '"') !== false || strpos($item, "\n") !== false) {
-                    return '"' . $item . '"';
-                }
-                return $item;
-            }, $row);
-            echo implode(',', $processed_row) . "\n";
-        }
+        echo $response;
         exit;
     }
 
