@@ -7,7 +7,6 @@ use app\common\builder\ZBuilder;
 use app\maintenance\action\EventAction;
 use app\maintenance\model\ContactMethodModel;
 use app\user\model\User as UserModel;
-use Tobycroft\AossSdk\Excel\Excel;
 
 class Event extends Admin
 {
@@ -141,7 +140,7 @@ JS;
             ];
         }
 
-        $token =  config('upload_prefix');
+        $token = config('upload_prefix');
         $excel_obj = new \Tobycroft\AossSdk\Excel\Excel($token);
         $response = $excel_obj->create_excel_download_directly($excel_data);
 
