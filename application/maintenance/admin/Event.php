@@ -72,13 +72,9 @@ class Event extends Admin
             ->fetch();
     }
 
-    /**
-     * 导出Excel
-     */
     public function export()
     {
         $ids = $this->request->param('ids', '');
-        
         if ($ids) {
             $ids = explode(',', $ids);
             $map[] = ['id', 'in', $ids];
@@ -88,7 +84,6 @@ class Event extends Admin
         $map[] = ['is_canceled', '=', 0];
 
         $data_list = EventAction::getList($map);
-
         $priority_list = EventAction::getPriorityList();
 
         foreach ($data_list as &$item) {
@@ -120,15 +115,13 @@ class Event extends Admin
         }
 
         $token = str_replace('upfull?token=', '', config('upload_prefix'));
-        $Excel = new Excel($token);
-        $response = $Excel->create_excel_download_directly($excel_data);
-        
+        $excel_obj = new \Tobycroft\AossSdk\Excel\Excel($token);
+        $response = $excel_obj->create_excel_download_directly($excel_data);
+
         $filename = '工单列表_' . date('YmdHis') . '.xlsx';
-        
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename);
         header('Cache-Control: max-age=0');
-        
         echo $response;
         exit;
     }
