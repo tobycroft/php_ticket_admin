@@ -140,7 +140,7 @@ JS;
             if (!empty($notes)) {
                 $remark_content .= '【备注】' . "\n";
                 foreach ($notes as $note) {
-                    $remark_content .= $note['create_time'] . ' ' . ($note['creator_name'] ?: '') . "\n";
+                    $remark_content .= $note['create_time'] . "\n";
                     $remark_content .= '    ' . ($note['content'] ?: '') . "\n";
                 }
             }
