@@ -145,6 +145,22 @@ JS;
         $excel_obj = new \Tobycroft\AossSdk\Excel\Excel($token);
         $response = $excel_obj->create_excel_download_directly($excel_data);
 
+        if (empty($response)) {
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => 'Excel生成失败']);
+            }
+            $this->error('Excel生成失败');
+        }
+
+        $json_response = json_decode($response, true);
+        if ($json_response && isset($json_response['code']) && $json_response['code'] != '0') {
+            $error_msg = $json_response['echo'] ?? 'Excel生成失败';
+            if ($this->request->isAjax()) {
+                return json(['code' => 0, 'msg' => $error_msg]);
+            }
+            $this->error($error_msg);
+        }
+
         $filename = '工单列表_' . date('YmdHis') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename);
