@@ -141,7 +141,7 @@ JS;
             ];
         }
 
-        $token = str_replace('upfull?token=', '', config('upload_prefix'));
+        $token =  config('upload_prefix');
         $excel_obj = new \Tobycroft\AossSdk\Excel\Excel($token);
         $response = $excel_obj->create_excel_download_directly($excel_data);
 
