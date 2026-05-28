@@ -7,6 +7,8 @@ use app\common\builder\ZBuilder;
 use app\maintenance\action\EventAction;
 use app\maintenance\model\ContactMethodModel;
 use app\user\model\User as UserModel;
+use Tobycroft\AossSdk\Aoss;
+use Tobycroft\AossSdk\Excel;
 
 class Event extends Admin
 {
@@ -85,6 +87,8 @@ class Event extends Admin
             $map = $this->getMap();
         }
         $map[] = ['is_canceled', '=', 0];
+
+        new Excel\Excel(Excel\)
 
         $data_list = EventAction::getList($map);
 
