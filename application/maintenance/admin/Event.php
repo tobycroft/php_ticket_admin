@@ -47,6 +47,21 @@ class Event extends Admin
         $yesterday = date('Y-m-d', strtotime('-1 day'));
         $today = date('Y-m-d');
 
+        $extra_js = <<<JS
+$(document).on('click', '.export-excel-btn', function() {
+    var ids = [];
+    $('.ids:checked').each(function() {
+        ids.push($(this).val());
+    });
+    var url = $(this).attr('href');
+    if (ids.length > 0) {
+        url += (url.indexOf('?') === -1 ? '?' : '&') + 'ids=' + ids.join(',');
+    }
+    window.location.href = url;
+    return false;
+});
+JS;
+
         return ZBuilder::make('table')
             ->setPageTitle('工单列表')
             ->setTableName('mt_event')
@@ -66,9 +81,10 @@ class Event extends Admin
                 ['right_button', '操作', 'btn']
             ])
             ->addTopButtons('add')
-            ->addTopButton('custom', ['title' => '导出Excel', 'icon' => 'fa fa-download', 'class' => 'btn btn-success ajax-get', 'href' => url('export'), 'target-form' => 'ids'])
+            ->addTopButton('custom', ['title' => '导出Excel', 'icon' => 'fa fa-download', 'class' => 'btn btn-success export-excel-btn', 'href' => url('export')])
             ->addRightButtons(['edit', 'detail' => ['title' => '详情', 'icon' => 'fa fa-eye', 'href' => url('detail', ['id' => '__id__'])], 'close' => ['title' => '标注已完成', 'icon' => 'fa fa-check-circle', 'class' => 'btn btn-xs btn-success', 'href' => url('close', ['id' => '__id__']), 'condition' => 'can_complete'], 'reopen' => ['title' => '标注未完成', 'icon' => 'fa fa-undo', 'class' => 'btn btn-xs btn-warning', 'href' => url('reopen', ['id' => '__id__']), 'condition' => 'can_reopen'], 'cancel' => ['title' => '作废', 'icon' => 'fa fa-trash', 'class' => 'btn btn-xs btn-danger', 'href' => url('cancel', ['id' => '__id__']), 'condition' => 'can_cancel']])
             ->setRowList($data_list)
+            ->setExtraJs($extra_js)
             ->fetch();
     }
 
