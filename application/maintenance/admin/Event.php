@@ -47,6 +47,7 @@ class Event extends Admin
         $today = date('Y-m-d');
 
         $extra_js = <<<JS
+        <script>
 $(document).on('click', '.export-excel-btn', function() {
     var ids = [];
     $('.ids:checked').each(function() {
@@ -70,6 +71,7 @@ $(document).on('click', '.export-excel-btn', function() {
     form.appendTo('body').submit();
     return false;
 });
+</script>
 JS;
 
         return ZBuilder::make('table')
