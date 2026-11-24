@@ -25,3 +25,4 @@ composer.lock
 /dbdump/dp_admin_role.sql
 /dbdump/dp_admin_user.sql
 /.trae/*
+.DS_Store
