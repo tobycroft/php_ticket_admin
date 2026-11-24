@@ -20,6 +20,7 @@ class EventSent extends Admin
         foreach ($data_list as &$item) {
             $item['is_closed_text'] = isset($is_closed_list[$item['is_closed']]) ? $is_closed_list[$item['is_closed']] : '';
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
+            $item['creator_nickname'] = !empty($item['creator_id']) ? get_nickname($item['creator_id']) : '';
             $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
             $item['end_time_text'] = $item['end_time'] ? $item['end_time'] : '';
             $item['can_close'] = !$item['is_closed'] && !$item['is_canceled'];
@@ -33,6 +34,7 @@ class EventSent extends Admin
             ->addColumns([
                 ['id', 'ID'],
                 ['title', '事件标题'],
+                ['creator_nickname', '创建人'],
                 ['receiver_name', '接单人'],
                 ['customer_name', '对接客户'],
                 ['start_time_text', '开始时间'],

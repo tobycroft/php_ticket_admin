@@ -33,6 +33,7 @@ class EventUnfinished extends Admin
             }
             $item['is_canceled_text'] = isset($is_canceled_list[$item['is_canceled']]) ? $is_canceled_list[$item['is_canceled']] : '';
             $item['priority_text'] = isset($priority_list[$item['priority']]) ? $priority_list[$item['priority']] : '';
+            $item['creator_nickname'] = !empty($item['creator_id']) ? get_nickname($item['creator_id']) : '';
             $item['start_time_text'] = $item['start_time'] ? $item['start_time'] : '';
             $item['end_time_text'] = $item['end_time'] ? $item['end_time'] : '';
             $item['can_close'] = ($item['receiver_id'] == UID || $item['creator_id'] == UID) && !$item['is_closed'] && !$item['is_canceled'] && !$item['is_no_feedback'];
@@ -47,6 +48,7 @@ class EventUnfinished extends Admin
                 ['id', 'ID'],
                 ['title', '事件标题'],
                 ['subtitle', '副标题'],
+                ['creator_nickname', '创建人'],
                 ['creator_name', '发单人'],
                 ['receiver_name', '接单人'],
                 ['customer_name', '对接客户'],
